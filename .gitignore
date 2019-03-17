@@ -72,3 +72,8 @@ xcuserdata
 # XCode build-schemes
 #
 !xcschemes
+
+####
+# .idea files
+#
+.idea/
