@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
-		A9D5AC04223ED48B00AF87FB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC03223ED48B00AF87FB /* ViewController.swift */; };
-		A9D5AC07223ED48B00AF87FB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC05223ED48B00AF87FB /* Main.storyboard */; };
+		A9D5AC04223ED48B00AF87FB /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Assets.xcassets */; };
 		A9D5AC0C223ED48E00AF87FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -17,8 +16,7 @@
 /* Begin PBXFileReference section */
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A9D5AC03223ED48B00AF87FB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		A9D5AC06223ED48B00AF87FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		A9D5AC08223ED48E00AF87FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9D5AC0B223ED48E00AF87FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9D5AC0D223ED48E00AF87FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -54,14 +52,53 @@
 		A9D5AC00223ED48B00AF87FB /* TelegramLineChart */ = {
 			isa = PBXGroup;
 			children = (
-				A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */,
-				A9D5AC03223ED48B00AF87FB /* ViewController.swift */,
-				A9D5AC05223ED48B00AF87FB /* Main.storyboard */,
-				A9D5AC08223ED48E00AF87FB /* Assets.xcassets */,
-				A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */,
-				A9D5AC0D223ED48E00AF87FB /* Info.plist */,
+				A9D5AC18223ED5AA00AF87FB /* Storyboards */,
+				A9D5AC13223ED4B300AF87FB /* Application Delegate */,
+				A9D5AC17223ED4E400AF87FB /* Supporting Files */,
+				A9D5AC16223ED4DC00AF87FB /* Resources */,
+				A9D5AC15223ED4CD00AF87FB /* View Controllers */,
 			);
 			path = TelegramLineChart;
+			sourceTree = "<group>";
+		};
+		A9D5AC13223ED4B300AF87FB /* Application Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */,
+			);
+			path = "Application Delegate";
+			sourceTree = "<group>";
+		};
+		A9D5AC15223ED4CD00AF87FB /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		A9D5AC16223ED4DC00AF87FB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */,
+				A9D5AC08223ED48E00AF87FB /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A9D5AC17223ED4E400AF87FB /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9D5AC0D223ED48E00AF87FB /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A9D5AC18223ED5AA00AF87FB /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -124,7 +161,6 @@
 			files = (
 				A9D5AC0C223ED48E00AF87FB /* LaunchScreen.storyboard in Resources */,
 				A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */,
-				A9D5AC07223ED48B00AF87FB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9D5AC04223ED48B00AF87FB /* ViewController.swift in Sources */,
+				A9D5AC04223ED48B00AF87FB /* ChartViewController.swift in Sources */,
 				A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -143,14 +179,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A9D5AC05223ED48B00AF87FB /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A9D5AC06223ED48B00AF87FB /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -284,7 +312,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D6V88ZYWK4;
-				INFOPLIST_FILE = TelegramLineChart/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/TelegramLineChart/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,7 +330,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D6V88ZYWK4;
-				INFOPLIST_FILE = TelegramLineChart/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/TelegramLineChart/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
