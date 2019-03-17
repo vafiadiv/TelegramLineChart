@@ -64,7 +64,6 @@
 		A9D5AC00223ED48B00AF87FB /* TelegramLineChart */ = {
 			isa = PBXGroup;
 			children = (
-				A9D5AC18223ED5AA00AF87FB /* Storyboards */,
 				A9D5AC13223ED4B300AF87FB /* Application Delegate */,
 				A9D5AC17223ED4E400AF87FB /* Supporting Files */,
 				A9D5AC16223ED4DC00AF87FB /* Resources */,
@@ -106,13 +105,6 @@
 				A9D5AC0D223ED48E00AF87FB /* Info.plist */,
 			);
 			path = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		A9D5AC18223ED5AA00AF87FB /* Storyboards */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
