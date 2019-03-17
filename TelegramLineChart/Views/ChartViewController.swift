@@ -14,7 +14,4 @@ class ChartViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .red
     }
-
-
 }
-

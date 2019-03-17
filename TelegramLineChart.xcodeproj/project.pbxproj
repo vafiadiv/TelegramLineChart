@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
+		A9A9A1C0223EDB72005F939A /* ChartLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A9A1BF223EDB72005F939A /* ChartLayer.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
 		A9D5AC04223ED48B00AF87FB /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 
 /* Begin PBXFileReference section */
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
+		A9A9A1BF223EDB72005F939A /* ChartLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLayer.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
@@ -35,6 +37,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A10ABAC56C66B51CC8690FAE /* Layers */ = {
+			isa = PBXGroup;
+			children = (
+				A9A9A1BF223EDB72005F939A /* ChartLayer.swift */,
+			);
+			path = Layers;
+			sourceTree = "<group>";
+		};
 		A9D5ABF5223ED48B00AF87FB = {
 			isa = PBXGroup;
 			children = (
@@ -58,7 +68,7 @@
 				A9D5AC13223ED4B300AF87FB /* Application Delegate */,
 				A9D5AC17223ED4E400AF87FB /* Supporting Files */,
 				A9D5AC16223ED4DC00AF87FB /* Resources */,
-				A9D5AC15223ED4CD00AF87FB /* View Controllers */,
+				A9D5AC15223ED4CD00AF87FB /* Views */,
 			);
 			path = TelegramLineChart;
 			sourceTree = "<group>";
@@ -71,12 +81,13 @@
 			path = "Application Delegate";
 			sourceTree = "<group>";
 		};
-		A9D5AC15223ED4CD00AF87FB /* View Controllers */ = {
+		A9D5AC15223ED4CD00AF87FB /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				A9D5AC03223ED48B00AF87FB /* ChartViewController.swift */,
+				A10ABAC56C66B51CC8690FAE /* Layers */,
 			);
-			path = "View Controllers";
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A9D5AC16223ED4DC00AF87FB /* Resources */ = {
@@ -176,6 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9D5AC04223ED48B00AF87FB /* ChartViewController.swift in Sources */,
+				A9A9A1C0223EDB72005F939A /* ChartLayer.swift in Sources */,
 				A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
