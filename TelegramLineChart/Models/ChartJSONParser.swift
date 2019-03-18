@@ -6,10 +6,11 @@
 import Foundation
 
 struct ChartJSONParser {
-	static func chart<XType, YType>(from JSON: Data) throws -> Chart<XType, YType>?  {
+	static func charts(from JSON: Data) throws -> [Chart<Int, Int>]  {
 
 		let decoder = JSONDecoder()
-		let _ = decoder.userInfo
-		return nil
+		let chartDTOs = try decoder.decode([ChartDTO].self, from: JSON)
+
+		return [Chart(lines: [])]
 	}
 }

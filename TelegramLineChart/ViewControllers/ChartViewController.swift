@@ -12,6 +12,16 @@ class ChartViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .red
+        self.setupData()
     }
+
+	private func setupData() {
+		guard let data = ChartLoader.loadChartData() else {
+			return
+		}
+		guard let chart = try? ChartJSONParser.charts(from: data) else {
+			//TODO: error
+			return
+		}
+	}
 }

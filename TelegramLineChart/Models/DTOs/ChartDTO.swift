@@ -7,6 +7,7 @@ import Foundation
 
 struct ChartDTO: Decodable {
 //	let columns: [[Int]]
+	let types: [String: String]
 
 	private enum CodingKeys: CodingKey {
 		case columns
@@ -18,7 +19,7 @@ struct ChartDTO: Decodable {
 	init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 
-
-		let types = try container.decode(ChartLinesDTO.self, forKey: CodingKeys.types)
+		let dict = try container.decode([String: String].self, forKey: .types)
+		self.types = dict
 	}
 }
