@@ -5,10 +5,7 @@
 
 import Foundation
 
-struct DataPoint<XType, YType> {
-
-}
-
-extension DataPoint: Decodable where XType == Int, YType == Int {
-
+struct DataPoint {
+	let x: Int
+	let y: Int
 }

@@ -6,8 +6,8 @@
 import Foundation
 import UIKit.UIColor
 
-struct DataLine<XType, YType> {
-	let points: [DataPoint<XType, YType>]
+struct DataLine {
+	let points: [DataPoint]
 	let color: UIColor
 	let name: String
 }

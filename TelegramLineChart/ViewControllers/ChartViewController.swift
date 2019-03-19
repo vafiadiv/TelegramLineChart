@@ -19,9 +19,10 @@ class ChartViewController: UIViewController {
 		guard let data = ChartLoader.loadChartData() else {
 			return
 		}
-		guard let chart = try? ChartJSONParser.charts(from: data) else {
+		guard let charts = try? ChartJSONParser.charts(from: data) else {
 			//TODO: error
 			return
 		}
+		print(charts)
 	}
 }

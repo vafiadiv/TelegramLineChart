@@ -5,6 +5,6 @@
 
 import Foundation
 
-struct Chart<XType, YType> {
-	let lines: [DataLine<XType, YType>]
+struct Chart {
+	let lines: [DataLine]
 }
