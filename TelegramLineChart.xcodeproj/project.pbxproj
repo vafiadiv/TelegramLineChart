@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C7B41FA9D03AB7E85D40027 /* LineTypeDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41463FBB449FF5BD1734 /* LineTypeDTO.swift */; };
 		1C7B44133593DB2FE501194F /* ChartDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B696DAD5D2CAEEE9301 /* ChartDTO.swift */; };
 		1C7B4691DC7087D7A8B4F9DE /* DataLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B47FCF147B3D38113F331 /* DataLine.swift */; };
 		1C7B47A2C9DC3E1EDF684923 /* DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4D2221C3C0295AC667CC /* DataPoint.swift */; };
@@ -24,7 +23,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1C7B41463FBB449FF5BD1734 /* LineTypeDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineTypeDTO.swift; sourceTree = "<group>"; };
 		1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartJSONParser.swift; sourceTree = "<group>"; };
 		1C7B47484B394C7749455180 /* Chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
 		1C7B47FCF147B3D38113F331 /* DataLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLine.swift; sourceTree = "<group>"; };
@@ -65,7 +63,6 @@
 			isa = PBXGroup;
 			children = (
 				1C7B4B696DAD5D2CAEEE9301 /* ChartDTO.swift */,
-				1C7B41463FBB449FF5BD1734 /* LineTypeDTO.swift */,
 			);
 			path = DTOs;
 			sourceTree = "<group>";
@@ -242,7 +239,6 @@
 				1C7B47A2C9DC3E1EDF684923 /* DataPoint.swift in Sources */,
 				1C7B49AAE0C5D8B21F5356D0 /* ChartJSONParser.swift in Sources */,
 				1C7B44133593DB2FE501194F /* ChartDTO.swift in Sources */,
-				1C7B41FA9D03AB7E85D40027 /* LineTypeDTO.swift in Sources */,
 				1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */,
 				1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */,
 			);
