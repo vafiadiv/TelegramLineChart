@@ -42,7 +42,7 @@ private extension Chart {
 				let xValue = xColumn[i]
 				points.append(DataPoint(x: xValue, y: yValue))
 			}
-			lines.append(DataLine(points: points, color: .green, name: "asd"))
+			lines.append(DataLine(points: points, color: .green, name: key)) //TODO: change "key" to actual mapped value
 		}
 
 		self.init(lines: lines)

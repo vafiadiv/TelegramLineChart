@@ -9,3 +9,9 @@ struct DataPoint {
 	let x: Int
 	let y: Int
 }
+
+extension DataPoint: CustomStringConvertible {
+	public var description: String {
+		return "DataPoint x: \(x), y: \(y)"
+	}
+}
