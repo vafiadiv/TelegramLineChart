@@ -104,7 +104,7 @@ internal class ChartView: UIView {
 		NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
 	}
 
-	///Returns on-screen UIKit points per 1 of chart measurement units
+	///Returns on-screen Core Graphics points per 1 of chart measurement units
 	private static func pointsPerUnit(drawingDistance: CGFloat, unitMin: Int, unitMax: Int) -> CGFloat {
 		return drawingDistance / CGFloat(unitMax - unitMin)
 	}
