@@ -40,64 +40,77 @@ internal class ChartView: UIView {
 			return
 		}
 
-		guard let ctx = UIGraphicsGetCurrentContext() else {
-			return
-		}
-
-//		ctx.saveGState()
-//		ctx.concatenate(CGAffineTransform(scaleX: 1, y: -1))
-//		ctx.concatenate(CGAffineTransform(translationX: 0, y: -rect.height))
-//		ctx.scaleBy(x: 1, y: -1)
-
-		let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
-
-		//dimensions in chart measurement units
-		let minUnitX = dataLine.points[0].x
-		let maxUnitX = dataLine.points.last!.x
-
-		var minUnitY = 0
-		var maxUnitY = 0
-		dataLine.points.forEach { point in
-			if point.y < minUnitY {
-				minUnitY = point.y
-			}
-
-			if point.y > maxUnitY {
-				maxUnitY = point.y
-			}
-		}
-
-		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: drawingRect.width, unitMin: minUnitX, unitMax: maxUnitX)
-		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: drawingRect.height, unitMin: minUnitY, unitMax: maxUnitY)
-
-		let path = UIBezierPath()
-		path.lineWidth = 3.0
-		ctx.setStrokeColor(dataLine.color.cgColor)
-
-		for i in 0..<dataLine.points.count {
-			let point = dataLine.points[i]
-			let unitRelativeX = CGFloat(point.x - minUnitX)
-			let unitRelativeY = CGFloat(point.y - minUnitY)
-
-			let screenPoint = CGPoint(
-					x: border.width + unitRelativeX * pointsPerUnitX,
-					y: rect.height - border.height - (unitRelativeY * pointsPerUnitY))
-
-			if i == 0 {
-				path.move(to: screenPoint)
-			} else {
-				path.addLine(to: screenPoint)
-			}
-
-			if self.debug {
-				type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
-			}
-		}
-
-		path.stroke()
-
-//		ctx.restoreGState()
+        
+        let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
+        type(of: self).drawDataLinePoints(dataLine.points,
+                                          drawingRect: drawingRect,
+                                          color: dataLine.color,
+                                          context: UIGraphicsGetCurrentContext(),
+                                          debugPrint: true)
+		
 	}
+    
+    private static func drawDataLinePoints(_ points: [DataPoint],
+                                           drawingRect: CGRect,
+                                           color: UIColor,
+                                           context: CGContext?,
+                                           debugPrint: Bool = false) {
+        guard let context = context else {
+            return
+        }
+
+        context.saveGState()
+        context.translateBy(x: drawingRect.origin.x, y: drawingRect.origin.y)
+        
+        //dimensions in chart measurement units
+        let minUnitX = points[0].x
+        let maxUnitX = points.last!.x
+        
+        var minUnitY = 0
+        var maxUnitY = 0
+        points.forEach { point in
+            if point.y < minUnitY {
+                minUnitY = point.y
+            }
+            
+            if point.y > maxUnitY {
+                maxUnitY = point.y
+            }
+        }
+        
+        let pointsPerUnitX = self.pointsPerUnit(drawingDistance: drawingRect.width, unitMin: minUnitX, unitMax: maxUnitX)
+        let pointsPerUnitY = self.pointsPerUnit(drawingDistance: drawingRect.height, unitMin: minUnitY, unitMax: maxUnitY)
+        
+        let path = UIBezierPath()
+        path.lineWidth = 3.0
+        context.setStrokeColor(color.cgColor)
+        
+        for i in 0..<points.count {
+            let point = points[i]
+            let unitRelativeX = CGFloat(point.x - minUnitX)
+            let unitRelativeY = CGFloat(point.y - minUnitY)
+            
+            let screenPoint = CGPoint(
+                x: unitRelativeX * pointsPerUnitX,
+                y: drawingRect.height - (unitRelativeY * pointsPerUnitY))
+            
+            if i == 0 {
+                path.move(to: screenPoint)
+            } else {
+                path.addLine(to: screenPoint)
+            }
+            
+            if debugPrint {
+//                self.drawCoordinates(x: point.x, y: point.y, at: screenPoint)
+                let borderRectPath = UIBezierPath(rect: CGRect(x: 0, y: 0, width: drawingRect.width, height: drawingRect.height))
+                borderRectPath.stroke()
+            }
+        }
+        
+        path.stroke()
+
+        context.restoreGState()
+    }
 
 	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint/*, in context: CGContext*/) {
 		let string = "x: \(x), y: \(y)"
