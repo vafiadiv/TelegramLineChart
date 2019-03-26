@@ -7,6 +7,12 @@ import UIKit
 
 internal class ChartView: UIView {
 
+    //enum to avoid instantiation
+    private enum Constants {
+        //relative distance between horizontal chart lines measured in drawing rect height
+        static let horizontalLinesRelativeY: CGFloat = 1 / 5.5
+    }
+    
 	var debug = false
 
 	var border = CGSize(width: 10, height: 10) {
@@ -40,25 +46,29 @@ internal class ChartView: UIView {
 			return
 		}
 
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return
+        }
         
         let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
         type(of: self).drawDataLinePoints(dataLine.points,
                                           drawingRect: drawingRect,
                                           color: dataLine.color,
-                                          context: UIGraphicsGetCurrentContext(),
+                                          context: context,
                                           debugPrint: true)
 		
+        //debug
+        let maxY = dataLine.points.map { $0.y }.max()!
+        
+        type(of: self).drawHorizontalLines(currentUnitMaxY: maxY, newUnitMaxY: maxY, drawingRect: drawingRect, context: context)
+        
 	}
     
     private static func drawDataLinePoints(_ points: [DataPoint],
                                            drawingRect: CGRect,
                                            color: UIColor,
-                                           context: CGContext?,
+                                           context: CGContext,
                                            debugPrint: Bool = false) {
-        guard let context = context else {
-            return
-        }
-
         context.saveGState()
         context.translateBy(x: drawingRect.origin.x, y: drawingRect.origin.y)
         
@@ -109,6 +119,33 @@ internal class ChartView: UIView {
         
         path.stroke()
 
+        context.restoreGState()
+    }
+    
+    private static func drawHorizontalLines(currentUnitMaxY: Int,
+                                            currentUnitMinY: Int = 0,
+                                            newUnitMaxY: Int,
+                                            newUnitMinY: Int = 0,
+                                            drawingRect: CGRect,
+                                            context: CGContext,
+                                            debugPrint: Bool = false) {
+        
+        let currentPointsPerUnitY = self.pointsPerUnit(drawingDistance: drawingRect.height, unitMin: currentUnitMinY, unitMax: currentUnitMaxY)
+//        let newPointsPerUnitY = self.pointsPerUnit(drawingDistance: drawingRect.height, unitMin: newUnitMinY, unitMax: newUnitMaxY)
+        
+        let distanceBetweenLines = drawingRect.height / Constants.horizontalLinesRelativeY
+        
+        
+        context.saveGState()
+        context.translateBy(x: drawingRect.x, y: drawingRect.y)
+        
+        let linePath = UIBezierPath()
+        linePath.move(to: CGPoint.zero)
+        
+        for i in 0..<lineYCoordinates.count {
+            
+        }
+        
         context.restoreGState()
     }
 
