@@ -4,10 +4,11 @@
 //
 
 import UIKit
+import CoreGraphics
 
 internal class ChartView: UIView {
 
-	var debug = false
+	var debug = true
 
 	var border = CGSize(width: 10, height: 10) {
 		didSet {
@@ -16,7 +17,7 @@ internal class ChartView: UIView {
 	}
 
 	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
-	var dataLine: DataLine? {
+	var dataLines = [DataLine]() {
 		didSet {
 //			(self.layer as? ChartLayer)?.dataLine = dataLine
 			self.setNeedsDisplay()
@@ -36,11 +37,12 @@ internal class ChartView: UIView {
 
 	override func draw(_ rect: CGRect) {
 		super.draw(rect)
-		guard let dataLine = dataLine, !dataLine.points.isEmpty else {
+
+		guard let context = UIGraphicsGetCurrentContext() else {
 			return
 		}
 
-		guard let ctx = UIGraphicsGetCurrentContext() else {
+		guard !self.dataLines.isEmpty else {
 			return
 		}
 
@@ -51,13 +53,34 @@ internal class ChartView: UIView {
 
 		let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
 
+		if self.debug {
+			context.saveGState()
+			context.setStrokeColor(UIColor.brown.cgColor)
+			context.stroke(drawingRect, width: 3.0)
+			context.restoreGState()
+		}
+
+		self.dataLines.forEach { dataLine in
+			self.drawPoints(dataLine.points, in: drawingRect, with: dataLine.color, in: context)
+		}
+//		ctx.restoreGState()
+	}
+
+	private func drawPoints(_ points: [DataPoint], in rect: CGRect, with color: UIColor, in context: CGContext) {
+		guard !points.isEmpty else {
+			return
+		}
+
+		context.saveGState()
+
 		//dimensions in chart measurement units
-		let minUnitX = dataLine.points[0].x
-		let maxUnitX = dataLine.points.last!.x
+		let minUnitX = points[0].x
+		//force-unwrap is safe since `poits` is not empty
+		let maxUnitX = points.last!.x
 
 		var minUnitY = 0
 		var maxUnitY = 0
-		dataLine.points.forEach { point in
+		points.forEach { point in
 			if point.y < minUnitY {
 				minUnitY = point.y
 			}
@@ -67,21 +90,20 @@ internal class ChartView: UIView {
 			}
 		}
 
-		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: drawingRect.width, unitMin: minUnitX, unitMax: maxUnitX)
-		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: drawingRect.height, unitMin: minUnitY, unitMax: maxUnitY)
+		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minUnitX, unitMax: maxUnitX)
+		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minUnitY, unitMax: maxUnitY)
 
 		let path = UIBezierPath()
 		path.lineWidth = 3.0
-		ctx.setStrokeColor(dataLine.color.cgColor)
 
-		for i in 0..<dataLine.points.count {
-			let point = dataLine.points[i]
+		for i in 0..<points.count {
+			let point = points[i]
 			let unitRelativeX = CGFloat(point.x - minUnitX)
 			let unitRelativeY = CGFloat(point.y - minUnitY)
 
 			let screenPoint = CGPoint(
-					x: border.width + unitRelativeX * pointsPerUnitX,
-					y: rect.height - border.height - (unitRelativeY * pointsPerUnitY))
+					x: rect.origin.x + unitRelativeX * pointsPerUnitX,
+					y: rect.origin.y + rect.height - (unitRelativeY * pointsPerUnitY))
 
 			if i == 0 {
 				path.move(to: screenPoint)
@@ -93,15 +115,11 @@ internal class ChartView: UIView {
 				type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
 			}
 		}
-
+		context.setStrokeColor(color.cgColor)
+		path.lineJoinStyle = .round
 		path.stroke()
 
-//		ctx.restoreGState()
-	}
-
-	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint/*, in context: CGContext*/) {
-		let string = "x: \(x), y: \(y)"
-		NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
+		context.restoreGState()
 	}
 
 	///Returns on-screen Core Graphics points per 1 of chart measurement units
@@ -109,4 +127,17 @@ internal class ChartView: UIView {
 		return drawingDistance / CGFloat(unitMax - unitMin)
 	}
 
+	// MARK: - debug drawing
+
+	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint/*, in context: CGContext*/) {
+		guard let context = UIGraphicsGetCurrentContext() else {
+			return
+		}
+		context.saveGState()
+//		let string = "x: \(x), y: \(y)"
+		let string = "y: \(y)"
+
+		NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.cyan])
+		context.restoreGState()
+	}
 }

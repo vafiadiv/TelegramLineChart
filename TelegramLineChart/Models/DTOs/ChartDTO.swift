@@ -9,6 +9,8 @@ struct ChartDTO: Decodable {
 //	let columns: [[Int]]
 	let types: [String: String]
 	let columns: [String: [Int]]
+	let names: [String: String]
+	let colors: [String: String]
 
 	private enum CodingKeys: CodingKey {
 		case columns
@@ -40,7 +42,8 @@ struct ChartDTO: Decodable {
 				index += 1
 			}
 		}
-
+		self.names = try container.decode([String: String].self, forKey: .names)
+		self.colors = try container.decode([String: String].self, forKey: .colors)
 		self.columns = columns
 	}
 }

@@ -14,6 +14,7 @@
 		1C7B487085FBB30C2F418D61 /* Chart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B47484B394C7749455180 /* Chart.swift */; };
 		1C7B49AAE0C5D8B21F5356D0 /* ChartJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */; };
 		1C7B4A3063B33E1AD5D2ADB5 /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4CC35F028D1B71FDBE07 /* ChartViewController.swift */; };
+		1C7B4AE1855F0AE2BCB169A7 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B461022C503D871FECBBD /* UIColor+Hex.swift */; };
 		1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B49627C833376D46B1993 /* DecodingError.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		1C7B447EF1D310E0E03AC931 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartJSONParser.swift; sourceTree = "<group>"; };
+		1C7B461022C503D871FECBBD /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		1C7B47484B394C7749455180 /* Chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
 		1C7B47FCF147B3D38113F331 /* DataLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLine.swift; sourceTree = "<group>"; };
 		1C7B49627C833376D46B1993 /* DecodingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DecodingError.swift; sourceTree = "<group>"; };
@@ -53,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C7B427912B18806AD9C8DC1 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				1C7B461022C503D871FECBBD /* UIColor+Hex.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		1C7B492F2384EC155815BFD4 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +151,7 @@
 			children = (
 				A10ABAC56C66B51CC8690FAE /* Layers */,
 				1C7B447EF1D310E0E03AC931 /* ChartView.swift */,
+				1C7B427912B18806AD9C8DC1 /* Extensions */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -245,6 +256,7 @@
 				1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */,
 				1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */,
 				1C7B484CFED8B9CBAFEFDED5 /* ChartView.swift in Sources */,
+				1C7B4AE1855F0AE2BCB169A7 /* UIColor+Hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

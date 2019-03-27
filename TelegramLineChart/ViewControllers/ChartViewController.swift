@@ -12,11 +12,11 @@ class ChartViewController: UIViewController {
 
 	private var chartView: ChartView!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		self.setupUI()
-        self.setupData()
-    }
+		self.setupData()
+	}
 
 
 	private func setupUI() {
@@ -44,7 +44,10 @@ class ChartViewController: UIViewController {
 		]
 		let dataLine = DataLine(points: mockPoints, color: .green, name: "Line")
 //		self.chartView.dataLine = dataLine
-		self.chartView.dataLine = charts[0].lines[0]
+		let croppedLines = charts[0].lines.map { line in
+			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
+		}
+		self.chartView.dataLines = croppedLines
 	}
 
 	override func viewWillLayoutSubviews() {

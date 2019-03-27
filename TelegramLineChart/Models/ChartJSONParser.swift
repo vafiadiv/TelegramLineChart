@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import UIKit.UIColor
 
 struct ChartJSONParser {
 
@@ -25,7 +26,7 @@ private extension Chart {
 		}
 
 		var lines = [DataLine]()
-		//1 column is "x"
+		//one column is "x"
 		lines.reserveCapacity(DTO.columns.count - 1)
 
 		for (key, column) in DTO.columns {
@@ -42,7 +43,11 @@ private extension Chart {
 				let xValue = xColumn[i]
 				points.append(DataPoint(x: xValue, y: yValue))
 			}
-			lines.append(DataLine(points: points, color: .green, name: key)) //TODO: change "key" to actual mapped value
+			var color: UIColor? = nil
+			if let colorHexString = DTO.colors[key] {
+				color = UIColor(hex: colorHexString)
+			}
+			lines.append(DataLine(points: points, color: color ?? .red, name: DTO.names[key] ?? ""))
 		}
 
 		self.init(lines: lines)
