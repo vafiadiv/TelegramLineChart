@@ -18,6 +18,7 @@
 		1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B49627C833376D46B1993 /* DecodingError.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
+		A935164D2249B10F00D6549C /* CGRect+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935164C2249B10F00D6549C /* CGRect+Convenience.swift */; };
 		A9A9A1C0223EDB72005F939A /* ChartLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A9A1BF223EDB72005F939A /* ChartLayer.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Assets.xcassets */; };
@@ -36,6 +37,7 @@
 		1C7B4CC35F028D1B71FDBE07 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		1C7B4D2221C3C0295AC667CC /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
+		A935164C2249B10F00D6549C /* CGRect+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Convenience.swift"; sourceTree = "<group>"; };
 		A9A9A1BF223EDB72005F939A /* ChartLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLayer.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,14 @@
 			path = Layers;
 			sourceTree = "<group>";
 		};
+		A935164B2249B0F700D6549C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A935164C2249B10F00D6549C /* CGRect+Convenience.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		A9D5ABF5223ED48B00AF87FB = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +143,7 @@
 				A9D5AC15223ED4CD00AF87FB /* Views */,
 				1C7B492F2384EC155815BFD4 /* ViewControllers */,
 				1C7B4DDE576DB433B9789C73 /* Models */,
+				A935164B2249B0F700D6549C /* Extensions */,
 				1C7B4CBC277602C2FAEFAD24 /* Core */,
 			);
 			path = TelegramLineChart;
@@ -257,6 +268,7 @@
 				1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */,
 				1C7B484CFED8B9CBAFEFDED5 /* ChartView.swift in Sources */,
 				1C7B4AE1855F0AE2BCB169A7 /* UIColor+Hex.swift in Sources */,
+				A935164D2249B10F00D6549C /* CGRect+Convenience.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
