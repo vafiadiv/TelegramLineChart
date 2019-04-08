@@ -2,7 +2,6 @@
 //  CGRect+Convenience.swift
 //  TelegramLineChart
 //
-//  Created by Valentin Vafiadi on 26/03/2019.
 //  Copyright © 2019 VFD. All rights reserved.
 //
 
@@ -16,4 +15,8 @@ extension CGRect {
     var y: CGFloat {
         return self.origin.y
     }
+
+	var ceiled: CGRect {
+		return CGRect(origin: self.origin.ceiled, size: self.size.ceiled)
+	}
 }

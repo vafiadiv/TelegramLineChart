@@ -42,7 +42,7 @@ class ChartViewController: UIViewController {
 			DataPoint(x: 15, y: 15),
 			DataPoint(x: 20, y: 15),
 		]
-		let dataLine = DataLine(points: mockPoints, color: .green, name: "Line")
+//		let dataLine = DataLine(points: mockPoints, color: .green, name: "Line")
 //		self.chartView.dataLine = dataLine
 		let croppedLines = charts[0].lines.map { line in
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)

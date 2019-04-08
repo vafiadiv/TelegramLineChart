@@ -8,19 +8,7 @@ import CoreGraphics
 
 internal class ChartView: UIView {
 
-    //enum to avoid instantiation
-    private enum Constants {
-        //relative distance between horizontal chart lines measured in drawing rect height
-        static let horizontalLinesRelativeY: CGFloat = 1 / 5.5
-    }
-
-	var debug = true
-
-	var border = CGSize(width: 10, height: 10) {
-		didSet {
-			(self.layer as? ChartLayer)?.border = border
-		}
-	}
+	// MARK: - Public properties
 
 	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
 	var dataLines = [DataLine]() {
@@ -29,6 +17,20 @@ internal class ChartView: UIView {
 			self.setNeedsDisplay()
 		}
 	}
+
+	// MARK: - Private properties
+
+	private var debug = true
+
+	private var border = CGSize(width: 10, height: 10) {
+		didSet {
+			(self.layer as? ChartLayer)?.border = border
+		}
+	}
+
+	private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
+
+	// MARK: - Public methods
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -69,6 +71,8 @@ internal class ChartView: UIView {
 
 //		ctx.restoreGState()
 	}
+
+	// MARK: - Private methods
 
 	private func drawPoints(_ points: [DataPoint], in rect: CGRect, with color: UIColor, in context: CGContext) {
 		guard !points.isEmpty else {
@@ -125,15 +129,20 @@ internal class ChartView: UIView {
 
 		context.restoreGState()
 
-		self.drawHorizontalLines(currentUnitMaxY: maxUnitY, currentUnitMinY: minUnitY, newUnitMaxY: maxUnitY, drawingRect: rect, context: context)
-
+		self.horizontalLinesDrawer.drawHorizontalLines(
+				currentPointsPerUnitY: pointsPerUnitY,
+				newPointsPerUnitY: pointsPerUnitY,
+				drawingRect: rect,
+				context: context)
 	}
 
 	///Returns on-screen Core Graphics points per 1 of chart measurement units
+
 	private static func pointsPerUnit(drawingDistance: CGFloat, unitMin: Int, unitMax: Int) -> CGFloat {
 		return drawingDistance / CGFloat(unitMax - unitMin)
 	}
 
+/*
 	private func drawHorizontalLines(currentUnitMaxY: Int,
 											currentUnitMinY: Int = 0,
 											newUnitMaxY: Int,
@@ -165,10 +174,11 @@ internal class ChartView: UIView {
 		linePath.stroke()
 		context.restoreGState()
 	}
+*/
 
 	// MARK: - debug drawing
 
-	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint/*, in context: CGContext*/) {
+	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
 		guard let context = UIGraphicsGetCurrentContext() else {
 			return
 		}
