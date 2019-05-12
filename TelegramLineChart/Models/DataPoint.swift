@@ -6,8 +6,12 @@
 import Foundation
 
 struct DataPoint {
-	let x: Int
-	let y: Int
+
+    typealias XType = Int
+    typealias YType = Int
+
+	let x: XType
+	let y: YType
 }
 
 extension DataPoint: CustomStringConvertible {

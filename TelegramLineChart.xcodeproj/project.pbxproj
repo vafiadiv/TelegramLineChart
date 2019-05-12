@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C7B40E6101E3839AD3AB7F8 /* BinaryFloatingPoint+Readable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B447A23A84C6F462CE09A /* BinaryFloatingPoint+Readable.swift */; };
+		1C7B40E6101E3839AD3AB7F8 /* Double+Readable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B447A23A84C6F462CE09A /* Double+Readable.swift */; };
 		1C7B4299E8A6676BF08D6E3C /* CGRect+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B40CBB075D29A2D849F01 /* CGRect+Convenience.swift */; };
 		1C7B4342EA8768DA34B7D2E5 /* CGPoint+Conventience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */; };
 		1C7B44133593DB2FE501194F /* ChartDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B696DAD5D2CAEEE9301 /* ChartDTO.swift */; };
@@ -23,7 +23,6 @@
 		1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
-		A9A9A1C0223EDB72005F939A /* ChartLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A9A1BF223EDB72005F939A /* ChartLayer.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Assets.xcassets */; };
 		A9D5AC0C223ED48E00AF87FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */; };
@@ -32,7 +31,7 @@
 /* Begin PBXFileReference section */
 		1C7B40CBB075D29A2D849F01 /* CGRect+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Convenience.swift"; sourceTree = "<group>"; };
 		1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartHorizontalLinesDrawer.swift; sourceTree = "<group>"; };
-		1C7B447A23A84C6F462CE09A /* BinaryFloatingPoint+Readable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BinaryFloatingPoint+Readable.swift"; sourceTree = "<group>"; };
+		1C7B447A23A84C6F462CE09A /* Double+Readable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+Readable.swift"; sourceTree = "<group>"; };
 		1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartJSONParser.swift; sourceTree = "<group>"; };
 		1C7B461022C503D871FECBBD /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		1C7B47484B394C7749455180 /* Chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
@@ -46,7 +45,6 @@
 		1C7B4D2221C3C0295AC667CC /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
-		A9A9A1BF223EDB72005F939A /* ChartLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLayer.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9D5AC08223ED48E00AF87FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -129,18 +127,10 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		A10ABAC56C66B51CC8690FAE /* Layers */ = {
-			isa = PBXGroup;
-			children = (
-				A9A9A1BF223EDB72005F939A /* ChartLayer.swift */,
-			);
-			path = Layers;
-			sourceTree = "<group>";
-		};
 		A935164B2249B0F700D6549C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1C7B447A23A84C6F462CE09A /* BinaryFloatingPoint+Readable.swift */,
+				1C7B447A23A84C6F462CE09A /* Double+Readable.swift */,
 				1C7B4709780C448DBAC345DB /* CoreGraphics */,
 			);
 			path = Extensions;
@@ -188,7 +178,6 @@
 		A9D5AC15223ED4CD00AF87FB /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A10ABAC56C66B51CC8690FAE /* Layers */,
 				1C7B427912B18806AD9C8DC1 /* Extensions */,
 				1C7B434E17D0254CF3789765 /* ChartView */,
 			);
@@ -284,7 +273,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9A9A1C0223EDB72005F939A /* ChartLayer.swift in Sources */,
 				A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */,
 				1C7B4A3063B33E1AD5D2ADB5 /* ChartViewController.swift in Sources */,
 				1C7B487085FBB30C2F418D61 /* Chart.swift in Sources */,
@@ -295,7 +283,7 @@
 				1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */,
 				1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */,
 				1C7B4AE1855F0AE2BCB169A7 /* UIColor+Hex.swift in Sources */,
-				1C7B40E6101E3839AD3AB7F8 /* BinaryFloatingPoint+Readable.swift in Sources */,
+				1C7B40E6101E3839AD3AB7F8 /* Double+Readable.swift in Sources */,
 				1C7B490E93E10E9A70F4BAEE /* ChartView.swift in Sources */,
 				1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */,
 				1C7B4299E8A6676BF08D6E3C /* CGRect+Convenience.swift in Sources */,

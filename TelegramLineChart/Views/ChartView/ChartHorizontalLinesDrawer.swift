@@ -12,7 +12,7 @@ internal class ChartHorizontalLinesDrawer {
 	private enum Constants {
 		//relative distance between horizontal chart lines measured in drawing rect height
 		static let horizontalLinesRelativeY: CGFloat = 1 / 5.5
-		static let textOffset: CGFloat = 5
+        static let textOffset = UIOffset(horizontal: 5, vertical: 5)
 	}
 
 	internal func drawHorizontalLines(currentPointsPerUnitY: CGFloat,
@@ -49,7 +49,7 @@ internal class ChartHorizontalLinesDrawer {
 		}
 
 		let lineTextPoints = lineYCoordinates.map {
-			return CGPoint(x: 0, y: $0 - Constants.textOffset)
+			return CGPoint(x: Constants.textOffset.horizontal, y: $0 - Constants.textOffset.vertical)
 		}
 
 		zip(lineTexts, lineTextPoints).forEach { text, point in
@@ -60,7 +60,7 @@ internal class ChartHorizontalLinesDrawer {
 
 		 	let attributedText = NSAttributedString(string: text, attributes: attributes)
 			let size = attributedText.size().ceiled
-			attributedText.draw(at: CGPoint(x: point.x, y: point.y - size.height - Constants.textOffset))
+			attributedText.draw(at: CGPoint(x: point.x, y: point.y - size.height - Constants.textOffset.vertical))
 		}
 	}
 }

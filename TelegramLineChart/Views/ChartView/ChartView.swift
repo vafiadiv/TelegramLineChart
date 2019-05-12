@@ -13,20 +13,25 @@ internal class ChartView: UIView {
 	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
 	var dataLines = [DataLine]() {
 		didSet {
-//			(self.layer as? ChartLayer)?.dataLine = dataLine
-			self.setNeedsDisplay()
+
+            let firstPoints = dataLines.compactMap { $0.points.first?.x }
+
+            let lastPoints = dataLines.compactMap { $0.points.last?.x }
+
+            let minX = firstPoints.min() ?? 0
+            let maxX = lastPoints.max() ?? minX
+            self.xRange = minX...maxX
+            self.setNeedsDisplay()
 		}
 	}
+
+    var xRange: ClosedRange<DataPoint.XType> = 0...0
 
 	// MARK: - Private properties
 
 	private var debug = true
 
-	private var border = CGSize(width: 10, height: 10) {
-		didSet {
-			(self.layer as? ChartLayer)?.border = border
-		}
-	}
+	private var border = CGSize(width: 10, height: 10)
 
 	private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
@@ -65,30 +70,44 @@ internal class ChartView: UIView {
 		}
 */
 
-		self.dataLines.forEach { dataLine in
-			self.drawPoints(dataLine.points, in: drawingRect, with: dataLine.color, in: context)
+        //point with min Y value across all points in all lines
+        let minY = self.dataLines.compactMap { dataLine in
+            dataLine.points.map { $0.y }.min()
+        }.min() ?? 0
+
+        //point with max Y value across all points in all lines
+        let maxY = self.dataLines.compactMap { dataLine in
+            dataLine.points.map { $0.y }.max()
+        }.max() ?? minY
+
+        let minPoint = DataPoint(x: xRange.lowerBound, y: minY)
+        let maxPoint = DataPoint(x: xRange.upperBound, y: maxY)
+
+        self.dataLines.forEach { dataLine in
+//            self.drawLine(dataLine, in: drawingRect, in: context)
+            self.drawLine(dataLine, minDataPoint: minPoint, maxDataPoint: maxPoint, in: drawingRect, in: context)
 		}
 
-//		ctx.restoreGState()
 	}
 
 	// MARK: - Private methods
 
-	private func drawPoints(_ points: [DataPoint], in rect: CGRect, with color: UIColor, in context: CGContext) {
-		guard !points.isEmpty else {
+	private func drawLine(_ line: DataLine, minDataPoint: DataPoint, maxDataPoint: DataPoint, in rect: CGRect, in context: CGContext) {
+		guard !line.points.isEmpty else {
 			return
 		}
 
 		context.saveGState()
 
+/*
 		//dimensions in chart measurement units
-		let minUnitX = points[0].x
-		//force-unwrap is safe since `poits` is not empty
-		let maxUnitX = points.last!.x
+		let minUnitX = line.points[0].x
+		//force-unwrap is safe since `points` is not empty
+		let maxUnitX = line.points.last!.x
 
 		var minUnitY = 0
 		var maxUnitY = 0
-		points.forEach { point in
+        line.points.forEach { point in
 			if point.y < minUnitY {
 				minUnitY = point.y
 			}
@@ -97,17 +116,18 @@ internal class ChartView: UIView {
 				maxUnitY = point.y
 			}
 		}
+*/
 
-		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minUnitX, unitMax: maxUnitX)
-		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minUnitY, unitMax: maxUnitY)
+		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
+		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
 
 		let path = UIBezierPath()
 		path.lineWidth = 3.0
 
-		for i in 0..<points.count {
-			let point = points[i]
-			let unitRelativeX = CGFloat(point.x - minUnitX)
-			let unitRelativeY = CGFloat(point.y - minUnitY)
+		for i in 0..<line.points.count {
+			let point = line.points[i]
+			let unitRelativeX = CGFloat(point.x - minDataPoint.x)
+			let unitRelativeY = CGFloat(point.y - minDataPoint.y)
 
 			let screenPoint = CGPoint(
 					x: rect.origin.x + unitRelativeX * pointsPerUnitX,
@@ -123,7 +143,7 @@ internal class ChartView: UIView {
 				type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
 			}
 		}
-		context.setStrokeColor(color.cgColor)
+		context.setStrokeColor(line.color.cgColor)
 		path.lineJoinStyle = .round
 		path.stroke()
 
@@ -141,40 +161,6 @@ internal class ChartView: UIView {
 	private static func pointsPerUnit(drawingDistance: CGFloat, unitMin: Int, unitMax: Int) -> CGFloat {
 		return drawingDistance / CGFloat(unitMax - unitMin)
 	}
-
-/*
-	private func drawHorizontalLines(currentUnitMaxY: Int,
-											currentUnitMinY: Int = 0,
-											newUnitMaxY: Int,
-											newUnitMinY: Int = 0,
-											drawingRect: CGRect,
-											context: CGContext,
-											debugPrint: Bool = false) {
-
-		let currentPointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: drawingRect.height, unitMin: currentUnitMinY, unitMax: currentUnitMaxY)
-//        let newPointsPerUnitY = self.pointsPerUnit(drawingDistance: drawingRect.height, unitMin: newUnitMinY, unitMax: newUnitMaxY)
-
-		let distanceBetweenLines = drawingRect.height * Constants.horizontalLinesRelativeY
-
-		var lineYCoordinates = [CGFloat]()
-		lineYCoordinates = Array(stride(from: drawingRect.height, through: 0, by: -distanceBetweenLines))
-
-		context.saveGState()
-		context.translateBy(x: drawingRect.x, y: drawingRect.y)
-
-		let linePath = UIBezierPath()
-		linePath.move(to: CGPoint.zero)
-		context.setStrokeColor(UIColor.gray.cgColor)
-		context.setLineWidth(1.0)
-		lineYCoordinates.forEach { lineYCoordinate in
-			linePath.move(to: CGPoint(x: 0, y: lineYCoordinate))
-			linePath.addLine(to: CGPoint(x: drawingRect.width, y: lineYCoordinate))
-		}
-
-		linePath.stroke()
-		context.restoreGState()
-	}
-*/
 
 	// MARK: - debug drawing
 
