@@ -20,6 +20,10 @@ extension CGRect {
 		return CGRect(origin: self.origin.ceiled, size: self.size.ceiled)
 	}
 
+    var center: CGPoint {
+        return CGPoint(x: self.midX, y: self.midY)
+    }
+
     init(width: CGFloat, height: CGFloat) {
         self.init(x: 0, y: 0, width: width, height: height)
     }

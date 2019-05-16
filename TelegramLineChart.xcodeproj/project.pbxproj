@@ -23,8 +23,10 @@
 		1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB424548B37C0370DD7A4 /* NotImplemented.swift */; };
+		A10AB701B10D1A13532D58C9 /* UIImage+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */; };
 		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
+		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
 		A99656BC228B6EB000D5B9E5 /* ChartSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Images.xcassets */; };
@@ -50,6 +52,8 @@
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
+		A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Static.swift"; sourceTree = "<group>"; };
+		A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Static.swift"; sourceTree = "<group>"; };
 		A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectView.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -140,6 +144,8 @@
 			children = (
 				1C7B447A23A84C6F462CE09A /* Double+Readable.swift */,
 				1C7B4709780C448DBAC345DB /* CoreGraphics */,
+				A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */,
+				A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -309,6 +315,8 @@
 				1C7B4342EA8768DA34B7D2E5 /* CGPoint+Conventience.swift in Sources */,
 				A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */,
 				A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */,
+				A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */,
+				A10AB701B10D1A13532D58C9 /* UIImage+Static.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

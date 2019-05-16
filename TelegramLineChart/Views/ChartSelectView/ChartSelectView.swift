@@ -44,6 +44,7 @@ class ChartSelectView: UIView {
 
     private func setupChartView() {
         chartView = ChartView()
+        chartView.drawHorizontalLines = false
         addSubview(chartView)
     }
 

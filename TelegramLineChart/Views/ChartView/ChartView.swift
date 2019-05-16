@@ -20,12 +20,14 @@ internal class ChartView: UIView {
 
             let minX = firstPoints.min() ?? 0
             let maxX = lastPoints.max() ?? minX
-            self.xRange = minX...maxX
-            self.setNeedsDisplay()
+            xRange = minX...maxX
+            setNeedsDisplay()
 		}
 	}
 
     var xRange: ClosedRange<DataPoint.XType> = 0...0
+
+    var drawHorizontalLines: Bool = true
 
 	// MARK: - Private properties
 
@@ -50,7 +52,7 @@ internal class ChartView: UIView {
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
-		self.layer.bounds = self.bounds
+		layer.bounds = bounds
 	}
 
 	override func draw(_ rect: CGRect) {
@@ -60,14 +62,14 @@ internal class ChartView: UIView {
 			return
 		}
 
-		guard !self.dataLines.isEmpty else {
+		guard !dataLines.isEmpty else {
 			return
 		}
 
 		let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
 
 /*
-		if self.debug {
+		if debug {
 			context.saveGState()
 			context.setStrokeColor(UIColor.brown.cgColor)
 			context.stroke(drawingRect, width: 3.0)
@@ -76,21 +78,21 @@ internal class ChartView: UIView {
 */
 
         //point with min Y value across all points in all lines
-        let minY = self.dataLines.compactMap { dataLine in
+        let minY = dataLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.min()
         }.min() ?? 0
 
         //point with max Y value across all points in all lines
-        let maxY = self.dataLines.compactMap { dataLine in
+        let maxY = dataLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.max()
         }.max() ?? minY
 
         let minPoint = DataPoint(x: xRange.lowerBound, y: minY)
         let maxPoint = DataPoint(x: xRange.upperBound, y: maxY)
 
-        self.dataLines.forEach { dataLine in
-//            self.drawLine(dataLine, in: drawingRect, in: context)
-            self.drawLine(dataLine, minDataPoint: minPoint, maxDataPoint: maxPoint, in: drawingRect, in: context)
+        dataLines.forEach { dataLine in
+//            drawLine(dataLine, in: drawingRect, in: context)
+            drawLine(dataLine, minDataPoint: minPoint, maxDataPoint: maxPoint, in: drawingRect, in: context)
 		}
 
 	}
@@ -144,7 +146,7 @@ internal class ChartView: UIView {
 				path.addLine(to: screenPoint)
 			}
 
-			if self.debug {
+			if debug {
 				type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
 			}
 		}
@@ -154,11 +156,13 @@ internal class ChartView: UIView {
 
 		context.restoreGState()
 
-		self.horizontalLinesDrawer.drawHorizontalLines(
-				currentPointsPerUnitY: pointsPerUnitY,
-				newPointsPerUnitY: pointsPerUnitY,
-				drawingRect: rect,
-				context: context)
+        if drawHorizontalLines {
+            horizontalLinesDrawer.drawHorizontalLines(
+                    currentPointsPerUnitY: pointsPerUnitY,
+                    newPointsPerUnitY: pointsPerUnitY,
+                    drawingRect: rect,
+                    context: context)
+        }
 	}
 
 	///Returns on-screen Core Graphics points per 1 of chart measurement units
