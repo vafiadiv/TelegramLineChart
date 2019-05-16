@@ -9,5 +9,6 @@
 import UIKit
 
 extension UIColor {
-    static let selectionWindowBackground = UIColor(named: "selectionWindowBackground")!
+    static let selectionWindowBackground = UIColor(named: "selection_window_background")!
+    static let selectionChartBackground = UIColor(named: "selection_chart_background")!
 }

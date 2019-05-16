@@ -8,20 +8,41 @@
 import UIKit
 
 extension CGRect {
+
+    // MARK: - Rect dimensions access
+
     var x: CGFloat {
         return self.origin.x
     }
-    
+
     var y: CGFloat {
         return self.origin.y
     }
 
-	var ceiled: CGRect {
-		return CGRect(origin: self.origin.ceiled, size: self.size.ceiled)
-	}
-
     var center: CGPoint {
         return CGPoint(x: self.midX, y: self.midY)
+    }
+
+    var left: CGFloat {
+        return self.origin.x
+    }
+
+    var right: CGFloat {
+        return self.origin.x + self.width
+    }
+
+    var top: CGFloat {
+        return self.origin.y
+    }
+
+    var bottom: CGFloat {
+        return self.origin.y + self.height
+    }
+
+    // MARK: - Other
+
+    var ceiled: CGRect {
+        return CGRect(origin: self.origin.ceiled, size: self.size.ceiled)
     }
 
     init(width: CGFloat, height: CGFloat) {
