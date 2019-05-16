@@ -10,20 +10,36 @@ import UIKit
 
 class ChartViewController: UIViewController {
 
+    private enum Constants {
+        static let chartSelectViewHeight: CGFloat = 50
+    }
+
 	private var chartView: ChartView!
+	private var chartSelectView: ChartSelectView!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.setupUI()
-		self.setupData()
+		setupUI()
+		setupData()
 	}
 
 
 	private func setupUI() {
-		self.chartView = ChartView()
-		self.chartView.backgroundColor = .white
-		self.view.addSubview(self.chartView)
+        setupChartView()
+        setupChartSelectView()
 	}
+
+    private func setupChartView() {
+        chartView = ChartView()
+        chartView.backgroundColor = .white
+        view.addSubview(chartView)
+    }
+
+    private func setupChartSelectView() {
+        chartSelectView = ChartSelectView()
+        view.addSubview(chartSelectView)
+    }
+
 
 	private func setupData() {
 		guard let data = ChartLoader.loadChartData() else {
@@ -35,26 +51,20 @@ class ChartViewController: UIViewController {
 			return
 		}
 
-/*
-		let mockPoints = [
-			DataPoint(x: 0, y: 0),
-			DataPoint(x: 5, y: 10),
-			DataPoint(x: 10, y: 5),
-			DataPoint(x: 15, y: 15),
-			DataPoint(x: 20, y: 15),
-		]
-		let dataLine = DataLine(points: mockPoints, color: .green, name: "Line")
-		self.chartView.dataLine = dataLine
-*/
 		let croppedLines = charts[0].lines.map { line in
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
 		}
-		self.chartView.dataLines = croppedLines
+		chartView.dataLines = croppedLines
+        chartSelectView.dataLines = croppedLines
 	}
 
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
-//		self.chartView.frame = self.view.bounds.insetBy(dx: 50, dy: 50)
-		self.chartView.frame = self.view.bounds
+		chartView.frame = CGRect(width: view.frame.width, height: view.frame.height - Constants.chartSelectViewHeight)
+        chartSelectView.frame = CGRect(
+                x: 0,
+                y: view.frame.height - Constants.chartSelectViewHeight,
+                width: view.frame.width,
+                height: Constants.chartSelectViewHeight)
 	}
 }

@@ -35,18 +35,23 @@ internal class ChartView: UIView {
 
 	private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
-	// MARK: - Public methods
+    // MARK: - Initialization
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .white
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        notImplemented()
+    }
+
+    // MARK: - Public methods
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		self.layer.bounds = self.bounds
 	}
-
-/*
-	override class var layerClass: AnyClass {
-		return ChartLayer.self
-	}
-*/
 
 	override func draw(_ rect: CGRect) {
 		super.draw(rect)

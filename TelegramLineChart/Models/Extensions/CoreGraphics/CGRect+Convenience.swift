@@ -19,4 +19,8 @@ extension CGRect {
 	var ceiled: CGRect {
 		return CGRect(origin: self.origin.ceiled, size: self.size.ceiled)
 	}
+
+    init(width: CGFloat, height: CGFloat) {
+        self.init(x: 0, y: 0, width: width, height: height)
+    }
 }

@@ -22,9 +22,12 @@
 		1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B49627C833376D46B1993 /* DecodingError.swift */; };
 		1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
+		A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB424548B37C0370DD7A4 /* NotImplemented.swift */; };
+		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
+		A99656BC228B6EB000D5B9E5 /* ChartSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
-		A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Assets.xcassets */; };
+		A9D5AC09223ED48E00AF87FB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Images.xcassets */; };
 		A9D5AC0C223ED48E00AF87FB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -44,10 +47,13 @@
 		1C7B4CC35F028D1B71FDBE07 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		1C7B4D2221C3C0295AC667CC /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
+		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
+		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
+		A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectView.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A9D5AC08223ED48E00AF87FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A9D5AC08223ED48E00AF87FB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A9D5AC0B223ED48E00AF87FB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A9D5AC0D223ED48E00AF87FB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,25 +112,27 @@
 			path = DTOs;
 			sourceTree = "<group>";
 		};
-		1C7B4CBC277602C2FAEFAD24 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		1C7B4DDE576DB433B9789C73 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A935164B2249B0F700D6549C /* Extensions */,
+				1C7B4C774CFBCB25E14BEC3E /* DTOs */,
 				1C7B47484B394C7749455180 /* Chart.swift */,
 				1C7B47FCF147B3D38113F331 /* DataLine.swift */,
 				1C7B4D2221C3C0295AC667CC /* DataPoint.swift */,
 				1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */,
-				1C7B4C774CFBCB25E14BEC3E /* DTOs */,
 				1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */,
 				1C7B49627C833376D46B1993 /* DecodingError.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		A10AB84C19A3C868EABF02D3 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				A10AB424548B37C0370DD7A4 /* NotImplemented.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 		A935164B2249B0F700D6549C /* Extensions */ = {
@@ -134,6 +142,15 @@
 				1C7B4709780C448DBAC345DB /* CoreGraphics */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		A99656BA228B6EB000D5B9E5 /* ChartSelectView */ = {
+			isa = PBXGroup;
+			children = (
+				A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */,
+				A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */,
+			);
+			path = ChartSelectView;
 			sourceTree = "<group>";
 		};
 		A9D5ABF5223ED48B00AF87FB = {
@@ -161,8 +178,7 @@
 				A9D5AC15223ED4CD00AF87FB /* Views */,
 				1C7B492F2384EC155815BFD4 /* ViewControllers */,
 				1C7B4DDE576DB433B9789C73 /* Models */,
-				A935164B2249B0F700D6549C /* Extensions */,
-				1C7B4CBC277602C2FAEFAD24 /* Core */,
+				A10AB84C19A3C868EABF02D3 /* Utility */,
 			);
 			path = TelegramLineChart;
 			sourceTree = "<group>";
@@ -178,6 +194,7 @@
 		A9D5AC15223ED4CD00AF87FB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A99656BA228B6EB000D5B9E5 /* ChartSelectView */,
 				1C7B427912B18806AD9C8DC1 /* Extensions */,
 				1C7B434E17D0254CF3789765 /* ChartView */,
 			);
@@ -188,7 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				A9D5AC0A223ED48E00AF87FB /* LaunchScreen.storyboard */,
-				A9D5AC08223ED48E00AF87FB /* Assets.xcassets */,
+				A9D5AC08223ED48E00AF87FB /* Images.xcassets */,
 				A10AB631D4BF05D312DA568F /* chart_data.json */,
 			);
 			path = Resources;
@@ -261,7 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9D5AC0C223ED48E00AF87FB /* LaunchScreen.storyboard in Resources */,
-				A9D5AC09223ED48E00AF87FB /* Assets.xcassets in Resources */,
+				A9D5AC09223ED48E00AF87FB /* Images.xcassets in Resources */,
 				A10AB97C9598135C09F825A6 /* chart_data.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -274,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */,
+				A99656BC228B6EB000D5B9E5 /* ChartSelectView.swift in Sources */,
 				1C7B4A3063B33E1AD5D2ADB5 /* ChartViewController.swift in Sources */,
 				1C7B487085FBB30C2F418D61 /* Chart.swift in Sources */,
 				1C7B4691DC7087D7A8B4F9DE /* DataLine.swift in Sources */,
@@ -289,6 +307,8 @@
 				1C7B4299E8A6676BF08D6E3C /* CGRect+Convenience.swift in Sources */,
 				1C7B48A9111C164A6A4192EC /* CGSize+Conventience.swift in Sources */,
 				1C7B4342EA8768DA34B7D2E5 /* CGPoint+Conventience.swift in Sources */,
+				A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */,
+				A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
