@@ -1,8 +1,8 @@
 //
 //  UIColor.swift
-//  ArtFit
+//  TelegramLineChart
 //
-//  Created by Valentin Vafiadi on 2019-05-16.
+//  Created by Valentin Vafiadi
 //  Copyright © 2019 VFD. All rights reserved.
 //
 
