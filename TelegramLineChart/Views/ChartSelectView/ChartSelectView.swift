@@ -22,11 +22,13 @@ class ChartSelectView: UIView {
         }
     }
 
+    weak var delegate: ChartSelectViewDelegate?
+
+    var chartView: ChartView!
+
+    var selectionWindowView: ChartSelectWindowView!
+
     // MARK: - Private properties
-
-    private var chartView: ChartView!
-
-    private var selectionWindowView: ChartSelectWindowView!
 
     private var gestureRecognizer: UIPanGestureRecognizer!
 
@@ -117,7 +119,7 @@ extension ChartSelectView: SelectionWindowPanHandlerDelegate {
             selectionWindowView.frame = CGRect(
                     x: leftAfterTranslation,
                     y: selectionWindowView.frame.y,
-                    width: selectionWindowView.frame.width - translation.x,
+                    width: selectionWindowView.frame.maxX - leftAfterTranslation,
                     height: selectionWindowView.frame.height)
 
         case .rightSide:
@@ -147,6 +149,8 @@ extension ChartSelectView: SelectionWindowPanHandlerDelegate {
                 selectionWindowView.frame.x += translation.x
             }
         }
+
+        self.delegate?.selectionWindowFrameDidChange()
     }
 }
 

@@ -8,14 +8,16 @@
 
 import UIKit
 
-class ChartViewController: UIViewController {
+class ChartViewController: UIViewController, RootViewProtocol {
+
+    typealias RootViewType = ChartSelectView
 
     private enum Constants {
         static let chartSelectViewHeight: CGFloat = 50
     }
 
 	private var chartView: ChartView!
-	private var chartSelectView: ChartSelectView!
+	private var chartSelectViewController: ChartSelectViewController!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -36,9 +38,12 @@ class ChartViewController: UIViewController {
     }
 
     private func setupChartSelectView() {
-        chartSelectView = ChartSelectView()
-        chartSelectView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(chartSelectView)
+        chartSelectViewController = ChartSelectViewController()
+        chartSelectViewController.delegate = self
+        addChild(chartSelectViewController)
+        chartSelectViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(chartSelectViewController.view)
+        chartSelectViewController.didMove(toParent: self)
     }
 
 	private func setupData() {
@@ -51,20 +56,33 @@ class ChartViewController: UIViewController {
 			return
 		}
 
+/*
 		let croppedLines = charts[0].lines.map { line in
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
 		}
+
 		chartView.dataLines = croppedLines
-        chartSelectView.dataLines = charts[0].lines
+*/
+		chartView.dataLines = charts[0].lines
+        chartSelectViewController.dataLines = charts[0].lines
 	}
 
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
+
 		chartView.frame = CGRect(width: view.frame.width, height: view.frame.height - Constants.chartSelectViewHeight)
-        chartSelectView.frame = CGRect(
+
+        chartSelectViewController.view.frame = CGRect(
                 x: 0,
                 y: view.frame.height - Constants.chartSelectViewHeight,
                 width: view.frame.width,
                 height: Constants.chartSelectViewHeight)
 	}
+}
+
+extension ChartViewController: ChartSelectViewControllerDelegate {
+
+    func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType) {
+        chartView.xRange = minUnitX...maxUnitX
+    }
 }

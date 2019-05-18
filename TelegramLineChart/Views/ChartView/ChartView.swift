@@ -25,7 +25,11 @@ internal class ChartView: UIView {
 		}
 	}
 
-    var xRange: ClosedRange<DataPoint.XType> = 0...0
+    var xRange: ClosedRange<DataPoint.XType> = 0...0 {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
 
     var drawHorizontalLines: Bool = true
 

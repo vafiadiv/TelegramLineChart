@@ -23,10 +23,15 @@
 		1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB424548B37C0370DD7A4 /* NotImplemented.swift */; };
+		A10AB21D7CB28D155B6C0A80 /* ChartSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */; };
+		A10AB44857B06B727C2AC2CB /* UIViewController+ViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */; };
 		A10AB701B10D1A13532D58C9 /* UIImage+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */; };
 		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
+		A10ABB77CED9D33B033BFCE0 /* Test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB0B9F1AD514BF25AC7A6 /* Test3.swift */; };
 		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
+		A10ABFABCB6F5A5D864BED66 /* ChartSelectViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */; };
+		A10ABFAC58459FE294CAC746 /* ChartSelectViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */; };
 		A99656BC228B6EB000D5B9E5 /* ChartSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */; };
 		A9D5AC02223ED48B00AF87FB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */; };
 		A9D5AC09223ED48E00AF87FB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9D5AC08223ED48E00AF87FB /* Images.xcassets */; };
@@ -49,8 +54,13 @@
 		1C7B4CC35F028D1B71FDBE07 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		1C7B4D2221C3C0295AC667CC /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
+		A10AB0B9F1AD514BF25AC7A6 /* Test3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Test3.swift; sourceTree = "<group>"; };
+		A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
+		A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ViewProtocol.swift"; sourceTree = "<group>"; };
+		A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewDelegate.swift; sourceTree = "<group>"; };
+		A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewController.swift; sourceTree = "<group>"; };
 		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
 		A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Static.swift"; sourceTree = "<group>"; };
 		A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Static.swift"; sourceTree = "<group>"; };
@@ -77,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				1C7B461022C503D871FECBBD /* UIColor+Hex.swift */,
+				A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -86,6 +97,7 @@
 			children = (
 				1C7B48E362B4ECDCC2DBF0B1 /* ChartView.swift */,
 				1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */,
+				A10AB0B9F1AD514BF25AC7A6 /* Test3.swift */,
 			);
 			path = ChartView;
 			sourceTree = "<group>";
@@ -155,6 +167,9 @@
 			children = (
 				A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */,
 				A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */,
+				A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */,
+				A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */,
+				A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */,
 			);
 			path = ChartSelectView;
 			sourceTree = "<group>";
@@ -317,6 +332,11 @@
 				A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */,
 				A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */,
 				A10AB701B10D1A13532D58C9 /* UIImage+Static.swift in Sources */,
+				A10ABB77CED9D33B033BFCE0 /* Test3.swift in Sources */,
+				A10AB44857B06B727C2AC2CB /* UIViewController+ViewProtocol.swift in Sources */,
+				A10AB21D7CB28D155B6C0A80 /* ChartSelectViewController.swift in Sources */,
+				A10ABFAC58459FE294CAC746 /* ChartSelectViewDelegate.swift in Sources */,
+				A10ABFABCB6F5A5D864BED66 /* ChartSelectViewControllerDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
