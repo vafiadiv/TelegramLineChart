@@ -12,11 +12,21 @@ extension CGRect {
     // MARK: - Rect dimensions access
 
     var x: CGFloat {
-        return self.origin.x
+        get {
+            return self.origin.x
+        }
+        set {
+            self.origin.x = newValue
+        }
     }
 
     var y: CGFloat {
-        return self.origin.y
+        get {
+            return self.origin.y
+        }
+        set {
+            self.origin.y = newValue
+        }
     }
 
     var center: CGPoint {

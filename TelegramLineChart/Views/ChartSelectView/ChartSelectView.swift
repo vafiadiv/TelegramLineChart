@@ -1,6 +1,6 @@
 //
 //  ChartSelectView.swift
-//  ArtFit
+//  ArtFit //TODO: headers
 //
 //  Created by Valentin Vafiadi on 2019-05-15.
 //  Copyright © 2019 VFD. All rights reserved.
@@ -53,6 +53,8 @@ class ChartSelectView: UIView {
 
     private func setupChartView() {
         chartView = ChartView()
+        chartView.translatesAutoresizingMaskIntoConstraints = false
+        chartView.debug = false
         chartView.backgroundColor = .selectionChartBackground
         chartView.drawHorizontalLines = false
         addSubview(chartView)
@@ -60,6 +62,7 @@ class ChartSelectView: UIView {
 
     private func setupSelectionWindow() {
         selectionWindowView = ChartSelectWindowView()
+        selectionWindowView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(selectionWindowView)
     }
 
@@ -68,6 +71,7 @@ class ChartSelectView: UIView {
         addGestureRecognizer(gestureRecognizer)
 
         panHandler = SelectionWindowPanHandler(selectionWindowView: selectionWindowView)
+        panHandler.delegate = self
     }
 
     // MARK: - Pan handling
@@ -75,36 +79,80 @@ class ChartSelectView: UIView {
     @objc
     private func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
         self.panHandler.handlePan(of: gestureRecognizer, in: self)
-/*
-        let translation = gestureRecognizer.translation(in: superview)
-        print("moved by: \(translation.x)")
-
-        switch gestureRecognizer.location(in: self).x {
-        case selectionWindow.frame.x - Constants.selectionWindowTouchArea / 2
-            ..<
-            selectionWindow.frame.x + Constants.selectionWindowTouchArea / 2:
-
-            print("left side")
-        default:
-            break
-        }
-        selectionWindow.frame.origin.x += translation.x
-        gestureRecognizer.setTranslation(.zero, in: superview)
-*/
     }
 
     // MARK: - Public methods
 
+    //TODO: remove
+    private var laidOutSelectionWindow = false
+
     override func layoutSubviews() {
         super.layoutSubviews()
         chartView.frame = self.bounds
-        selectionWindowView.frame = self.bounds
+        if !laidOutSelectionWindow {
+            selectionWindowView.frame = self.bounds
+            laidOutSelectionWindow = true
+        }
+        print("laid out views")
+    }
+}
+
+extension ChartSelectView: SelectionWindowPanHandlerDelegate {
+
+    fileprivate func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint) {
+        let minX: CGFloat = 0
+        let maxX = bounds.width
+        switch area {
+        case .leftSide:
+
+            let leftAfterTranslation: CGFloat
+            if selectionWindowView.frame.minX + translation.x < minX {
+                leftAfterTranslation = minX
+            } else if selectionWindowView.frame.minX + translation.x > maxX {
+                leftAfterTranslation = maxX
+            } else {
+                leftAfterTranslation = selectionWindowView.frame.minX + translation.x
+            }
+
+            selectionWindowView.frame = CGRect(
+                    x: leftAfterTranslation,
+                    y: selectionWindowView.frame.y,
+                    width: selectionWindowView.frame.width - translation.x,
+                    height: selectionWindowView.frame.height)
+
+        case .rightSide:
+
+            let widthAfterTranslation: CGFloat
+            if selectionWindowView.frame.maxX + translation.x > maxX {
+                widthAfterTranslation = maxX - selectionWindowView.frame.minX
+            } else if selectionWindowView.frame.maxX + translation.x < minX {
+                widthAfterTranslation = 0
+            } else {
+                widthAfterTranslation = selectionWindowView.frame.width + translation.x
+            }
+            selectionWindowView.frame = CGRect(
+                    x: selectionWindowView.frame.x,
+                    y: selectionWindowView.frame.y,
+                    width: widthAfterTranslation,
+                    height: selectionWindowView.frame.height)
+
+        case .wholeWindow:
+            let leftAfterTranslation = selectionWindowView.frame.minX + translation.x
+            let rightAfterTranslation = selectionWindowView.frame.maxX + translation.x
+            if leftAfterTranslation < minX {
+                selectionWindowView.frame.x = minX
+            } else if rightAfterTranslation > maxX {
+                selectionWindowView.frame.x = maxX - selectionWindowView.frame.width
+            } else {
+                selectionWindowView.frame.x += translation.x
+            }
+        }
     }
 }
 
 private class SelectionWindowPanHandler {
 
-    private enum PanningArea {
+    internal enum PanningArea {
         case leftSide
         case rightSide
         case wholeWindow
@@ -113,6 +161,10 @@ private class SelectionWindowPanHandler {
     private enum Constants {
         static let touchAreaWidth: CGFloat = 44.0
     }
+
+    // MARK: - Public properties
+
+    weak var delegate: SelectionWindowPanHandlerDelegate?
 
     // MARK: - Private properties
 
@@ -154,7 +206,6 @@ private class SelectionWindowPanHandler {
 
     func handlePan(of gestureRecognizer: UIPanGestureRecognizer, in view: UIView) {
         let translation = gestureRecognizer.translation(in: view.superview)
-//        print("moved by: \(translation.x)")
 
         if gestureRecognizer.state == .began {
             let touchLocation = gestureRecognizer.location(in: view)
@@ -165,11 +216,16 @@ private class SelectionWindowPanHandler {
             } else if rightSideTouchArea.contains(touchLocation) {
                 panningArea = .rightSide
             }
-
-            print("panning: \(panningArea)")
         }
 
-        selectionWindowView.frame.origin.x += translation.x
+        if let panningArea = panningArea {
+            self.delegate?.didPanArea(panningArea, by: translation)
+        }
+
         gestureRecognizer.setTranslation(.zero, in: view.superview)
     }
+}
+
+private protocol SelectionWindowPanHandlerDelegate: AnyObject {
+    func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint)
 }

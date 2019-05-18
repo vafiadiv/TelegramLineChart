@@ -23,7 +23,6 @@ class ChartViewController: UIViewController {
 		setupData()
 	}
 
-
 	private func setupUI() {
         setupChartView()
         setupChartSelectView()
@@ -31,15 +30,16 @@ class ChartViewController: UIViewController {
 
     private func setupChartView() {
         chartView = ChartView()
+        chartView.translatesAutoresizingMaskIntoConstraints = false
         chartView.backgroundColor = .white
         view.addSubview(chartView)
     }
 
     private func setupChartSelectView() {
         chartSelectView = ChartSelectView()
+        chartSelectView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(chartSelectView)
     }
-
 
 	private func setupData() {
 		guard let data = ChartLoader.loadChartData() else {
@@ -55,7 +55,7 @@ class ChartViewController: UIViewController {
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
 		}
 		chartView.dataLines = croppedLines
-        chartSelectView.dataLines = croppedLines
+        chartSelectView.dataLines = charts[0].lines
 	}
 
 	override func viewWillLayoutSubviews() {

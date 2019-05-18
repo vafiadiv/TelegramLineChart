@@ -29,9 +29,9 @@ internal class ChartView: UIView {
 
     var drawHorizontalLines: Bool = true
 
-	// MARK: - Private properties
+    var debug = true
 
-	private var debug = true
+    // MARK: - Private properties
 
 	private var border = CGSize(width: 10, height: 10)
 
