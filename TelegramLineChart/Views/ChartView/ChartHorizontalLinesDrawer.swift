@@ -14,20 +14,22 @@ internal class ChartHorizontalLinesDrawer {
 		static let horizontalLinesRelativeY: CGFloat = 1 / 5.5
         static let textOffset = UIOffset(horizontal: 5, vertical: 5)
 	}
+    internal func drawHorizontalLines(lines: [(xPoint: CGFloat, xUnit: DataPoint.XType)],
+                                      drawingRect: CGRect,
+                                      context: CGContext,
+                                      debugPrint: Bool = false) {
+
+    }
 
 	internal func drawHorizontalLines(currentPointsPerUnitY: CGFloat,
-									  newPointsPerUnitY: CGFloat,
 									  drawingRect: CGRect,
 									  context: CGContext,
 									  debugPrint: Bool = false) {
 
-//		let currentPointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: drawingRect.height, unitMin: currentUnitMinY, unitMax: currentUnitMaxY)
-//        let newPointsPerUnitY = self.pointsPerUnit(drawingDistance: drawingRect.height, unitMin: newUnitMinY, unitMax: newUnitMaxY)
-
 		let distanceBetweenLines = drawingRect.height * Constants.horizontalLinesRelativeY
 
 		var lineYCoordinates = [CGFloat]()
-		lineYCoordinates = Array(stride(from: drawingRect.height, through: 0, by: -distanceBetweenLines))
+		lineYCoordinates = Array(stride(from: drawingRect.height, through: 0, by: -distanceBetweenLines)) //TODO: replace drawingRect.height with unit
 
 		context.saveGState()
 		context.translateBy(x: drawingRect.x, y: drawingRect.y)

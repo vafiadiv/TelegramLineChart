@@ -55,6 +55,7 @@ class ChartSelectView: UIView {
 
     private func setupChartView() {
         chartView = ChartView()
+        chartView.lineWidth = 1
         chartView.translatesAutoresizingMaskIntoConstraints = false
         chartView.backgroundColor = .selectionChartBackground
         chartView.drawHorizontalLines = false
