@@ -11,7 +11,7 @@ import UIKit
 class ChartSelectView: UIView {
 
     private enum Constants {
-        static let selectionWindowTouchArea: CGFloat = 44.0
+        static let selectionWindowTouchArea: CGFloat = 90.0 //TODO: tmp
     }
 
     // MARK: - Public properties

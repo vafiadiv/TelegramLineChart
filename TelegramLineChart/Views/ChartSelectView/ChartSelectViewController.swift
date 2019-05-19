@@ -40,7 +40,7 @@ extension ChartSelectViewController: ChartSelectViewDelegate {
         let minSelectedXRelative = minSelectionViewX / totalViewWidth
         let maxSelectedXRelative = maxSelectionViewX / totalViewWidth
 
-        let firstPoints = dataLines.compactMap { $0.points.first?.x }
+        let firstPoints = dataLines.compactMap { $0.points.first?.x } //TODO: remove copypaste with chart view
         let lastPoints = dataLines.compactMap { $0.points.last?.x }
 
         let minUnitX = firstPoints.min() ?? 0

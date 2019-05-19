@@ -14,9 +14,12 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
     private enum Constants {
         static let chartSelectViewHeight: CGFloat = 50
+        static let chartIndex: Int = 0
     }
 
+    private var charts = [Chart]()
 	private var chartView: ChartView!
+
 	private var chartSelectViewController: ChartSelectViewController!
 
 	override func viewDidLoad() {
@@ -56,6 +59,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 			return
 		}
 
+        self.charts = charts
+
 /*
 		let croppedLines = charts[0].lines.map { line in
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
@@ -63,8 +68,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
 		chartView.dataLines = croppedLines
 */
-		chartView.dataLines = charts[0].lines
-        chartSelectViewController.dataLines = charts[0].lines
+		chartView.dataLines = charts[Constants.chartIndex].lines
+        chartSelectViewController.dataLines = charts[Constants.chartIndex].lines
 	}
 
 	override func viewWillLayoutSubviews() {
@@ -83,6 +88,11 @@ class ChartViewController: UIViewController, RootViewProtocol {
 extension ChartViewController: ChartSelectViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType) {
-        chartView.xRange = minUnitX...maxUnitX
+        let croppedDataLines: [DataLine] = self.charts[Constants.chartIndex].lines.map {
+            let pointsInRange = $0.points.filter { $0.x >= minUnitX && $0.x <= maxUnitX }
+            return DataLine(points: pointsInRange, color: $0.color, name: $0.name)
+        }
+//        chartView.xRange = minUnitX...maxUnitX
+        chartView.dataLines = croppedDataLines
     }
 }

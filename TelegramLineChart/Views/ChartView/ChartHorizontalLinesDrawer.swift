@@ -45,7 +45,7 @@ internal class ChartHorizontalLinesDrawer {
 		context.restoreGState()
 
 		let lineTexts = lineYCoordinates.map {
-			Double($0).abbreviated
+			floor(Double($0)).abbreviated
 		}
 
 		let lineTextPoints = lineYCoordinates.map {
