@@ -56,7 +56,6 @@ class ChartSelectView: UIView {
     private func setupChartView() {
         chartView = ChartView()
         chartView.translatesAutoresizingMaskIntoConstraints = false
-        chartView.debug = false
         chartView.backgroundColor = .selectionChartBackground
         chartView.drawHorizontalLines = false
         addSubview(chartView)
@@ -85,7 +84,7 @@ class ChartSelectView: UIView {
 
     // MARK: - Public methods
 
-    //TODO: remove
+    //TODO: remove, replace with relative frame position calculations: selectionWindowView width from self.width * relativeMin...self.width * relativeMax
     private var laidOutSelectionWindow = false
 
     override func layoutSubviews() {

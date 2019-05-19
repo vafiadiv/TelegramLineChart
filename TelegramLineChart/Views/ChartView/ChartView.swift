@@ -10,6 +10,8 @@ internal class ChartView: UIView {
 
 	// MARK: - Public properties
 
+    var lineWidth: CGFloat = 3.0
+
 	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
 	var dataLines = [DataLine]() {
 		didSet {
@@ -25,7 +27,7 @@ internal class ChartView: UIView {
 		}
 	}
 
-    var xRange: ClosedRange<DataPoint.XType> = 0...0 { //TODO: make private
+    var xRange: ClosedRange<DataPoint.XType> = 0...0 { //TODO: make private?
         didSet {
             setNeedsDisplay()
         }
@@ -33,7 +35,7 @@ internal class ChartView: UIView {
 
     var drawHorizontalLines: Bool = true
 
-    var debug = true
+    var debug = false
 
     // MARK: - Private properties
 
@@ -54,10 +56,12 @@ internal class ChartView: UIView {
 
     // MARK: - Public methods
 
+/*
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		layer.bounds = bounds
 	}
+*/
 
 	override func draw(_ rect: CGRect) {
 		super.draw(rect)
@@ -91,49 +95,35 @@ internal class ChartView: UIView {
             dataLine.points.map { $0.y }.max()
         }.max() ?? minY
 
-        let minPoint = DataPoint(x: xRange.lowerBound, y: minY)
-        let maxPoint = DataPoint(x: xRange.upperBound, y: maxY)
+        let minDataPoint = DataPoint(x: xRange.lowerBound, y: minY)
+        let maxDataPoint = DataPoint(x: xRange.upperBound, y: maxY)
+
+        let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
+        let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
 
         dataLines.forEach { dataLine in
 //            drawLine(dataLine, in: drawingRect, in: context)
-            drawLine(dataLine, minDataPoint: minPoint, maxDataPoint: maxPoint, in: drawingRect, in: context)
+            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitX, pointsPerUnitY: pointsPerUnitY, in: drawingRect, in: context)
 		}
-
 	}
 
 	// MARK: - Private methods
 
-	private func drawLine(_ line: DataLine, minDataPoint: DataPoint, maxDataPoint: DataPoint, in rect: CGRect, in context: CGContext) {
+	private func drawLine(_ line: DataLine,
+                          minDataPoint: DataPoint,
+                          pointsPerUnitX: CGFloat,
+                          pointsPerUnitY: CGFloat,
+                          in rect: CGRect,
+                          in context: CGContext) {
+
 		guard !line.points.isEmpty else {
 			return
 		}
 
 		context.saveGState()
 
-/*
-		//dimensions in chart measurement units
-		let minUnitX = line.points[0].x
-		//force-unwrap is safe since `points` is not empty
-		let maxUnitX = line.points.last!.x
-
-		var minUnitY = 0
-		var maxUnitY = 0
-        line.points.forEach { point in
-			if point.y < minUnitY {
-				minUnitY = point.y
-			}
-
-			if point.y > maxUnitY {
-				maxUnitY = point.y
-			}
-		}
-*/
-
-		let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
-		let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
-
 		let path = UIBezierPath()
-		path.lineWidth = 3.0
+		path.lineWidth = lineWidth
 
 		for i in 0..<line.points.count {
 			let point = line.points[i]
