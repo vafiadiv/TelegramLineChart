@@ -94,7 +94,7 @@ class ChartSelectView: UIView {
             selectionWindowView.frame = self.bounds
             laidOutSelectionWindow = true
         }
-        print("laid out views")
+//        print("laid out views")
     }
 }
 

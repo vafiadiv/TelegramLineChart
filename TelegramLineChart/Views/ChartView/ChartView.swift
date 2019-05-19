@@ -8,6 +8,11 @@ import CoreGraphics
 
 internal class ChartView: UIView {
 
+    //caseless enum to avoid instantiation
+    private enum Constants {
+        static let animationDuration: CFTimeInterval = 0.25
+    }
+
 	// MARK: - Public properties
 
     var lineWidth: CGFloat = 3.0
@@ -39,7 +44,22 @@ internal class ChartView: UIView {
 
     // MARK: - Private properties
 
-	private var border = CGSize(width: 10, height: 10)
+    private var animating = false
+
+    private var currentPointPerUnitY: CGFloat?
+
+    private var pointsPerUnitYPerSecond: CGFloat = 0
+
+    private var animationStartPointPerUnitY: CGFloat?
+
+    private var animationEndPointPerUnitY: CGFloat?
+
+    //TODO: remove?
+    private var animationEndTime: CFAbsoluteTime?
+
+    private var displayLink: CADisplayLink! //TODO: optional
+
+    private var border = CGSize(width: 10, height: 10)
 
 	private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
@@ -48,6 +68,9 @@ internal class ChartView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
+        displayLink = CADisplayLink(target: self, selector: #selector(testDisplayLinkFire))
+        displayLink.isPaused = true
+        displayLink.add(to: .main, forMode: .default)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -62,6 +85,11 @@ internal class ChartView: UIView {
 		layer.bounds = bounds
 	}
 */
+
+    @objc
+    private func testDisplayLinkFire() {
+        self.setNeedsDisplay()
+    }
 
 	override func draw(_ rect: CGRect) {
 		super.draw(rect)
@@ -101,10 +129,68 @@ internal class ChartView: UIView {
         let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
         let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
 
+        if currentPointPerUnitY == nil {
+            currentPointPerUnitY = pointsPerUnitY
+        }
+
+        let animationInProgress = animationEndPointPerUnitY != nil
+
+        //if an animation is in progress
+        if pointsPerUnitY == animationEndPointPerUnitY,
+           let currentPointPerUnitY = currentPointPerUnitY,
+           let animationEndPointPerUnitY = animationEndPointPerUnitY,
+           let displayLink = displayLink {
+
+            //if animation is unfinished, advancing currentPointPerUnitY towards targetPointPerUnitY
+            //if currentPointPerUnitY ???? animationEndPointPerUnitY { <--- остановился тут. Какое должо быть условие, что анимация закончилась? animationEndPointPerUnitY может быть как больше, так и меньше начального значения
+            if abs(currentPointPerUnitY) > abs(animationEndPointPerUnitY * 1.05) ||
+               abs(currentPointPerUnitY) < abs(animationEndPointPerUnitY * 0.95) {
+
+//                let frameDuration = displayLink.targetTimestamp - CACurrentMediaTime()
+                self.currentPointPerUnitY? += pointsPerUnitYPerSecond / CGFloat(60)
+//                print("animation in progress")
+            } else {
+                //animation has reached its destination
+                pointsPerUnitYPerSecond = 0
+                displayLink.isPaused = true
+                print("paused displayLink")
+            }
+        }
+        
+        //if an animation of changing Y scale is needed, start the animation
+        if (!animationInProgress && pointsPerUnitY != currentPointPerUnitY) ||
+           (animationInProgress && pointsPerUnitY != animationEndPointPerUnitY) {
+
+            animationEndPointPerUnitY = pointsPerUnitY
+            animationEndTime = CACurrentMediaTime() + Constants.animationDuration
+            let pointsPerUnitYDiff = pointsPerUnitY - currentPointPerUnitY!
+            pointsPerUnitYPerSecond = pointsPerUnitYDiff / CGFloat(Constants.animationDuration)
+
+            displayLink.isPaused = false
+            print("unpaused displayLink")
+        }
+
+/*
+        if pointsPerUnitY != currentPointPerUnitY {
+
+            //valid in 2 cases:
+            //1. no animation is in progress (targetPointPerUnitY == nil)
+            //2. an animation is in progress (targetPointPerUnitY != nil), but the targetPointPerUnitY is different
+            if pointsPerUnitY != targetPointPerUnitY {
+                targetPointPerUnitY = pointsPerUnitY
+                animationEndTime = CFAbsoluteTimeGetCurrent() + Constants.animationDuration
+            }
+        }
+*/
+
         dataLines.forEach { dataLine in
 //            drawLine(dataLine, in: drawingRect, in: context)
-            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitX, pointsPerUnitY: pointsPerUnitY, in: drawingRect, in: context)
-		}
+            guard let currentPointPerUnitY = currentPointPerUnitY else {
+                return
+            }
+
+            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitX, pointsPerUnitY: currentPointPerUnitY, in: drawingRect, in: context)
+        }
 	}
 
 	// MARK: - Private methods
