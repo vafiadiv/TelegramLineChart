@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Double {
+extension Double { //TODO: change to BinaryFloatingPoint?
 
 	var abbreviated: String {
 		var num = self

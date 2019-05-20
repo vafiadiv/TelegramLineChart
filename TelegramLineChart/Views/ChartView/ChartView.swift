@@ -11,16 +11,29 @@ internal class ChartView: UIView {
     //caseless enum to avoid instantiation
     private enum Constants {
         static let animationDuration: CFTimeInterval = 0.5
+
+        //relative distance between horizontal chart lines measured in drawing rect height
+        static let horizontalLinesRelativeY: CGFloat = 1 / 5
     }
 
     private struct AnimationInfo {
+
         var pointsPerUnitYPerSecond: CGFloat = 0
 
+        var animationStartPointPerUnitY: CGFloat = 0
+
         var animationEndPointPerUnitY: CGFloat = 0
+
+/*
+        var animationStartMinY: DataPoint.YType = 0
+
+        var animationEndMinY: DataPoint.YType = 0
+*/
 
         var animationRemainingTime: CFTimeInterval = 0
 
         var debugAnimationFramesNumber: Int = 0
+
     }
 
 	// MARK: - Public properties
@@ -37,7 +50,9 @@ internal class ChartView: UIView {
 
             let minX = firstPoints.min() ?? 0
             let maxX = lastPoints.max() ?? minX
+
             xRange = minX...maxX
+
             setNeedsDisplay()
 		}
 	}
@@ -71,7 +86,8 @@ internal class ChartView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        displayLink = CADisplayLink(target: self, selector: #selector(testDisplayLinkFire))
+        isOpaque = true
+        displayLink = CADisplayLink(target: self, selector: #selector(displayLinkFire))
         displayLink?.isPaused = true
         displayLink?.add(to: .main, forMode: .default)
     }
@@ -83,7 +99,7 @@ internal class ChartView: UIView {
     // MARK: - Public methods
 
     @objc
-    private func testDisplayLinkFire() {
+    private func displayLinkFire() {
         self.setNeedsDisplay()
     }
 
@@ -96,7 +112,7 @@ internal class ChartView: UIView {
             return
         }
 
-		let drawingRect = rect.insetBy(dx: border.width, dy: border.height)
+		let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
         //point with min Y value across all points in all lines
 /*
@@ -115,17 +131,17 @@ internal class ChartView: UIView {
         let minDataPoint = DataPoint(x: xRange.lowerBound, y: minY)
         let maxDataPoint = DataPoint(x: xRange.upperBound, y: maxY)
 
-        let pointsPerUnitX = type(of: self).pointsPerUnit(drawingDistance: rect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
-        let pointsPerUnitY = type(of: self).pointsPerUnit(drawingDistance: rect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
+        //calculate the required scale for the current data
+        let pointsPerUnitXRequired = type(of: self).pointsPerUnit(drawingDistance: chartRect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
+        let pointsPerUnitYRequired = type(of: self).pointsPerUnit(drawingDistance: chartRect.height, unitMin: minDataPoint.y, unitMax: maxDataPoint.y)
 
         if currentPointPerUnitY == 0 {
-            currentPointPerUnitY = pointsPerUnitY
+            currentPointPerUnitY = pointsPerUnitYRequired
         }
 
-
+        //if an animation is in progress
         if let animationInfo = animationInfo {
-            //if an animation is in progress
-            if pointsPerUnitY == animationInfo.animationEndPointPerUnitY {
+            if pointsPerUnitYRequired == animationInfo.animationEndPointPerUnitY {
 
                 lastDrawnTime = displayLink.timestamp
 
@@ -146,7 +162,7 @@ internal class ChartView: UIView {
                     print("""
                           <<< animation ended;
                              current pointsPerUnitY: \(currentPointPerUnitY)
-                             target pointsPerUnitY: \(animationInfo.animationEndPointPerUnitY) (\(currentPointPerUnitY == animationInfo.animationEndPointPerUnitY ? "equal" : "not equal"))
+                             target pointsPerUnitY: \(animationInfo.animationEndPointPerUnitY) (equal: \(currentPointPerUnitY == animationInfo.animationEndPointPerUnitY))
                              reached in \(animationInfo.debugAnimationFramesNumber) frames
                           """)
 
@@ -163,15 +179,16 @@ internal class ChartView: UIView {
         //start or restart the animation in 2 cases:
         //1. No animation is in progress and currentPointPerUnitY should be changed;
         //2. Animation is in progress, but animates towards a wrong value (animationEndPointPerUnitY). This can happen
-        //   if pointPerUnitY changed during animation
-        if (animationInfo == nil && pointsPerUnitY != currentPointPerUnitY) ||
-           (animationInfo != nil && pointsPerUnitY != animationInfo!.animationEndPointPerUnitY) {
+        //   if pointPerUnitYRequired was changed during animation
+        if (animationInfo == nil && pointsPerUnitYRequired != currentPointPerUnitY) ||
+           (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
 
-            let pointsPerUnitYDiff = pointsPerUnitY - currentPointPerUnitY
+            let pointsPerUnitYDiff = pointsPerUnitYRequired - currentPointPerUnitY
 
             self.animationInfo = AnimationInfo(
                     pointsPerUnitYPerSecond: pointsPerUnitYDiff / CGFloat(Constants.animationDuration),
-                    animationEndPointPerUnitY: pointsPerUnitY,
+                    animationStartPointPerUnitY: currentPointPerUnitY,
+                    animationEndPointPerUnitY: pointsPerUnitYRequired,
                     animationRemainingTime: Constants.animationDuration,
                     debugAnimationFramesNumber: 0)
             lastDrawnTime = displayLink.timestamp
@@ -180,15 +197,46 @@ internal class ChartView: UIView {
             print(">>> animation started")
         }
 
-        dataLines.forEach { dataLine in
-            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitX, pointsPerUnitY: currentPointPerUnitY, in: drawingRect, in: context)
+        if drawHorizontalLines {
+            let lineUnitYs = Array(stride(from: minY, through: maxY, by: Int(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
+
+            let currentLinesAlpha: CGFloat
+
+            if let animationInfo = animationInfo {
+
+                currentLinesAlpha = CGFloat(animationInfo.animationRemainingTime / Constants.animationDuration)
+
+                let animationEndLines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
+                    let unitRelativeY = CGFloat(yUnit - minY)
+                    let yPoint = chartRect.origin.y + chartRect.height - floor(unitRelativeY * pointsPerUnitYRequired)
+                    return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
+                }
+
+                horizontalLinesDrawer.drawHorizontalLines(
+                        lines: animationEndLines,
+                        drawingRect: chartRect,
+                        context: context,
+                        alpha: 1 - currentLinesAlpha)
+            } else {
+                currentLinesAlpha = 1.0
+            }
+
+
+            let currentLines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
+                let unitRelativeY = CGFloat(yUnit - minY)
+                let yPoint = chartRect.origin.y + chartRect.height - floor(unitRelativeY * currentPointPerUnitY)
+                return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
+            } //TODO: remove copypaste
+
+            horizontalLinesDrawer.drawHorizontalLines(
+                    lines: currentLines,
+                    drawingRect: chartRect,
+                    context: context,
+                    alpha: currentLinesAlpha)
         }
 
-        if drawHorizontalLines {
-            horizontalLinesDrawer.drawHorizontalLines(
-                    currentPointsPerUnitY: currentPointPerUnitY,
-                    drawingRect: rect,
-                    context: context)
+        dataLines.forEach { dataLine in
+            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY, in: chartRect, in: context)
         }
     }
 
