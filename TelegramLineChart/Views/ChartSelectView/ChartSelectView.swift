@@ -24,11 +24,34 @@ class ChartSelectView: UIView {
 
     weak var delegate: ChartSelectViewDelegate?
 
-    var chartView: ChartView!
+    ///
+    ///Range of selected portion of the chart relative to the whole chart width.
+    ///For both lowerBound and upperBound values < 0 and > 1.0 are ignored.
+    var selectedRelativeRange: ClosedRange<CGFloat> = 0.75...1.0 {
+        didSet {
+            if selectedRelativeRange.lowerBound < 0 {
+                selectedRelativeRange = 0...selectedRelativeRange.upperBound
+            }
 
-    var selectionWindowView: ChartSelectWindowView!
+            if selectedRelativeRange.lowerBound > 1.0 {
+                selectedRelativeRange = 1.0...1.0
+            }
+
+            if selectedRelativeRange.upperBound < 0 {
+                selectedRelativeRange = 0...0
+            }
+
+            if selectedRelativeRange.upperBound > 1.0 {
+                selectedRelativeRange = selectedRelativeRange.lowerBound...1.0
+            }
+        }
+    }
 
     // MARK: - Private properties
+
+    private var chartView: ChartView!
+
+    private var selectionWindowView: ChartSelectWindowView!
 
     private var gestureRecognizer: UIPanGestureRecognizer!
 
@@ -85,29 +108,28 @@ class ChartSelectView: UIView {
 
     // MARK: - Public methods
 
-    //TODO: remove, replace with relative frame position calculations: selectionWindowView width from self.width * relativeMin...self.width * relativeMax
-    private var laidOutSelectionWindow = false
-
     override func layoutSubviews() {
         super.layoutSubviews()
-        chartView.frame = self.bounds
-        if !laidOutSelectionWindow {
-            selectionWindowView.frame = self.bounds
-            laidOutSelectionWindow = true
-        }
-//        print("laid out views")
+        chartView.frame = bounds
+
+        let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
+        let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX
+        selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
     }
 }
 
 extension ChartSelectView: SelectionWindowPanHandlerDelegate {
 
     fileprivate func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint) {
+
         let minX: CGFloat = 0
         let maxX = bounds.width
+
         switch area {
         case .leftSide:
 
             let leftAfterTranslation: CGFloat
+
             if selectionWindowView.frame.minX + translation.x < minX {
                 leftAfterTranslation = minX
             } else if selectionWindowView.frame.minX + translation.x > maxX {
@@ -125,6 +147,7 @@ extension ChartSelectView: SelectionWindowPanHandlerDelegate {
         case .rightSide:
 
             let widthAfterTranslation: CGFloat
+
             if selectionWindowView.frame.maxX + translation.x > maxX {
                 widthAfterTranslation = maxX - selectionWindowView.frame.minX
             } else if selectionWindowView.frame.maxX + translation.x < minX {
@@ -139,6 +162,7 @@ extension ChartSelectView: SelectionWindowPanHandlerDelegate {
                     height: selectionWindowView.frame.height)
 
         case .wholeWindow:
+
             let leftAfterTranslation = selectionWindowView.frame.minX + translation.x
             let rightAfterTranslation = selectionWindowView.frame.maxX + translation.x
             if leftAfterTranslation < minX {
@@ -150,7 +174,15 @@ extension ChartSelectView: SelectionWindowPanHandlerDelegate {
             }
         }
 
-        self.delegate?.selectionWindowFrameDidChange()
+        let minSelectionViewX = selectionWindowView.frame.minX
+        let maxSelectionViewX = selectionWindowView.frame.maxX
+
+        let minSelectedXRelative = minSelectionViewX / maxX
+        let maxSelectedXRelative = maxSelectionViewX / maxX
+
+        selectedRelativeRange = minSelectedXRelative...maxSelectedXRelative
+
+        self.delegate?.selectedRangeDidChange()
     }
 }
 

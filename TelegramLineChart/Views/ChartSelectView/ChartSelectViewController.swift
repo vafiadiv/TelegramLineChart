@@ -19,6 +19,7 @@ class ChartSelectViewController: UIViewController, RootViewProtocol {
     var dataLines = [DataLine]() {
         didSet {
             rootView.dataLines = dataLines
+            selectedRangeDidChange()
         }
     }
 
@@ -32,13 +33,8 @@ class ChartSelectViewController: UIViewController, RootViewProtocol {
 }
 
 extension ChartSelectViewController: ChartSelectViewDelegate {
-    func selectionWindowFrameDidChange() {
-        let totalViewWidth = self.rootView.frame.width
-        let minSelectionViewX = self.rootView.selectionWindowView.frame.minX
-        let maxSelectionViewX = self.rootView.selectionWindowView.frame.maxX
 
-        let minSelectedXRelative = minSelectionViewX / totalViewWidth
-        let maxSelectedXRelative = maxSelectionViewX / totalViewWidth
+    func selectedRangeDidChange() {
 
         let firstPoints = dataLines.compactMap { $0.points.first?.x } //TODO: remove copypaste with chart view
         let lastPoints = dataLines.compactMap { $0.points.last?.x }
@@ -48,8 +44,8 @@ extension ChartSelectViewController: ChartSelectViewDelegate {
 
         let totalUnitWidth = maxUnitX - minUnitX
 
-        let minUnitXSelected = minUnitX + DataPoint.XType(CGFloat(totalUnitWidth) * minSelectedXRelative)
-        let maxUnitXSelected = minUnitX + DataPoint.XType(CGFloat(totalUnitWidth) * maxSelectedXRelative)
+        let minUnitXSelected = minUnitX + DataPoint.XType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.lowerBound)
+        let maxUnitXSelected = minUnitX + DataPoint.XType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.upperBound)
 
         delegate?.didSelectChartPartition(minUnitX: minUnitXSelected, maxUnitX: maxUnitXSelected)
     }

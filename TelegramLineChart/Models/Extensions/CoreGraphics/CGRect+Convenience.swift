@@ -38,7 +38,7 @@ extension CGRect {
     }
 
     var right: CGFloat {
-        return self.origin.x + self.width
+        return self.maxX
     }
 
     var top: CGFloat {
@@ -46,7 +46,7 @@ extension CGRect {
     }
 
     var bottom: CGFloat {
-        return self.origin.y + self.height
+        return maxY
     }
 
     // MARK: - Other

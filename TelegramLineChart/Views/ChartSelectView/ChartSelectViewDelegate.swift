@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ChartSelectViewDelegate: AnyObject {
-    func selectionWindowFrameDidChange()
+    func selectedRangeDidChange()
 }
