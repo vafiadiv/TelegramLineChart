@@ -25,16 +25,11 @@ internal class ChartHorizontalLinesDrawer {
                                       alpha: CGFloat = 1,
                                       debugPrint: Bool = false) {
 
-//        let distanceBetweenLines = drawingRect.height * Constants.horizontalLinesRelativeY
-
-//        var lineYCoordinates = [CGFloat]()
-//        lineYCoordinates = Array(stride(from: drawingRect.height, through: 0, by: -distanceBetweenLines)) //TODO: replace drawingRect.height with unit
-
         context.saveGState()
-        context.translateBy(x: drawingRect.x, y: drawingRect.y)
+//        context.translateBy(x: drawingRect.x, y: drawingRect.y)
 
         let linePath = UIBezierPath()
-        linePath.move(to: CGPoint.zero)
+        linePath.move(to: CGPoint(x: drawingRect.minX, y: 0))
 //        context.setStrokeColor(UIColor.chartHorizontalLines.withAlphaComponent(alpha).cgColor)
         context.setStrokeColor(UIColor.chartHorizontalLines.cgColor)
         context.setLineWidth(1.0)
@@ -67,11 +62,4 @@ internal class ChartHorizontalLinesDrawer {
             attributedText.draw(at: CGPoint(x: point.x, y: point.y - size.height - Constants.textOffset.vertical))
         }
     }
-
-	internal func drawHorizontalLines(currentPointsPerUnitY: CGFloat,
-									  drawingRect: CGRect,
-									  context: CGContext,
-									  debugPrint: Bool = false) {
-
-	}
 }

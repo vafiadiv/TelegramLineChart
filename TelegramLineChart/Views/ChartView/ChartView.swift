@@ -121,7 +121,7 @@ internal class ChartView: UIView {
         }.min() ?? 0
 */
 
-        let minY = 0 //TODO: decide, whether the y = 0 line should always be visible. Pro: no weird jumps when scrolling, con: high-value parts will be poorly visible
+        let minY = 0 //TODO: decide, whether or not the y = 0 line should always be visible. Pro: no weird jumps when scrolling, con: high-value parts will be poorly visible
 
         //point with max Y value across all points in all lines
         let maxY = dataLines.compactMap { dataLine in
@@ -159,12 +159,15 @@ internal class ChartView: UIView {
                 } else {
                     //animation has reached its destination
 
+                    print("<<< animation ended;")
+/*
                     print("""
                           <<< animation ended;
                              current pointsPerUnitY: \(currentPointPerUnitY)
                              target pointsPerUnitY: \(animationInfo.animationEndPointPerUnitY) (equal: \(currentPointPerUnitY == animationInfo.animationEndPointPerUnitY))
                              reached in \(animationInfo.debugAnimationFramesNumber) frames
                           """)
+*/
 
                     currentPointPerUnitY = animationInfo.animationEndPointPerUnitY
 
@@ -197,7 +200,7 @@ internal class ChartView: UIView {
             print(">>> animation started")
         }
 
-        if drawHorizontalLines {
+        if drawHorizontalLines && maxY - minY > 0 {
             let lineUnitYs = Array(stride(from: minY, through: maxY, by: Int(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
 
             let currentLinesAlpha: CGFloat
@@ -206,12 +209,13 @@ internal class ChartView: UIView {
 
                 currentLinesAlpha = CGFloat(animationInfo.animationRemainingTime / Constants.animationDuration)
 
-                let animationEndLines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
-                    let unitRelativeY = CGFloat(yUnit - minY)
-                    let yPoint = chartRect.origin.y + chartRect.height - floor(unitRelativeY * pointsPerUnitYRequired)
-                    return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
-                }
+                let animationEndLines = ChartHorizontalLinesDrawer.HorizontalLine.lines(
+                        lineUnitYs: lineUnitYs,
+                        minY: minY,
+                        pointsPerUnitY: pointsPerUnitYRequired,
+                        chartRect: chartRect)
 
+                print("Drawing animation end lines: >\(animationEndLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
                 horizontalLinesDrawer.drawHorizontalLines(
                         lines: animationEndLines,
                         drawingRect: chartRect,
@@ -222,11 +226,13 @@ internal class ChartView: UIView {
             }
 
 
-            let currentLines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
-                let unitRelativeY = CGFloat(yUnit - minY)
-                let yPoint = chartRect.origin.y + chartRect.height - floor(unitRelativeY * currentPointPerUnitY)
-                return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
-            } //TODO: remove copypaste
+            let currentLines = ChartHorizontalLinesDrawer.HorizontalLine.lines(
+                    lineUnitYs: lineUnitYs,
+                    minY: minY,
+                    pointsPerUnitY: currentPointPerUnitY,
+                    chartRect: chartRect)
+
+            print("Drawing       current lines: |\(currentLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
 
             horizontalLinesDrawer.drawHorizontalLines(
                     lines: currentLines,
@@ -303,4 +309,21 @@ internal class ChartView: UIView {
 		NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.cyan])
 		context.restoreGState()
 	}
+}
+
+extension ChartHorizontalLinesDrawer.HorizontalLine {
+
+    static func lines(
+            lineUnitYs: [DataPoint.YType],
+            minY: DataPoint.YType,
+            pointsPerUnitY: CGFloat,
+            chartRect: CGRect) -> [ChartHorizontalLinesDrawer.HorizontalLine] {
+
+        let lines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
+            let unitRelativeY = CGFloat(yUnit - minY)
+            let yPoint = chartRect.maxY - floor(unitRelativeY * pointsPerUnitY)
+            return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
+        }
+        return lines
+    }
 }

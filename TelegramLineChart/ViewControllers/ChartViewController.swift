@@ -70,6 +70,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 */
 		chartView.dataLines = charts[Constants.chartIndex].lines
         chartSelectViewController.dataLines = charts[Constants.chartIndex].lines
+//        chartView.dataLines = [DataLine.mockDataLine1]
+//        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}
 
 	override func viewWillLayoutSubviews() {
@@ -88,7 +90,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
 extension ChartViewController: ChartSelectViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType) {
-        let croppedDataLines: [DataLine] = self.charts[Constants.chartIndex].lines.map {
+        let croppedDataLines: [DataLine] = chartSelectViewController.dataLines.map {
             let pointsInRange = $0.points.filter { $0.x >= minUnitX && $0.x <= maxUnitX }
             return DataLine(points: pointsInRange, color: $0.color, name: $0.name)
         }
