@@ -10,7 +10,7 @@ internal class ChartView: UIView {
 
     //caseless enum to avoid instantiation
     private enum Constants {
-        static let animationDuration: CFTimeInterval = 0.5
+        static let animationDuration: CFTimeInterval = 0.1
 
         //relative distance between horizontal chart lines measured in drawing rect height
         static let horizontalLinesRelativeY: CGFloat = 1 / 5
@@ -23,12 +23,6 @@ internal class ChartView: UIView {
         var animationStartPointPerUnitY: CGFloat = 0
 
         var animationEndPointPerUnitY: CGFloat = 0
-
-/*
-        var animationStartMinY: DataPoint.YType = 0
-
-        var animationEndMinY: DataPoint.YType = 0
-*/
 
         var animationRemainingTime: CFTimeInterval = 0
 
@@ -44,6 +38,7 @@ internal class ChartView: UIView {
 	var dataLines = [DataLine]() {
 		didSet {
 
+/*
             let firstPoints = dataLines.compactMap { $0.points.first?.x }
 
             let lastPoints = dataLines.compactMap { $0.points.last?.x }
@@ -52,14 +47,17 @@ internal class ChartView: UIView {
             let maxX = lastPoints.max() ?? minX
 
             xRange = minX...maxX
+*/
 
             setNeedsDisplay()
+//            updateVisibleDataLines()
 		}
 	}
 
-    var xRange: ClosedRange<DataPoint.XType> = 0...0 { //TODO: make private? Should be for drawing 2 edge points offscreen
+    var xRange: ClosedRange<DataPoint.XType> = 0...0 {
         didSet {
             setNeedsDisplay()
+//            updateVisibleDataLines()
         }
     }
 
@@ -68,6 +66,8 @@ internal class ChartView: UIView {
     var debug = false
 
     // MARK: - Private properties
+
+    private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
     private var currentPointPerUnitY: CGFloat = 0
 
@@ -79,7 +79,11 @@ internal class ChartView: UIView {
 
     private var border = CGSize(width: 10, height: 10)
 
-	private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
+    private var linearFunctionFactory = LinearFunctionFactory()
+
+    //data lines containing points that are visible at the moment; includes 2 "fake" edge points for drawing first
+    //and last visible segment
+    private var visibleDataLines = [DataLine]()
 
     // MARK: - Initialization
 
@@ -106,11 +110,14 @@ internal class ChartView: UIView {
 	override func draw(_ rect: CGRect) {
 		super.draw(rect)
 
+        updateVisibleDataLines()
+
         guard let context = UIGraphicsGetCurrentContext(),
               let displayLink = displayLink,
-              !dataLines.isEmpty else {
+              !visibleDataLines.isEmpty else {
             return
         }
+
 
 		let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
@@ -124,7 +131,7 @@ internal class ChartView: UIView {
         let minY = 0 //TODO: decide, whether or not the y = 0 line should always be visible. Pro: no weird jumps when scrolling, con: high-value parts will be poorly visible
 
         //point with max Y value across all points in all lines
-        let maxY = dataLines.compactMap { dataLine in
+        let maxY = visibleDataLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.max()
         }.max() ?? 0
 
@@ -138,6 +145,9 @@ internal class ChartView: UIView {
         if currentPointPerUnitY == 0 {
             currentPointPerUnitY = pointsPerUnitYRequired
         }
+
+        //TODO: tmp
+        currentPointPerUnitY = pointsPerUnitYRequired
 
         //if an animation is in progress
         if let animationInfo = animationInfo {
@@ -188,7 +198,7 @@ internal class ChartView: UIView {
 
             let pointsPerUnitYDiff = pointsPerUnitYRequired - currentPointPerUnitY
 
-            self.animationInfo = AnimationInfo(
+            animationInfo = AnimationInfo(
                     pointsPerUnitYPerSecond: pointsPerUnitYDiff / CGFloat(Constants.animationDuration),
                     animationStartPointPerUnitY: currentPointPerUnitY,
                     animationEndPointPerUnitY: pointsPerUnitYRequired,
@@ -209,7 +219,7 @@ internal class ChartView: UIView {
 
                 currentLinesAlpha = CGFloat(animationInfo.animationRemainingTime / Constants.animationDuration)
 
-                let animationEndLines = ChartHorizontalLinesDrawer.HorizontalLine.lines(
+                let animationEndLines = ChartHorizontalLinesDrawer.HorizontalLine.horizontalLines(
                         lineUnitYs: lineUnitYs,
                         minY: minY,
                         pointsPerUnitY: pointsPerUnitYRequired,
@@ -226,7 +236,7 @@ internal class ChartView: UIView {
             }
 
 
-            let currentLines = ChartHorizontalLinesDrawer.HorizontalLine.lines(
+            let currentLines = ChartHorizontalLinesDrawer.HorizontalLine.horizontalLines(
                     lineUnitYs: lineUnitYs,
                     minY: minY,
                     pointsPerUnitY: currentPointPerUnitY,
@@ -241,12 +251,70 @@ internal class ChartView: UIView {
                     alpha: currentLinesAlpha)
         }
 
-        dataLines.forEach { dataLine in
+        visibleDataLines.forEach { dataLine in
             drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY, in: chartRect, in: context)
         }
     }
 
 	// MARK: - Private methods
+
+
+    private func updateVisibleDataLines() {
+/*
+        1. найти ближайшую слева точку к lowerBound (lowerThanLowerBound, lowerThanLowerBoundIndex):
+            2.1 бежим по dataLine, если lowerBound < текущей:
+               если (индекс текущей > 0) - берём (индекс текущей - 1)
+               иначе берём 0.
+       2. Аналогично ближайшую справа от upperBound;
+       3. Находим пересечение lowerBound и линии (lowerThanLowerBound, lowerThanLowerBound+1) - это minFakePoint
+       4. Находим пересечение upperBound и линии (higherThanUpperBound-1, higherThanUpperBound) - это maxFakePoint
+       4.5 - сделать guard на lowerThanLowerBoundIndex+1 > higherThanUpperBound-1 ?
+       5. Возвращаем [minFakePoint, lowerThanLowerBoundIndex+1, ... higherThanUpperBound-1, maxFakePoint]
+*/
+
+        visibleDataLines = dataLines.map {
+
+            //1. To find visible portion of the graph in `xRange` first we need to find all that are on the screen (inside xRange)
+            // plus two points that are just outside of it (to the left and to the right).
+            var points = $0.points(containing: xRange)
+
+            guard let pointOutsideRangeLeft = points.first,
+                  let pointOutsideRangeRight = points.last,
+                    points.count > 1 else {
+                return $0
+            }
+
+            //2. Find points where edge lines intersect the edges of the screen (i.e. vertical lines y = xRange.lowerBound and
+            // y = xRange.upperBound)
+            let pointInsideRangeLeft = points[1]
+
+            let leftEdgeIntersectingLine = linearFunctionFactory.function(
+                    x1: Double(pointOutsideRangeLeft.x),
+                    y1: Double(pointOutsideRangeLeft.y),
+                    x2: Double(pointInsideRangeLeft.x),
+                    y2: Double(pointInsideRangeLeft.y))
+
+            let leftEdgeY = leftEdgeIntersectingLine(Double(xRange.lowerBound))
+            let leftEdgePoint = DataPoint(x: xRange.lowerBound, y: DataPoint.YType(leftEdgeY))
+
+            let pointInsideRangeRight = points[points.count - 2]
+            let rightEdgeIntersectingLine = linearFunctionFactory.function(
+                    x1: Double(pointOutsideRangeRight.x),
+                    y1: Double(pointOutsideRangeRight.y),
+                    x2: Double(pointInsideRangeRight.x),
+                    y2: Double(pointInsideRangeRight.y))
+
+            let rightEdgeY = rightEdgeIntersectingLine(Double(xRange.upperBound))
+            let rightEdgePoint = DataPoint(x: xRange.upperBound, y: DataPoint.YType(rightEdgeY))
+
+            print("Now visible: left edge: \(leftEdgePoint), right edge: \(rightEdgePoint) for line \($0.name)")
+
+            points[0] = leftEdgePoint
+            points[points.count - 1] = rightEdgePoint
+
+            return DataLine(points: points, color: $0.color, name: $0.name)
+        }
+    }
 
 	private func drawLine(_ line: DataLine,
                           minDataPoint: DataPoint,
@@ -311,9 +379,45 @@ internal class ChartView: UIView {
 	}
 }
 
+extension Array where Element == DataPoint {
+
+}
+
+extension DataLine {
+
+    //Returns minimal continuous array of points from the line so that minPoint.x < xRange.lowerBound && maxPoint.x > xRange.upperBound
+    //I.e. for points.x = [1, 3, 5, 7, 9] and xRange = 4...6 returns [3, 5, 7]
+    func points(containing xRange: ClosedRange<DataPoint.XType>) -> [DataPoint] {
+
+        let indexInsideRangeLeft = points.firstIndex { $0.x >= xRange.lowerBound }
+        let indexOutsideRangeLeft: Int
+
+        if let indexInsideRangeLeft = indexInsideRangeLeft {
+            indexOutsideRangeLeft = indexInsideRangeLeft > 0 ? indexInsideRangeLeft - 1 : 0
+        } else {
+            indexOutsideRangeLeft = points.count - 1
+        }
+
+        let indexInsideRangeRight = points.lastIndex { $0.x <= xRange.upperBound }
+        let indexOutsideRangeRight: Int
+
+        if let indexInsideRangeRight = indexInsideRangeRight {
+            indexOutsideRangeRight = indexInsideRangeRight < points.count - 1 ? indexInsideRangeRight + 1 : points.count - 1
+        } else {
+            indexOutsideRangeRight = indexOutsideRangeLeft
+        }
+
+        if indexOutsideRangeLeft <= indexOutsideRangeRight {
+            return Array(points[indexOutsideRangeLeft...indexOutsideRangeRight])
+        } else {
+            return Array(points[indexOutsideRangeLeft...indexOutsideRangeLeft])
+        }
+    }
+}
+
 extension ChartHorizontalLinesDrawer.HorizontalLine {
 
-    static func lines(
+    static func horizontalLines(
             lineUnitYs: [DataPoint.YType],
             minY: DataPoint.YType,
             pointsPerUnitY: CGFloat,

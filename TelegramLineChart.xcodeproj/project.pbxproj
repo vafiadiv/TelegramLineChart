@@ -29,6 +29,7 @@
 		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
 		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
+		A10ABF33773F3BA35193E9A1 /* LinearFunctionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */; };
 		A10ABFABCB6F5A5D864BED66 /* ChartSelectViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */; };
 		A10ABFAC58459FE294CAC746 /* ChartSelectViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */; };
 		A99656BC228B6EB000D5B9E5 /* ChartSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */; };
@@ -62,6 +63,7 @@
 		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
 		A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Static.swift"; sourceTree = "<group>"; };
 		A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Static.swift"; sourceTree = "<group>"; };
+		A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearFunctionFactory.swift; sourceTree = "<group>"; };
 		A99656BB228B6EB000D5B9E5 /* ChartSelectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectView.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D5AC01223ED48B00AF87FB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 				1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */,
 				1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */,
 				1C7B49627C833376D46B1993 /* DecodingError.swift */,
+				A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				A10AB21D7CB28D155B6C0A80 /* ChartSelectViewController.swift in Sources */,
 				A10ABFAC58459FE294CAC746 /* ChartSelectViewDelegate.swift in Sources */,
 				A10ABFABCB6F5A5D864BED66 /* ChartSelectViewControllerDelegate.swift in Sources */,
+				A10ABF33773F3BA35193E9A1 /* LinearFunctionFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

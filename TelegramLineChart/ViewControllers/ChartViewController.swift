@@ -14,7 +14,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
     private enum Constants {
         static let chartSelectViewHeight: CGFloat = 50
-        static let chartIndex: Int = 0
+        static let chartIndex: Int = 1
     }
 
     private var charts = [Chart]()
@@ -90,11 +90,14 @@ class ChartViewController: UIViewController, RootViewProtocol {
 extension ChartViewController: ChartSelectViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType) {
+/*
         let croppedDataLines: [DataLine] = chartSelectViewController.dataLines.map {
             let pointsInRange = $0.points.filter { $0.x >= minUnitX && $0.x <= maxUnitX }
             return DataLine(points: pointsInRange, color: $0.color, name: $0.name)
         }
-//        chartView.xRange = minUnitX...maxUnitX
         chartView.dataLines = croppedDataLines
+*/
+
+        chartView.xRange = minUnitX...maxUnitX
     }
 }
