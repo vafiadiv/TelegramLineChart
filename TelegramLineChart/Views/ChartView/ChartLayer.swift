@@ -12,6 +12,8 @@ class ChartLayer: CALayer {
     private enum Constants {
         static let animationDuration: CFTimeInterval = 0.1
 
+        static let highlightedPopupTop: CGFloat = 6
+
         //relative distance between horizontal chart lines measured in drawing rect height
         static let horizontalLinesRelativeY: CGFloat = 1 / 5
     }
@@ -51,7 +53,15 @@ class ChartLayer: CALayer {
         }
     }
 
+    private(set) var yRange: ClosedRange<DataPoint.YType> = 0...0
+
     var drawHorizontalLines: Bool = true {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
+    var highlightedPoint: CGPoint? {
         didSet {
             setNeedsDisplay()
         }
@@ -61,7 +71,9 @@ class ChartLayer: CALayer {
 
     // MARK: - Private properties
 
-    private let horizontalLinesDrawer = ChartHorizontalLinesDrawer()
+    private var horizontalLinesDrawer = ChartHorizontalLinesDrawer()
+
+    private var pointPopupDrawer = PointPopupDrawer()
 
     private var currentPointPerUnitY: CGFloat = 0
 
@@ -71,7 +83,8 @@ class ChartLayer: CALayer {
 
     private var displayLink: CADisplayLink?
 
-    private var border = CGSize(width: 10, height: 10)
+    //TODO: remove, replace usages with self.bounds
+    private var border = CGSize(width: 0, height: 0)
 
     private var linearFunctionFactory = LinearFunctionFactory()
 
@@ -93,12 +106,7 @@ class ChartLayer: CALayer {
         notImplemented()
     }
 
-    // MARK: - Public methods
-
-    @objc
-    private func displayLinkFire() {
-        self.setNeedsDisplay()
-    }
+    // MARK: - Overrides
 
     override func draw(in context: CGContext) {
         super.draw(in: context)
@@ -118,13 +126,9 @@ class ChartLayer: CALayer {
         let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
         //point with min Y value across all points in all lines
-/*
         let minY = dataLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.min()
         }.min() ?? 0
-*/
-
-        let minY = 0 //TODO: decide, whether or not the y = 0 line should always be visible. Pro: no weird jumps when scrolling, con: high-value parts will be poorly visible
 
         //point with max Y value across all points in all lines
         let maxY = visibleDataLines.compactMap { dataLine in
@@ -133,6 +137,8 @@ class ChartLayer: CALayer {
 
         let minDataPoint = DataPoint(x: xRange.lowerBound, y: minY)
         let maxDataPoint = DataPoint(x: xRange.upperBound, y: maxY)
+
+        yRange = minY...maxY
 
         //calculate the required scale for the current data
         let pointsPerUnitXRequired = type(of: self).pointsPerUnit(drawingDistance: chartRect.width, unitMin: minDataPoint.x, unitMax: maxDataPoint.x)
@@ -166,14 +172,6 @@ class ChartLayer: CALayer {
                     //animation has reached its destination
 
                     print("<<< animation ended;")
-/*
-                    print("""
-                          <<< animation ended;
-                             current pointsPerUnitY: \(currentPointPerUnitY)
-                             target pointsPerUnitY: \(animationInfo.animationEndPointPerUnitY) (equal: \(currentPointPerUnitY == animationInfo.animationEndPointPerUnitY))
-                             reached in \(animationInfo.debugAnimationFramesNumber) frames
-                          """)
-*/
 
                     currentPointPerUnitY = animationInfo.animationEndPointPerUnitY
 
@@ -232,7 +230,6 @@ class ChartLayer: CALayer {
                 currentLinesAlpha = 1.0
             }
 
-
             let currentLines = ChartHorizontalLinesDrawer.HorizontalLine.horizontalLines(
                     lineUnitYs: lineUnitYs,
                     minY: minY,
@@ -248,8 +245,12 @@ class ChartLayer: CALayer {
                     alpha: currentLinesAlpha)
         }
 
+        if let highlightedPoint = highlightedPoint {
+            drawHighlightedPoint(at: highlightedPoint, to: context, pointsPerUnitX: pointsPerUnitXRequired)
+        }
+
         visibleDataLines.forEach { dataLine in
-            drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY, in: chartRect, in: context)
+            drawLine(dataLine, to: context, in: chartRect, minDataPoint: minDataPoint, maxDataPoint: maxDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY)
         }
 
         context.restoreGState()
@@ -257,6 +258,10 @@ class ChartLayer: CALayer {
 
     // MARK: - Private methods
 
+    @objc
+    private func displayLinkFire() {
+        self.setNeedsDisplay()
+    }
 
     private func updateVisibleDataLines() {
 /*
@@ -315,12 +320,27 @@ class ChartLayer: CALayer {
         }
     }
 
+    private func drawHighlightedPoint(at point: CGPoint, to context: CGContext, pointsPerUnitX: CGFloat) {
+
+        let chartUnitWidth = CGFloat(xRange.upperBound - xRange.lowerBound)
+        let highlightedUnitX = xRange.lowerBound + DataPoint.XType(chartUnitWidth * point.x / bounds.width)
+
+        guard xRange ~= highlightedUnitX else {
+            return
+        }
+
+        pointPopupDrawer.context = context
+        pointPopupDrawer.drawPopup(atTopCenter: CGPoint(x: point.x, y: Constants.highlightedPopupTop))
+    }
+
+
     private func drawLine(_ line: DataLine,
-                          minDataPoint: DataPoint,
-                          pointsPerUnitX: CGFloat,
-                          pointsPerUnitY: CGFloat,
+                          to context: CGContext,
                           in rect: CGRect,
-                          in context: CGContext) {
+                          minDataPoint: DataPoint,
+                          maxDataPoint: DataPoint,
+                          pointsPerUnitX: CGFloat,
+                          pointsPerUnitY: CGFloat) {
 
         guard !line.points.isEmpty else {
             return
@@ -331,25 +351,18 @@ class ChartLayer: CALayer {
         let path = UIBezierPath()
         path.lineWidth = lineWidth
 
-        for i in 0..<line.points.count {
-            let point = line.points[i]
-            let unitRelativeX = CGFloat(point.x - minDataPoint.x)
-            let unitRelativeY = CGFloat(point.y - minDataPoint.y)
+        let points = ChartPointsCalculator.points(from: line.points, in: rect, bottomLeftPoint: minDataPoint, topRightPoint: maxDataPoint)
 
-            let screenPoint = CGPoint(
-                    x: rect.origin.x + unitRelativeX * pointsPerUnitX,
-                    y: rect.origin.y + rect.height - (unitRelativeY * pointsPerUnitY))
+        for i in 0..<points.count {
+            let point = points[i]
 
             if i == 0 {
-                path.move(to: screenPoint)
+                path.move(to: point)
             } else {
-                path.addLine(to: screenPoint)
-            }
-
-            if debugDrawing {
-                type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
+                path.addLine(to: point)
             }
         }
+
         context.setStrokeColor(line.color.cgColor)
         path.lineJoinStyle = .round
         path.stroke()

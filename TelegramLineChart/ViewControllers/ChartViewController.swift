@@ -12,13 +12,15 @@ class ChartViewController: UIViewController {
 
     private enum Constants {
         static let chartSelectViewHeight: CGFloat = 50
-        static let chartIndex: Int = 2
+        static let chartIndex: Int = 1
     }
 
     private var charts = [Chart]()
 	private var chartView: MainChartView!
 
-	private var chartSelectViewController: ChartSelectViewController!
+    private var tapGestureRecognizer: UITapGestureRecognizer!
+
+    private var chartSelectViewController: ChartSelectViewController!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -29,6 +31,7 @@ class ChartViewController: UIViewController {
 	private func setupUI() {
         setupChartView()
         setupChartSelectView()
+        setupTapGestureRecognizer()
 	}
 
     private func setupChartView() {
@@ -47,7 +50,12 @@ class ChartViewController: UIViewController {
         chartSelectViewController.didMove(toParent: self)
     }
 
-	private func setupData() {
+    private func setupTapGestureRecognizer() {
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
+        chartView.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    private func setupData() {
 		guard let data = ChartLoader.loadChartData() else {
 			return
 		}
@@ -72,10 +80,33 @@ class ChartViewController: UIViewController {
 //        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}
 
-	override func viewWillLayoutSubviews() {
+    @objc
+    private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
+        guard gestureRecognizer.state == .ended else {
+            return
+        }
+
+        let highlightedPoint = gestureRecognizer.location(in: chartView)
+        chartView.highlightedPoint = highlightedPoint
+
+        let unitMinX = CGFloat(chartView.xRange.lowerBound)
+        let unitMaxX = CGFloat(chartView.xRange.upperBound)
+        let unitMinY = CGFloat(chartView.yRange.lowerBound)
+        let unitMaxY = CGFloat(chartView.yRange.upperBound)
+
+        let tapUnitPoint = DataPoint(
+                x: DataPoint.XType(unitMinX + (unitMaxX - unitMinX) * highlightedPoint.x / chartView.frame.width),
+                y: DataPoint.YType(unitMinY + (unitMaxY - unitMinY) * highlightedPoint.y / chartView.frame.height))
+    }
+
+    override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 
-		chartView.frame = CGRect(width: view.frame.width, height: view.frame.height - Constants.chartSelectViewHeight)
+		chartView.frame = CGRect(
+                x: 0,
+                y: view.safeAreaInsets.top,
+                width: view.frame.width,
+                height: view.frame.height - view.safeAreaInsets.top - Constants.chartSelectViewHeight)
 
         chartSelectViewController.view.frame = CGRect(
                 x: 0,

@@ -6,7 +6,7 @@
 import UIKit
 import CoreGraphics
 
-internal class ChartHorizontalLinesDrawer {
+internal struct ChartHorizontalLinesDrawer {
 
     struct HorizontalLine {
         let yPoint: CGFloat

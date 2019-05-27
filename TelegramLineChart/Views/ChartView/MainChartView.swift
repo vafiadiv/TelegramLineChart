@@ -24,6 +24,16 @@ class MainChartView: UIView  {
         }
     }
 
+    var yRange: ClosedRange<DataPoint.YType> {
+        return chartLayer.yRange
+    }
+
+    var highlightedPoint: CGPoint? {
+        didSet {
+            chartLayer.highlightedPoint = highlightedPoint
+        }
+    }
+
     // MARK: - Private properties
 
     override class var layerClass: AnyClass {
@@ -37,6 +47,8 @@ class MainChartView: UIView  {
         return chartLayer
     }
 
+    private var tapGestureRecognizer: UITapGestureRecognizer!
+
     // MARK: - Initialization
 
     override init(frame: CGRect) {
@@ -49,11 +61,11 @@ class MainChartView: UIView  {
         notImplemented()
     }
 
-
     // MARK: - Private methods
 
     private func setupUI() {
         setupChartLayer()
+//        setupTapGestureRecognizer()
     }
 
     private func setupChartLayer() {
@@ -62,4 +74,20 @@ class MainChartView: UIView  {
         chartLayer.drawHorizontalLines = true
         chartLayer.contentsScale = UIScreen.main.scale
     }
+
+/*
+    private func setupTapGestureRecognizer() {
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
+        addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    @objc
+    private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
+        guard gestureRecognizer.state == .ended else {
+            return
+        }
+
+        chartLayer.highlightedPoint = gestureRecognizer.location(in: self)
+    }
+*/
 }
