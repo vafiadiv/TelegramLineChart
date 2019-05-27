@@ -6,7 +6,7 @@
 import UIKit
 import CoreGraphics
 
-internal class ChartView: UIView {
+class ChartLayer: CALayer {
 
     //caseless enum to avoid instantiation
     private enum Constants {
@@ -30,16 +30,20 @@ internal class ChartView: UIView {
 
     }
 
-	// MARK: - Public properties
+    // MARK: - Public properties
 
-    var lineWidth: CGFloat = 2.0
-
-	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
-	var dataLines = [DataLine]() {
-		didSet {
+    var lineWidth: CGFloat = 2.0 {
+        didSet {
             setNeedsDisplay()
-		}
-	}
+        }
+    }
+
+    ///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
+    var dataLines = [DataLine]() {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
 
     var xRange: ClosedRange<DataPoint.XType> = 0...0 {
         didSet {
@@ -47,9 +51,13 @@ internal class ChartView: UIView {
         }
     }
 
-    var drawHorizontalLines: Bool = true
+    var drawHorizontalLines: Bool = true {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
 
-    var debug = false
+    var debugDrawing = false
 
     // MARK: - Private properties
 
@@ -72,10 +80,9 @@ internal class ChartView: UIView {
     private var visibleDataLines = [DataLine]()
 
     // MARK: - Initialization
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .white
+    override init() {
+        super.init()
+        backgroundColor = UIColor.white.cgColor
         isOpaque = true
         displayLink = CADisplayLink(target: self, selector: #selector(displayLinkFire))
         displayLink?.isPaused = true
@@ -93,19 +100,22 @@ internal class ChartView: UIView {
         self.setNeedsDisplay()
     }
 
-	override func draw(_ rect: CGRect) {
-		super.draw(rect)
+    override func draw(in context: CGContext) {
+        super.draw(in: context)
+
+        let rect = context.boundingBoxOfClipPath
+
+        context.saveGState()
 
         updateVisibleDataLines()
 
-        guard let context = UIGraphicsGetCurrentContext(),
-              let displayLink = displayLink,
+        guard let displayLink = displayLink,
               !visibleDataLines.isEmpty else {
             return
         }
 
 
-		let chartRect = rect.insetBy(dx: border.width, dy: border.height)
+        let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
         //point with min Y value across all points in all lines
 /*
@@ -180,7 +190,7 @@ internal class ChartView: UIView {
         //2. Animation is in progress, but animates towards a wrong value (animationEndPointPerUnitY). This can happen
         //   if pointPerUnitYRequired was changed during animation
         if (animationInfo == nil && pointsPerUnitYRequired != currentPointPerUnitY) ||
-           (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
+                   (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
 
             let pointsPerUnitYDiff = pointsPerUnitYRequired - currentPointPerUnitY
 
@@ -197,6 +207,7 @@ internal class ChartView: UIView {
         }
 
         if drawHorizontalLines && maxY - minY > 0 {
+
             let lineUnitYs = Array(stride(from: minY, through: maxY, by: Int(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
 
             let currentLinesAlpha: CGFloat
@@ -240,9 +251,11 @@ internal class ChartView: UIView {
         visibleDataLines.forEach { dataLine in
             drawLine(dataLine, minDataPoint: minDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY, in: chartRect, in: context)
         }
+
+        context.restoreGState()
     }
 
-	// MARK: - Private methods
+    // MARK: - Private methods
 
 
     private func updateVisibleDataLines() {
@@ -266,7 +279,7 @@ internal class ChartView: UIView {
 
             guard let pointOutsideRangeLeft = points.first,
                   let pointOutsideRangeRight = points.last,
-                    points.count > 1 else {
+                  points.count > 1 else {
                 return $0
             }
 
@@ -302,67 +315,67 @@ internal class ChartView: UIView {
         }
     }
 
-	private func drawLine(_ line: DataLine,
+    private func drawLine(_ line: DataLine,
                           minDataPoint: DataPoint,
                           pointsPerUnitX: CGFloat,
                           pointsPerUnitY: CGFloat,
                           in rect: CGRect,
                           in context: CGContext) {
 
-		guard !line.points.isEmpty else {
-			return
-		}
+        guard !line.points.isEmpty else {
+            return
+        }
 
-		context.saveGState()
+        UIGraphicsPushContext(context)
 
-		let path = UIBezierPath()
-		path.lineWidth = lineWidth
+        let path = UIBezierPath()
+        path.lineWidth = lineWidth
 
-		for i in 0..<line.points.count {
-			let point = line.points[i]
-			let unitRelativeX = CGFloat(point.x - minDataPoint.x)
-			let unitRelativeY = CGFloat(point.y - minDataPoint.y)
+        for i in 0..<line.points.count {
+            let point = line.points[i]
+            let unitRelativeX = CGFloat(point.x - minDataPoint.x)
+            let unitRelativeY = CGFloat(point.y - minDataPoint.y)
 
-			let screenPoint = CGPoint(
-					x: rect.origin.x + unitRelativeX * pointsPerUnitX,
-					y: rect.origin.y + rect.height - (unitRelativeY * pointsPerUnitY))
+            let screenPoint = CGPoint(
+                    x: rect.origin.x + unitRelativeX * pointsPerUnitX,
+                    y: rect.origin.y + rect.height - (unitRelativeY * pointsPerUnitY))
 
-			if i == 0 {
-				path.move(to: screenPoint)
-			} else {
-				path.addLine(to: screenPoint)
-			}
+            if i == 0 {
+                path.move(to: screenPoint)
+            } else {
+                path.addLine(to: screenPoint)
+            }
 
-			if debug {
-				type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
-			}
-		}
-		context.setStrokeColor(line.color.cgColor)
-		path.lineJoinStyle = .round
-		path.stroke()
+            if debugDrawing {
+                type(of: self).drawCoordinates(x: point.x, y: point.y, at: screenPoint)
+            }
+        }
+        context.setStrokeColor(line.color.cgColor)
+        path.lineJoinStyle = .round
+        path.stroke()
 
-		context.restoreGState()
-	}
+        UIGraphicsPopContext()
+    }
 
-	///Returns on-screen Core Graphics points per 1 of chart measurement units
+    ///Returns on-screen Core Graphics points per 1 of chart measurement units
 
-	private static func pointsPerUnit(drawingDistance: CGFloat, unitMin: Int, unitMax: Int) -> CGFloat {
-		return drawingDistance / CGFloat(unitMax - unitMin)
-	}
+    private static func pointsPerUnit(drawingDistance: CGFloat, unitMin: Int, unitMax: Int) -> CGFloat {
+        return drawingDistance / CGFloat(unitMax - unitMin)
+    }
 
-	// MARK: - debug drawing
+    // MARK: - debug drawing
 
-	private static func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
-		guard let context = UIGraphicsGetCurrentContext() else {
-			return
-		}
-		context.saveGState()
+    private static func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return
+        }
+        context.saveGState()
 //		let string = "x: \(x), y: \(y)"
-		let string = "y: \(y)"
+        let string = "y: \(y)"
 
-		NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.cyan])
-		context.restoreGState()
-	}
+        NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.cyan])
+        context.restoreGState()
+    }
 }
 
 // MARK: -

@@ -8,17 +8,15 @@
 
 import UIKit
 
-class ChartViewController: UIViewController, RootViewProtocol {
-
-    typealias RootViewType = ChartSelectView
+class ChartViewController: UIViewController {
 
     private enum Constants {
         static let chartSelectViewHeight: CGFloat = 50
-        static let chartIndex: Int = 1
+        static let chartIndex: Int = 2
     }
 
     private var charts = [Chart]()
-	private var chartView: ChartView!
+	private var chartView: MainChartView!
 
 	private var chartSelectViewController: ChartSelectViewController!
 
@@ -34,7 +32,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
 	}
 
     private func setupChartView() {
-        chartView = ChartView()
+        chartView = MainChartView()
         chartView.translatesAutoresizingMaskIntoConstraints = false
         chartView.backgroundColor = .white
         view.addSubview(chartView)
@@ -69,7 +67,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
 		chartView.dataLines = croppedLines
 */
 		chartView.dataLines = charts[Constants.chartIndex].lines
-        chartSelectViewController.dataLines = charts[Constants.chartIndex].lines
+        chartSelectViewController.dataLines = chartView.dataLines
 //        chartView.dataLines = [DataLine.mockDataLine1]
 //        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}

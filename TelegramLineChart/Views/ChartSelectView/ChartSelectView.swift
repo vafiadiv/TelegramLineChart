@@ -18,19 +18,19 @@ class ChartSelectView: UIView {
 
     var dataLines = [DataLine]() {
         didSet {
-            chartView.dataLines = dataLines
+            chartLayer.dataLines = dataLines
         }
     }
-
-    weak var delegate: ChartSelectViewDelegate?
 
     ///
     ///Subrange of graph lines that should be displayed in full view
     var graphXRange: ClosedRange<DataPoint.XType> = 0...0 {
         didSet {
-            chartView.xRange = graphXRange
+            chartLayer.xRange = graphXRange
         }
     }
+
+    weak var delegate: ChartSelectViewDelegate?
 
     ///
     ///Range of selected portion of the chart relative to the whole chart width.
@@ -57,13 +57,22 @@ class ChartSelectView: UIView {
 
     // MARK: - Private properties
 
-    private var chartView: ChartView!
-
     private var selectionWindowView: ChartSelectWindowView!
 
     private var gestureRecognizer: UIPanGestureRecognizer!
 
     private var panHandler: SelectionWindowPanHandler!
+
+    private var chartLayer: ChartLayer {
+        guard let chartLayer = layer as? ChartLayer else {
+            fatalError("Wrong layer class")
+        }
+        return chartLayer
+    }
+
+    override class var layerClass: AnyClass {
+        return ChartLayer.self
+    }
 
     // MARK: - Initialization
 
@@ -77,20 +86,19 @@ class ChartSelectView: UIView {
     }
 
     // MARK: - Private methods
-
+    
     private func setupUI() {
-        setupChartView()
+        setupChartLayer()
         setupSelectionWindow()
         setupGestureRecognizer()
+        self.backgroundColor = .white
     }
 
-    private func setupChartView() {
-        chartView = ChartView()
-        chartView.lineWidth = 1
-        chartView.translatesAutoresizingMaskIntoConstraints = false
-        chartView.backgroundColor = .selectionChartBackground
-        chartView.drawHorizontalLines = false
-        addSubview(chartView)
+    private func setupChartLayer() {
+        chartLayer.lineWidth = 1
+        chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
+        chartLayer.drawHorizontalLines = false
+        chartLayer.contentsScale = UIScreen.main.scale
     }
 
     private func setupSelectionWindow() {
@@ -118,7 +126,6 @@ class ChartSelectView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        chartView.frame = bounds
 
         let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
         let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX

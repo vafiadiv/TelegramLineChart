@@ -25,7 +25,7 @@ internal class ChartHorizontalLinesDrawer {
                                       alpha: CGFloat = 1,
                                       debugPrint: Bool = false) {
 
-        context.saveGState()
+        UIGraphicsPushContext(context)
 //        context.translateBy(x: drawingRect.x, y: drawingRect.y)
 
         let linePath = UIBezierPath()
@@ -39,7 +39,6 @@ internal class ChartHorizontalLinesDrawer {
         }
 
         linePath.stroke()
-        context.restoreGState()
 
 /*
         let lineTexts = lineYCoordinates.map {
@@ -61,5 +60,7 @@ internal class ChartHorizontalLinesDrawer {
             let size = attributedText.size().ceiled
             attributedText.draw(at: CGPoint(x: point.x, y: point.y - size.height - Constants.textOffset.vertical))
         }
+
+        UIGraphicsPopContext()
     }
 }
