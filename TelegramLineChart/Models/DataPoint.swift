@@ -14,6 +14,8 @@ struct DataPoint {
 	let y: YType
 }
 
+// MARK: -
+
 extension DataPoint: CustomStringConvertible {
 	public var description: String {
 		return "DataPoint x: \(x), y: \(y)"

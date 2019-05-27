@@ -87,6 +87,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 	}
 }
 
+// MARK: -
+
 extension ChartViewController: ChartSelectViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType) {

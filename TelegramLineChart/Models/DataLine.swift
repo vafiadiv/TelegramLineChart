@@ -12,6 +12,23 @@ struct DataLine {
 	let name: String
 }
 
+// MARK: - Convenience extensions
+
+extension Array where Element == DataLine {
+
+    var xRange: ClosedRange<DataPoint.XType> {
+
+        let firstPoints = self.compactMap { $0.points.first?.x }
+
+        let lastPoints = self.compactMap { $0.points.last?.x }
+
+        let minX = firstPoints.min() ?? 0
+        let maxX = lastPoints.max() ?? minX
+
+        return minX...maxX
+    }
+}
+
 // MARK: - mocked data
 
 extension DataLine {

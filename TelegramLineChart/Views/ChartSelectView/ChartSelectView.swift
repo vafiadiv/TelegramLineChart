@@ -25,6 +25,14 @@ class ChartSelectView: UIView {
     weak var delegate: ChartSelectViewDelegate?
 
     ///
+    ///Subrange of graph lines that should be displayed in full view
+    var graphXRange: ClosedRange<DataPoint.XType> = 0...0 {
+        didSet {
+            chartView.xRange = graphXRange
+        }
+    }
+
+    ///
     ///Range of selected portion of the chart relative to the whole chart width.
     ///For both lowerBound and upperBound values < 0 and > 1.0 are ignored.
     var selectedRelativeRange: ClosedRange<CGFloat> = 0.75...1.0 {
@@ -117,6 +125,8 @@ class ChartSelectView: UIView {
         selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
     }
 }
+
+// MARK: -
 
 extension ChartSelectView: SelectionWindowPanHandlerDelegate {
 

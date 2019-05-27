@@ -17,6 +17,8 @@ struct ChartJSONParser {
 	}
 }
 
+// MARK: -
+
 private extension Chart {
 
 	init(DTO: ChartDTO) throws {

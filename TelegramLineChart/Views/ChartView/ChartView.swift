@@ -37,27 +37,13 @@ internal class ChartView: UIView {
 	///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
 	var dataLines = [DataLine]() {
 		didSet {
-
-/*
-            let firstPoints = dataLines.compactMap { $0.points.first?.x }
-
-            let lastPoints = dataLines.compactMap { $0.points.last?.x }
-
-            let minX = firstPoints.min() ?? 0
-            let maxX = lastPoints.max() ?? minX
-
-            xRange = minX...maxX
-*/
-
             setNeedsDisplay()
-//            updateVisibleDataLines()
 		}
 	}
 
     var xRange: ClosedRange<DataPoint.XType> = 0...0 {
         didSet {
             setNeedsDisplay()
-//            updateVisibleDataLines()
         }
     }
 
@@ -379,9 +365,7 @@ internal class ChartView: UIView {
 	}
 }
 
-extension Array where Element == DataPoint {
-
-}
+// MARK: -
 
 extension DataLine {
 
@@ -414,6 +398,8 @@ extension DataLine {
         }
     }
 }
+
+// MARK: -
 
 extension ChartHorizontalLinesDrawer.HorizontalLine {
 
