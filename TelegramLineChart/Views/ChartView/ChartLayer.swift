@@ -47,13 +47,13 @@ class ChartLayer: CALayer {
         }
     }
 
-    var xRange: ClosedRange<DataPoint.XType> = 0...0 {
+    var xRange: ClosedRange<DataPoint.DataType> = 0...0 {
         didSet {
             setNeedsDisplay()
         }
     }
 
-    private(set) var yRange: ClosedRange<DataPoint.YType> = 0...0
+    private(set) var yRange: ClosedRange<DataPoint.DataType> = 0...0
 
     var drawHorizontalLines: Bool = true {
         didSet {
@@ -86,7 +86,7 @@ class ChartLayer: CALayer {
     //TODO: remove, replace usages with self.bounds
     private var border = CGSize(width: 0, height: 0)
 
-    private var linearFunctionFactory = LinearFunctionFactory()
+    private var linearFunctionFactory = LinearFunctionFactory<Double>()
 
     //data lines containing points that are visible at the moment; includes 2 "fake" edge points for drawing first
     //and last visible segment
@@ -245,9 +245,11 @@ class ChartLayer: CALayer {
                     alpha: currentLinesAlpha)
         }
 
+/*
         if let highlightedPoint = highlightedPoint {
             drawHighlightedPoint(at: highlightedPoint, to: context, pointsPerUnitX: pointsPerUnitXRequired)
         }
+*/
 
         visibleDataLines.forEach { dataLine in
             drawLine(dataLine, to: context, in: chartRect, minDataPoint: minDataPoint, maxDataPoint: maxDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY)
@@ -299,7 +301,7 @@ class ChartLayer: CALayer {
                     y2: Double(pointInsideRangeLeft.y))
 
             let leftEdgeY = leftEdgeIntersectingLine(Double(xRange.lowerBound))
-            let leftEdgePoint = DataPoint(x: xRange.lowerBound, y: DataPoint.YType(leftEdgeY))
+            let leftEdgePoint = DataPoint(x: xRange.lowerBound, y: DataPoint.DataType(leftEdgeY))
 
             let pointInsideRangeRight = points[points.count - 2]
             let rightEdgeIntersectingLine = linearFunctionFactory.function(
@@ -309,7 +311,7 @@ class ChartLayer: CALayer {
                     y2: Double(pointInsideRangeRight.y))
 
             let rightEdgeY = rightEdgeIntersectingLine(Double(xRange.upperBound))
-            let rightEdgePoint = DataPoint(x: xRange.upperBound, y: DataPoint.YType(rightEdgeY))
+            let rightEdgePoint = DataPoint(x: xRange.upperBound, y: DataPoint.DataType(rightEdgeY))
 
             print("Now visible: left edge: \(leftEdgePoint), right edge: \(rightEdgePoint) for line \($0.name)")
 
@@ -323,7 +325,7 @@ class ChartLayer: CALayer {
     private func drawHighlightedPoint(at point: CGPoint, to context: CGContext, pointsPerUnitX: CGFloat) {
 
         let chartUnitWidth = CGFloat(xRange.upperBound - xRange.lowerBound)
-        let highlightedUnitX = xRange.lowerBound + DataPoint.XType(chartUnitWidth * point.x / bounds.width)
+        let highlightedUnitX = xRange.lowerBound + DataPoint.DataType(chartUnitWidth * point.x / bounds.width)
 
         guard xRange ~= highlightedUnitX else {
             return
@@ -331,6 +333,14 @@ class ChartLayer: CALayer {
 
         pointPopupDrawer.context = context
         pointPopupDrawer.drawPopup(atTopCenter: CGPoint(x: point.x, y: Constants.highlightedPopupTop))
+
+        context.saveGState()
+
+        context.move(to: CGPoint(x: point.x, y: 0))
+        context.addLine(to: CGPoint(x: point.x, y: bounds.height))
+        context.strokePath()
+
+        context.restoreGState()
     }
 
 
@@ -361,6 +371,10 @@ class ChartLayer: CALayer {
             } else {
                 path.addLine(to: point)
             }
+
+            if debugDrawing {
+                type(of: self).drawCoordinates(x: line.points[i].x, y: line.points[i].y, at: point)
+            }
         }
 
         context.setStrokeColor(line.color.cgColor)
@@ -386,7 +400,7 @@ class ChartLayer: CALayer {
 //		let string = "x: \(x), y: \(y)"
         let string = "y: \(y)"
 
-        NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.cyan])
+        NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
         context.restoreGState()
     }
 }
@@ -397,7 +411,7 @@ extension DataLine {
 
     //Returns minimal continuous array of points from the line so that minPoint.x < xRange.lowerBound && maxPoint.x > xRange.upperBound
     //I.e. for points.x = [1, 3, 5, 7, 9] and xRange = 4...6 returns [3, 5, 7]
-    func points(containing xRange: ClosedRange<DataPoint.XType>) -> [DataPoint] {
+    func points(containing xRange: ClosedRange<DataPoint.DataType>) -> [DataPoint] {
 
         let indexInsideRangeLeft = points.firstIndex { $0.x >= xRange.lowerBound }
         let indexOutsideRangeLeft: Int
@@ -430,8 +444,8 @@ extension DataLine {
 extension ChartHorizontalLinesDrawer.HorizontalLine {
 
     static func horizontalLines(
-            lineUnitYs: [DataPoint.YType],
-            minY: DataPoint.YType,
+            lineUnitYs: [DataPoint.DataType],
+            minY: DataPoint.DataType,
             pointsPerUnitY: CGFloat,
             chartRect: CGRect) -> [ChartHorizontalLinesDrawer.HorizontalLine] {
 

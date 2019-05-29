@@ -24,7 +24,7 @@ class ChartSelectView: UIView {
 
     ///
     ///Subrange of graph lines that should be displayed in full view
-    var graphXRange: ClosedRange<DataPoint.XType> = 0...0 {
+    var graphXRange: ClosedRange<DataPoint.DataType> = 0...0 {
         didSet {
             chartLayer.xRange = graphXRange
         }

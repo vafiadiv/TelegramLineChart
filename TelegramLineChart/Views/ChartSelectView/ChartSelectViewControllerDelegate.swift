@@ -9,5 +9,5 @@
 import Foundation
 
 protocol ChartSelectViewControllerDelegate: AnyObject {
-    func didSelectChartPartition(minUnitX: DataPoint.XType, maxUnitX: DataPoint.XType)
+    func didSelectChartPartition(minUnitX: DataPoint.DataType, maxUnitX: DataPoint.DataType)
 }

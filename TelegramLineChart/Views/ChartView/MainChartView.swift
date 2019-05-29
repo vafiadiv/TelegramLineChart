@@ -18,19 +18,28 @@ class MainChartView: UIView  {
         }
     }
 
-    var xRange: ClosedRange<DataPoint.XType> = 0...0 {
+    var xRange: ClosedRange<DataPoint.DataType> = 0...0 {
         didSet {
             chartLayer.xRange = xRange
         }
     }
 
-    var yRange: ClosedRange<DataPoint.YType> {
+    var yRange: ClosedRange<DataPoint.DataType> {
         return chartLayer.yRange
     }
 
     var highlightedPoint: CGPoint? {
         didSet {
             chartLayer.highlightedPoint = highlightedPoint
+        }
+    }
+
+    var highlightedPointsInfos: [ChartPopupPointInfo]? {
+        get {
+            return popupLayer.pointInfos
+        }
+        set {
+            popupLayer.pointInfos = newValue
         }
     }
 
@@ -46,6 +55,8 @@ class MainChartView: UIView  {
         }
         return chartLayer
     }
+
+    private var popupLayer: ChartPopupLayer!
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
@@ -65,6 +76,7 @@ class MainChartView: UIView  {
 
     private func setupUI() {
         setupChartLayer()
+        setupPopupLayer()
 //        setupTapGestureRecognizer()
     }
 
@@ -73,6 +85,17 @@ class MainChartView: UIView  {
         chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
         chartLayer.drawHorizontalLines = true
         chartLayer.contentsScale = UIScreen.main.scale
+    }
+
+    private func setupPopupLayer() {
+        popupLayer = ChartPopupLayer()
+        popupLayer.contentsScale = UIScreen.main.scale
+        chartLayer.addSublayer(popupLayer)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        popupLayer.frame = chartLayer.bounds
     }
 
 /*

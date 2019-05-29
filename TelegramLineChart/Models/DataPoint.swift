@@ -7,11 +7,11 @@ import Foundation
 
 struct DataPoint {
 
-    typealias XType = Int
-    typealias YType = Int
+    typealias DataType = Int
 
-	let x: XType
-	let y: YType
+	let x: DataType
+
+	let y: DataType
 }
 
 // MARK: -

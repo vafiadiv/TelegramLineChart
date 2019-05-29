@@ -58,4 +58,8 @@ extension CGRect {
     init(width: CGFloat, height: CGFloat) {
         self.init(x: 0, y: 0, width: width, height: height)
     }
+
+    init(center: CGPoint, width: CGFloat, height: CGFloat) {
+        self.init(origin: CGPoint(x: center.x - width / 2, y: center.y - height / 2), size: CGSize(width: width, height: height))
+    }
 }

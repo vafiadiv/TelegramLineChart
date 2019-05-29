@@ -10,7 +10,7 @@ internal struct ChartHorizontalLinesDrawer {
 
     struct HorizontalLine {
         let yPoint: CGFloat
-        let yUnit: DataPoint.YType
+        let yUnit: DataPoint.DataType
     }
 
 	//enum to avoid instantiation

@@ -27,11 +27,15 @@
 		A10AB265DD78E54E80EC85A7 /* MainChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB770012C6AF46F55D8AB /* MainChartView.swift */; };
 		A10AB44857B06B727C2AC2CB /* UIViewController+ViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */; };
 		A10AB4AB5AE8052E30FF2A7A /* ChartPointsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB6CF9CC005000142AC86 /* ChartPointsCalculator.swift */; };
+		A10AB64495C36B247DE41BD6 /* ChartPopupLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB82F578B8746E8A9EA5F /* ChartPopupLayer.swift */; };
 		A10AB701B10D1A13532D58C9 /* UIImage+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */; };
+		A10AB74B1032FED56F0B2A93 /* DataPoint+CGGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */; };
 		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
 		A10AB9FFCF27125A87C06709 /* PointPopupDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2D37C72E80EE8B39FBD /* PointPopupDrawer.swift */; };
+		A10ABAE38F13352C3D0C5263 /* DataRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB5F6C2B767014B0D6261 /* DataRect.swift */; };
 		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
+		A10ABE628BE674B951034D10 /* ChartPopupPointInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABAF3D78D0963CAC17284 /* ChartPopupPointInfo.swift */; };
 		A10ABF33773F3BA35193E9A1 /* LinearFunctionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */; };
 		A10ABFABCB6F5A5D864BED66 /* ChartSelectViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */; };
 		A10ABFAC58459FE294CAC746 /* ChartSelectViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */; };
@@ -60,13 +64,17 @@
 		A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A10AB2D37C72E80EE8B39FBD /* PointPopupDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointPopupDrawer.swift; sourceTree = "<group>"; };
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
+		A10AB5F6C2B767014B0D6261 /* DataRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRect.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		A10AB6CF9CC005000142AC86 /* ChartPointsCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointsCalculator.swift; sourceTree = "<group>"; };
 		A10AB770012C6AF46F55D8AB /* MainChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainChartView.swift; sourceTree = "<group>"; };
 		A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ViewProtocol.swift"; sourceTree = "<group>"; };
 		A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewDelegate.swift; sourceTree = "<group>"; };
+		A10AB82F578B8746E8A9EA5F /* ChartPopupLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPopupLayer.swift; sourceTree = "<group>"; };
 		A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewController.swift; sourceTree = "<group>"; };
 		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
+		A10ABAF3D78D0963CAC17284 /* ChartPopupPointInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPopupPointInfo.swift; sourceTree = "<group>"; };
+		A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataPoint+CGGeometry.swift"; sourceTree = "<group>"; };
 		A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Static.swift"; sourceTree = "<group>"; };
 		A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Static.swift"; sourceTree = "<group>"; };
 		A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearFunctionFactory.swift; sourceTree = "<group>"; };
@@ -105,6 +113,7 @@
 				1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */,
 				A10AB770012C6AF46F55D8AB /* MainChartView.swift */,
 				A10AB6CF9CC005000142AC86 /* ChartPointsCalculator.swift */,
+				A10AB82F578B8746E8A9EA5F /* ChartPopupLayer.swift */,
 			);
 			path = ChartView;
 			sourceTree = "<group>";
@@ -147,6 +156,8 @@
 				1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */,
 				1C7B49627C833376D46B1993 /* DecodingError.swift */,
 				A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */,
+				A10AB5F6C2B767014B0D6261 /* DataRect.swift */,
+				A10ABAF3D78D0963CAC17284 /* ChartPopupPointInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -174,6 +185,7 @@
 				1C7B4709780C448DBAC345DB /* CoreGraphics */,
 				A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */,
 				A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */,
+				A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -357,6 +369,10 @@
 				A10AB265DD78E54E80EC85A7 /* MainChartView.swift in Sources */,
 				A10AB9FFCF27125A87C06709 /* PointPopupDrawer.swift in Sources */,
 				A10AB4AB5AE8052E30FF2A7A /* ChartPointsCalculator.swift in Sources */,
+				A10AB74B1032FED56F0B2A93 /* DataPoint+CGGeometry.swift in Sources */,
+				A10ABAE38F13352C3D0C5263 /* DataRect.swift in Sources */,
+				A10AB64495C36B247DE41BD6 /* ChartPopupLayer.swift in Sources */,
+				A10ABE628BE674B951034D10 /* ChartPopupPointInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

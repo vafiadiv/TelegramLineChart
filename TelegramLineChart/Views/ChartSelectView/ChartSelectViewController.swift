@@ -45,8 +45,8 @@ extension ChartSelectViewController: ChartSelectViewDelegate {
 
         let totalUnitWidth = xRange.upperBound - xRange.lowerBound
 
-        let minUnitXSelected = xRange.lowerBound + DataPoint.XType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.lowerBound)
-        let maxUnitXSelected = xRange.lowerBound + DataPoint.XType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.upperBound)
+        let minUnitXSelected = xRange.lowerBound + DataPoint.DataType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.lowerBound)
+        let maxUnitXSelected = xRange.lowerBound + DataPoint.DataType(CGFloat(totalUnitWidth) * rootView.selectedRelativeRange.upperBound)
 
         delegate?.didSelectChartPartition(minUnitX: minUnitXSelected, maxUnitX: maxUnitXSelected)
     }

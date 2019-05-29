@@ -16,7 +16,7 @@ struct DataLine {
 
 extension Array where Element == DataLine {
 
-    var xRange: ClosedRange<DataPoint.XType> {
+    var xRange: ClosedRange<DataPoint.DataType> {
 
         let firstPoints = self.compactMap { $0.points.first?.x }
 

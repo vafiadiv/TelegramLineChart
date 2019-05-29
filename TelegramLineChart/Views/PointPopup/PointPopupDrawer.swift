@@ -22,9 +22,15 @@ internal struct PointPopupDrawer {
             return
         }
 
+        context.saveGState()
+
         let backgroundRect = CGRect(x: point.x - Constants.size.width / 2, y: point.y, width: Constants.size.width, height: Constants.size.height)
         let rectPath = CGPath(roundedRect: backgroundRect, cornerWidth: Constants.cornerRadius, cornerHeight: Constants.cornerRadius, transform: nil)
+
+        context.setFillColor(UIColor.chartPopupBackground.cgColor)
         context.addPath(rectPath)
-        context.strokePath()
+        context.fillPath()
+
+        context.restoreGState()
     }
 }
