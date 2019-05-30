@@ -17,6 +17,9 @@ extension UIColor {
 
     static let selectionChartBackground = UIColor(named: "selection_chart_background")!
 
-    //TODO: change
-    static let chartPopupBackground = UIColor(named: "selection_chart_background")!
+    static let chartPopupBackground = UIColor(named: "chart_popup_background")!
+
+    static let chartBackground = UIColor(named: "chart_background")!
+
+    static let chartPopupLine = UIColor(named: "chart_popup_line")!
 }

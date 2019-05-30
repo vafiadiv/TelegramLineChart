@@ -16,7 +16,9 @@ internal struct ChartHorizontalLinesDrawer {
 	//enum to avoid instantiation
 	private enum Constants {
 
-        static let textOffset = UIOffset(horizontal: 5, vertical: 0)
+        static let textOffset = UIOffset(horizontal: 0, vertical: 0)
+
+        static let fontSize: CGFloat = 11
 	}
 
     internal func drawHorizontalLines(lines: [HorizontalLine],
@@ -26,16 +28,18 @@ internal struct ChartHorizontalLinesDrawer {
                                       debugPrint: Bool = false) {
 
         UIGraphicsPushContext(context)
-//        context.translateBy(x: drawingRect.x, y: drawingRect.y)
+
+        let minX = drawingRect.minX + Constants.textOffset.horizontal
+        let maxX = drawingRect.maxX - Constants.textOffset.horizontal
 
         let linePath = UIBezierPath()
-        linePath.move(to: CGPoint(x: drawingRect.minX, y: 0))
+        linePath.move(to: CGPoint(x: minX, y: 0))
 //        context.setStrokeColor(UIColor.chartHorizontalLines.withAlphaComponent(alpha).cgColor)
         context.setStrokeColor(UIColor.chartHorizontalLines.cgColor)
         context.setLineWidth(1.0)
         lines.forEach {
-            linePath.move(to: CGPoint(x: 0, y: $0.yPoint))
-            linePath.addLine(to: CGPoint(x: drawingRect.width, y: $0.yPoint))
+            linePath.move(to: CGPoint(x: minX, y: $0.yPoint))
+            linePath.addLine(to: CGPoint(x: maxX, y: $0.yPoint))
         }
 
         linePath.stroke()
@@ -47,12 +51,12 @@ internal struct ChartHorizontalLinesDrawer {
 */
 
         let lineTextPoints = lines.map {
-            return CGPoint(x: Constants.textOffset.horizontal, y: $0.yPoint - Constants.textOffset.vertical)
+            return CGPoint(x: minX, y: $0.yPoint - Constants.textOffset.vertical)
         }
 
         zip(lines, lineTextPoints).forEach { line, point in
             let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 15),
+                .font: UIFont.systemFont(ofSize: Constants.fontSize, weight: .light),
                 .foregroundColor: UIColor.chartHorizontalLinesText.withAlphaComponent(alpha)
             ]
 

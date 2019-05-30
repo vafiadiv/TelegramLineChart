@@ -12,8 +12,6 @@ class ChartLayer: CALayer {
     private enum Constants {
         static let animationDuration: CFTimeInterval = 0.1
 
-        static let highlightedPopupTop: CGFloat = 6
-
         //relative distance between horizontal chart lines measured in drawing rect height
         static let horizontalLinesRelativeY: CGFloat = 1 / 5
     }
@@ -29,7 +27,6 @@ class ChartLayer: CALayer {
         var animationRemainingTime: CFTimeInterval = 0
 
         var debugAnimationFramesNumber: Int = 0
-
     }
 
     // MARK: - Public properties
@@ -56,12 +53,6 @@ class ChartLayer: CALayer {
     private(set) var yRange: ClosedRange<DataPoint.DataType> = 0...0
 
     var drawHorizontalLines: Bool = true {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-
-    var highlightedPoint: CGPoint? {
         didSet {
             setNeedsDisplay()
         }
@@ -245,12 +236,6 @@ class ChartLayer: CALayer {
                     alpha: currentLinesAlpha)
         }
 
-/*
-        if let highlightedPoint = highlightedPoint {
-            drawHighlightedPoint(at: highlightedPoint, to: context, pointsPerUnitX: pointsPerUnitXRequired)
-        }
-*/
-
         visibleDataLines.forEach { dataLine in
             drawLine(dataLine, to: context, in: chartRect, minDataPoint: minDataPoint, maxDataPoint: maxDataPoint, pointsPerUnitX: pointsPerUnitXRequired, pointsPerUnitY: currentPointPerUnitY)
         }
@@ -321,28 +306,6 @@ class ChartLayer: CALayer {
             return DataLine(points: points, color: $0.color, name: $0.name)
         }
     }
-
-    private func drawHighlightedPoint(at point: CGPoint, to context: CGContext, pointsPerUnitX: CGFloat) {
-
-        let chartUnitWidth = CGFloat(xRange.upperBound - xRange.lowerBound)
-        let highlightedUnitX = xRange.lowerBound + DataPoint.DataType(chartUnitWidth * point.x / bounds.width)
-
-        guard xRange ~= highlightedUnitX else {
-            return
-        }
-
-        pointPopupDrawer.context = context
-        pointPopupDrawer.drawPopup(atTopCenter: CGPoint(x: point.x, y: Constants.highlightedPopupTop))
-
-        context.saveGState()
-
-        context.move(to: CGPoint(x: point.x, y: 0))
-        context.addLine(to: CGPoint(x: point.x, y: bounds.height))
-        context.strokePath()
-
-        context.restoreGState()
-    }
-
 
     private func drawLine(_ line: DataLine,
                           to context: CGContext,

@@ -11,13 +11,26 @@ import UIKit
 class ChartViewController: UIViewController {
 
     private enum Constants {
-        static let chartSelectViewHeight: CGFloat = 50
+
+        static let tempChartViewTop: CGFloat = 54
+
+        static let tempChartViewBottom: CGFloat = 30
+
+        static let chartViewHeight: CGFloat = 288
+
+        static let chartViewXOffset: CGFloat = 16
+
+        static let chartSelectViewHeight: CGFloat = 43
+
         static let chartIndex: Int = 1
     }
 
     private var charts = [Chart]()
 
     private var chartView: MainChartView!
+
+    private var tempViewTop: UIView!
+    private var tempViewBottom: UIView!
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
@@ -32,6 +45,7 @@ class ChartViewController: UIViewController {
 	}
 
 	private func setupUI() {
+        view.backgroundColor = .white
         setupChartView()
         setupChartSelectView()
         setupTapGestureRecognizer()
@@ -89,52 +103,44 @@ class ChartViewController: UIViewController {
             return
         }
 
-        let highlightedPoint = gestureRecognizer.location(in: chartView)
-//        chartView.highlightedPoint = highlightedPoint
+        let tapPoint = gestureRecognizer.location(in: chartView)
 
         let unitMinX = CGFloat(chartView.xRange.lowerBound)
         let unitMaxX = CGFloat(chartView.xRange.upperBound)
-//        let unitMinY = CGFloat(chartView.yRange.lowerBound)
-//        let unitMaxY = CGFloat(chartView.yRange.upperBound)
 
         let dataRect = DataRect(
                 origin: DataPoint(x: chartView.xRange.lowerBound, y: chartView.yRange.lowerBound),
                 width: chartView.xRange.upperBound - chartView.xRange.lowerBound,
                 height: chartView.yRange.upperBound - chartView.yRange.lowerBound)
-/*
-        let tapUnitPoint = DataPoint(
-                x: DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * highlightedPoint.x / chartView.frame.width),
-                y: DataPoint.DataType(unitMinY + (unitMaxY - unitMinY) * highlightedPoint.y / chartView.frame.height))
-*/
-        let tapPointUnitX = DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * highlightedPoint.x / chartView.frame.width)
+
+        let tapDataPointX = DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * tapPoint.x / chartView.frame.width)
 
         if chartView.highlightedPointsInfos != nil {
             chartView.highlightedPointsInfos = nil
         } else {
             let popupPointInfos: [ChartPopupPointInfo] = chartView.dataLines.compactMap { dataLine in
-                guard let leftPointUnit = dataLine.points.last(where: { $0.x < tapPointUnitX }),
-                      let rightPointUnit = dataLine.points.first(where: { $0.x > tapPointUnitX }) else {
+                guard let leftPointUnit = dataLine.points.last(where: { $0.x < tapDataPointX }),
+                      let rightPointUnit = dataLine.points.first(where: { $0.x > tapDataPointX }) else {
                     return nil
                 }
 
-                let leftPoint = leftPointUnit.convert(from: dataRect, to: chartView.bounds)
-                let rightPoint = rightPointUnit.convert(from: dataRect, to: chartView.bounds)
-                let function = linearFunctionFactory.function(x1: leftPoint.x, y1: leftPoint.y, x2: rightPoint.x, y2: rightPoint.y)
+                let function = linearFunctionFactory.function(
+                        x1: CGFloat(leftPointUnit.x),
+                        y1: CGFloat(leftPointUnit.y),
+                        x2: CGFloat(rightPointUnit.x),
+                        y2: CGFloat(rightPointUnit.y))
 
-                let tapIntersection = CGPoint(x: highlightedPoint.x, y: function(highlightedPoint.x))
+                let dataPointY = DataPoint.DataType(function(CGFloat(tapDataPointX)))
+
+                let dataPoint = DataPoint(x: tapDataPointX, y: dataPointY)
+
+                let graphPoint = dataPoint.convert(from: dataRect, to: chartView.bounds)
 
                 print("line \(dataLine.name): leftPoint = \(leftPointUnit), rightPoint = \(rightPointUnit)")
-                return ChartPopupPointInfo(point: tapIntersection, color: dataLine.color, value: -999)
+                return ChartPopupPointInfo(point: graphPoint, color: dataLine.color, dataPoint: dataPoint)
             }
 
             chartView.highlightedPointsInfos = popupPointInfos
-/*
-            chartView.highlightedPointsInfos = [
-                ChartPopupPointInfo(point: CGPoint(x: 100, y: 100), color: .red, value: 111),
-                ChartPopupPointInfo(point: CGPoint(x: 200, y: 200), color: .green, value: 222),
-                ChartPopupPointInfo(point: CGPoint(x: 300, y: 300), color: .blue, value: 333),
-            ]
-*/
         }
     }
 
@@ -142,15 +148,15 @@ class ChartViewController: UIViewController {
 		super.viewWillLayoutSubviews()
 
 		chartView.frame = CGRect(
-                x: 0,
-                y: view.safeAreaInsets.top,
-                width: view.frame.width,
-                height: view.frame.height - view.safeAreaInsets.top - Constants.chartSelectViewHeight)
+                x: Constants.chartViewXOffset,
+                y: view.safeAreaInsets.top + Constants.tempChartViewTop,
+                width: view.frame.width - 2 * Constants.chartViewXOffset,
+                height: Constants.chartViewHeight)
 
         chartSelectViewController.view.frame = CGRect(
-                x: 0,
-                y: view.frame.height - Constants.chartSelectViewHeight,
-                width: view.frame.width,
+                x: Constants.chartViewXOffset,
+                y: chartView.frame.maxY + Constants.tempChartViewBottom,
+                width: view.frame.width - 2 * Constants.chartViewXOffset,
                 height: Constants.chartSelectViewHeight)
 	}
 }

@@ -11,5 +11,5 @@ import UIKit
 struct ChartPopupPointInfo {
     var point: CGPoint
     var color: UIColor
-    var value: DataPoint.DataType
+    var dataPoint: DataPoint
 }

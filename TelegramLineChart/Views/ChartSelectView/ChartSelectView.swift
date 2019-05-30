@@ -91,12 +91,12 @@ class ChartSelectView: UIView {
         setupChartLayer()
         setupSelectionWindow()
         setupGestureRecognizer()
-        self.backgroundColor = .white
+        backgroundColor = .selectionChartBackground
     }
 
     private func setupChartLayer() {
         chartLayer.lineWidth = 1
-        chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
+//        chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
         chartLayer.drawHorizontalLines = false
         chartLayer.contentsScale = UIScreen.main.scale
     }
@@ -227,7 +227,7 @@ private class SelectionWindowPanHandler {
 
     private var leftSideTouchArea: CGRect {
         return CGRect(
-                x: selectionWindowView.frame.left - Constants.touchAreaWidth / 2,
+                x: selectionWindowView.frame.minX - Constants.touchAreaWidth / 2,
                 y: selectionWindowView.frame.y,
                 width: Constants.touchAreaWidth,
                 height: selectionWindowView.frame.height)
@@ -235,7 +235,7 @@ private class SelectionWindowPanHandler {
 
     private var rightSideTouchArea: CGRect {
         return CGRect(
-                x: selectionWindowView.frame.right - Constants.touchAreaWidth / 2,
+                x: selectionWindowView.frame.maxX - Constants.touchAreaWidth / 2,
                 y: selectionWindowView.frame.y,
                 width: Constants.touchAreaWidth,
                 height: selectionWindowView.frame.height)
@@ -243,7 +243,7 @@ private class SelectionWindowPanHandler {
 
     private var centralTouchArea: CGRect {
         return CGRect(
-                x: selectionWindowView.frame.left + Constants.touchAreaWidth / 2,
+                x: selectionWindowView.frame.minX + Constants.touchAreaWidth / 2,
                 y: selectionWindowView.frame.y,
                 width: selectionWindowView.frame.width - Constants.touchAreaWidth,
                 height: selectionWindowView.frame.height)

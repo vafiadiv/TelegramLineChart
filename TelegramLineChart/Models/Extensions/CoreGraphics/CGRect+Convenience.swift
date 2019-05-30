@@ -33,22 +33,6 @@ extension CGRect {
         return CGPoint(x: self.midX, y: self.midY)
     }
 
-    var left: CGFloat {
-        return self.origin.x
-    }
-
-    var right: CGFloat {
-        return self.maxX
-    }
-
-    var top: CGFloat {
-        return self.origin.y
-    }
-
-    var bottom: CGFloat {
-        return maxY
-    }
-
     // MARK: - Other
 
     var ceiled: CGRect {

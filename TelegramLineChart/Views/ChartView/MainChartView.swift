@@ -28,12 +28,6 @@ class MainChartView: UIView  {
         return chartLayer.yRange
     }
 
-    var highlightedPoint: CGPoint? {
-        didSet {
-            chartLayer.highlightedPoint = highlightedPoint
-        }
-    }
-
     var highlightedPointsInfos: [ChartPopupPointInfo]? {
         get {
             return popupLayer.pointInfos
@@ -81,7 +75,6 @@ class MainChartView: UIView  {
     }
 
     private func setupChartLayer() {
-        chartLayer.lineWidth = 1
         chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
         chartLayer.drawHorizontalLines = true
         chartLayer.contentsScale = UIScreen.main.scale
@@ -97,20 +90,4 @@ class MainChartView: UIView  {
         super.layoutSubviews()
         popupLayer.frame = chartLayer.bounds
     }
-
-/*
-    private func setupTapGestureRecognizer() {
-        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
-        addGestureRecognizer(tapGestureRecognizer)
-    }
-
-    @objc
-    private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
-        guard gestureRecognizer.state == .ended else {
-            return
-        }
-
-        chartLayer.highlightedPoint = gestureRecognizer.location(in: self)
-    }
-*/
 }

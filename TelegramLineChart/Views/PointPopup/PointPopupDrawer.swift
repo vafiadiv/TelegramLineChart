@@ -11,14 +11,15 @@ import UIKit
 internal struct PointPopupDrawer {
 
     private enum Constants {
-        static let size = CGSize(width: 94, height: 60)
+        static let size = CGSize(width: 94, height: 40)
+        static let lineHeight: CGFloat = 14
         static let cornerRadius: CGFloat = 3
     }
 
     var context: CGContext?
 
-    func drawPopup(atTopCenter point: CGPoint) {
-        guard let context = context else {
+    func drawPopup(atTopCenter point: CGPoint, pointInfos: [ChartPopupPointInfo]) {
+        guard let context = context, !pointInfos.isEmpty else {
             return
         }
 
@@ -32,5 +33,9 @@ internal struct PointPopupDrawer {
         context.fillPath()
 
         context.restoreGState()
+
+        for pointInfo in pointInfos {
+
+        }
     }
 }
