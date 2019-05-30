@@ -14,7 +14,7 @@ extension DataPoint {
 
         let relativeX = CGFloat(self.x - dataRect.origin.x) / CGFloat(dataRect.width)
         //Since graph Y axis points up and in iOS Core Graphics Y axis points down, relativeY is calculated from the top
-        let relativeY = CGFloat(dataRect.height - self.y) / CGFloat(dataRect.height)
+        let relativeY = CGFloat(dataRect.height + dataRect.origin.y - self.y) / CGFloat(dataRect.height)
 
         return CGPoint(
                 x: rect.x + rect.width * relativeX,

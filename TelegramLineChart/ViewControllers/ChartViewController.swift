@@ -40,7 +40,6 @@ class ChartViewController: UIViewController {
     private func setupChartView() {
         chartView = MainChartView()
         chartView.translatesAutoresizingMaskIntoConstraints = false
-        (chartView.layer as? ChartLayer)?.debugDrawing = true
         chartView.backgroundColor = .white
         view.addSubview(chartView)
     }
@@ -99,7 +98,7 @@ class ChartViewController: UIViewController {
 //        let unitMaxY = CGFloat(chartView.yRange.upperBound)
 
         let dataRect = DataRect(
-                origin: DataPoint(x: chartView.xRange.lowerBound, y: chartView.xRange.lowerBound),
+                origin: DataPoint(x: chartView.xRange.lowerBound, y: chartView.yRange.lowerBound),
                 width: chartView.xRange.upperBound - chartView.xRange.lowerBound,
                 height: chartView.yRange.upperBound - chartView.yRange.lowerBound)
 /*
@@ -118,8 +117,8 @@ class ChartViewController: UIViewController {
                     return nil
                 }
 
-                let leftPoint = leftPointUnit.convert(from: dataRect, to: chartView.frame)
-                let rightPoint = rightPointUnit.convert(from: dataRect, to: chartView.frame)
+                let leftPoint = leftPointUnit.convert(from: dataRect, to: chartView.bounds)
+                let rightPoint = rightPointUnit.convert(from: dataRect, to: chartView.bounds)
                 let function = linearFunctionFactory.function(x1: leftPoint.x, y1: leftPoint.y, x2: rightPoint.x, y2: rightPoint.y)
 
                 let tapIntersection = CGPoint(x: highlightedPoint.x, y: function(highlightedPoint.x))
@@ -170,5 +169,6 @@ extension ChartViewController: ChartSelectViewControllerDelegate {
 */
 
         chartView.xRange = minUnitX...maxUnitX
+        chartView.highlightedPointsInfos = nil
     }
 }
