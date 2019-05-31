@@ -9,7 +9,10 @@
 import UIKit
 
 struct ChartPopupPointInfo {
-    var point: CGPoint
+
+    var pointY: CGFloat
+
     var color: UIColor
-    var dataPoint: DataPoint
+
+    var valueY: String
 }

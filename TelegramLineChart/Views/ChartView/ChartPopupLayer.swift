@@ -8,8 +8,10 @@
 
 import UIKit
 
+//TODO: remove
 class ChartPopupLayer: CALayer {
 
+/*
     // MARK: - Private types
 
     private enum Constants {
@@ -82,4 +84,5 @@ class ChartPopupLayer: CALayer {
         pointPopupDrawer.context = context
         pointPopupDrawer.drawPopup(atTopCenter: CGPoint(x: point.x, y: Constants.popupTop), pointInfos: pointInfos)
     }
+*/
 }

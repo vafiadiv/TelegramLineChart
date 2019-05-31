@@ -28,14 +28,6 @@ class MainChartView: UIView  {
         return chartLayer.yRange
     }
 
-    var highlightedPointsInfos: [ChartPopupPointInfo]? {
-        get {
-            return popupLayer.pointInfos
-        }
-        set {
-            popupLayer.pointInfos = newValue
-        }
-    }
 
     // MARK: - Private properties
 
@@ -71,7 +63,6 @@ class MainChartView: UIView  {
     private func setupUI() {
         setupChartLayer()
         setupPopupLayer()
-//        setupTapGestureRecognizer()
     }
 
     private func setupChartLayer() {

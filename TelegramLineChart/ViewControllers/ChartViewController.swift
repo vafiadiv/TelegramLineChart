@@ -29,12 +29,11 @@ class ChartViewController: UIViewController {
 
     private var chartView: MainChartView!
 
-    private var tempViewTop: UIView!
-    private var tempViewBottom: UIView!
-
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
     private var chartSelectViewController: ChartSelectViewController!
+
+    private var pointPopupViewController: PointPopupViewController!
 
     private let linearFunctionFactory = LinearFunctionFactory<CGFloat>()
 
@@ -47,7 +46,8 @@ class ChartViewController: UIViewController {
 	private func setupUI() {
         view.backgroundColor = .white
         setupChartView()
-        setupChartSelectView()
+        setupChartSelectViewController()
+        setupPointPopupViewController()
         setupTapGestureRecognizer()
 	}
 
@@ -58,13 +58,22 @@ class ChartViewController: UIViewController {
         view.addSubview(chartView)
     }
 
-    private func setupChartSelectView() {
+    private func setupChartSelectViewController() {
         chartSelectViewController = ChartSelectViewController()
         chartSelectViewController.delegate = self
         addChild(chartSelectViewController)
         chartSelectViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(chartSelectViewController.view)
         chartSelectViewController.didMove(toParent: self)
+    }
+
+    private func setupPointPopupViewController() {
+        pointPopupViewController = PointPopupViewController()
+        addChild(pointPopupViewController)
+        pointPopupViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        pointPopupViewController.view.isHidden = true
+        view.addSubview(pointPopupViewController.view)
+        pointPopupViewController.didMove(toParent: self)
     }
 
     private func setupTapGestureRecognizer() {
@@ -91,8 +100,10 @@ class ChartViewController: UIViewController {
 
 		chartView.dataLines = croppedLines
 */
-		chartView.dataLines = charts[Constants.chartIndex].lines
-        chartSelectViewController.dataLines = chartView.dataLines
+        let lines = charts[Constants.chartIndex].lines
+        chartView.dataLines = lines
+        chartSelectViewController.dataLines = lines
+        pointPopupViewController.dataLines = lines
 //        chartView.dataLines = [DataLine.mockDataLine1]
 //        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}
@@ -103,15 +114,28 @@ class ChartViewController: UIViewController {
             return
         }
 
-        let tapPoint = gestureRecognizer.location(in: chartView)
+        guard pointPopupViewController.view.isHidden else {
+            pointPopupViewController.view.isHidden = true
+            return
+        }
 
-        let unitMinX = CGFloat(chartView.xRange.lowerBound)
-        let unitMaxX = CGFloat(chartView.xRange.upperBound)
+        let tapPoint = gestureRecognizer.location(in: chartView)
 
         let dataRect = DataRect(
                 origin: DataPoint(x: chartView.xRange.lowerBound, y: chartView.yRange.lowerBound),
                 width: chartView.xRange.upperBound - chartView.xRange.lowerBound,
                 height: chartView.yRange.upperBound - chartView.yRange.lowerBound)
+
+        pointPopupViewController.setupWith(tapPoint: tapPoint, dataRect: dataRect, chartRect: chartView.bounds)
+        let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: chartView.frame.height))
+        let tapPointInSelf = self.view.convert(tapPoint, from: chartView)
+        pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: chartView.center.y), size: size)
+        pointPopupViewController.view.isHidden = false
+        //TODO: comment
+/*
+
+        let unitMinX = CGFloat(chartView.xRange.lowerBound)
+        let unitMaxX = CGFloat(chartView.xRange.upperBound)
 
         let tapDataPointX = DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * tapPoint.x / chartView.frame.width)
 
@@ -142,6 +166,7 @@ class ChartViewController: UIViewController {
 
             chartView.highlightedPointsInfos = popupPointInfos
         }
+*/
     }
 
     override func viewWillLayoutSubviews() {
@@ -158,6 +183,8 @@ class ChartViewController: UIViewController {
                 y: chartView.frame.maxY + Constants.tempChartViewBottom,
                 width: view.frame.width - 2 * Constants.chartViewXOffset,
                 height: Constants.chartSelectViewHeight)
+
+        //TODO: reset popupVC's frame
 	}
 }
 
@@ -175,6 +202,6 @@ extension ChartViewController: ChartSelectViewControllerDelegate {
 */
 
         chartView.xRange = minUnitX...maxUnitX
-        chartView.highlightedPointsInfos = nil
+        pointPopupViewController.view.isHidden = true
     }
 }

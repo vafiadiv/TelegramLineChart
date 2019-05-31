@@ -12,8 +12,13 @@ internal struct PointPopupDrawer {
 
     private enum Constants {
         static let size = CGSize(width: 94, height: 40)
+
         static let lineHeight: CGFloat = 14
+
         static let cornerRadius: CGFloat = 3
+
+        static let boldFont = UIFont.systemFont(ofSize: 14, weight: .medium)
+        static let lightFont = UIFont.systemFont(ofSize: 15, weight: .light)
     }
 
     var context: CGContext?
@@ -22,6 +27,20 @@ internal struct PointPopupDrawer {
         guard let context = context, !pointInfos.isEmpty else {
             return
         }
+
+/*
+        let formatter = DateFormatter()
+        formatter.timeStyle = .none
+        formatter.dateStyle = .short
+
+        let date = Date(timeIntervalSince1970: TimeInterval(pointInfos[0].dataPoint.x))
+        let dateString = formatter.string(from: date)
+*/
+
+        for pointInfo in pointInfos {
+
+        }
+        print("printing popup with values: \(pointInfos.map { $0.valueY }.joined(separator: ", "))")
 
         context.saveGState()
 
@@ -33,9 +52,5 @@ internal struct PointPopupDrawer {
         context.fillPath()
 
         context.restoreGState()
-
-        for pointInfo in pointInfos {
-
-        }
     }
 }
