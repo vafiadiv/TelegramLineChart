@@ -42,7 +42,6 @@ class MainChartView: UIView  {
         return chartLayer
     }
 
-    private var popupLayer: ChartPopupLayer!
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
@@ -51,7 +50,6 @@ class MainChartView: UIView  {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        backgroundColor = .white
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -61,24 +59,13 @@ class MainChartView: UIView  {
     // MARK: - Private methods
 
     private func setupUI() {
+        backgroundColor = .white
         setupChartLayer()
-        setupPopupLayer()
     }
 
     private func setupChartLayer() {
         chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
         chartLayer.drawHorizontalLines = true
         chartLayer.contentsScale = UIScreen.main.scale
-    }
-
-    private func setupPopupLayer() {
-        popupLayer = ChartPopupLayer()
-        popupLayer.contentsScale = UIScreen.main.scale
-        chartLayer.addSublayer(popupLayer)
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        popupLayer.frame = chartLayer.bounds
     }
 }

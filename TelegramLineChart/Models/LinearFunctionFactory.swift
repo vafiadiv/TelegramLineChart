@@ -8,6 +8,7 @@
 
 import Foundation
 
+//TODO: replace with a simple linearFunctionValueAtX(x1, x2, y1, y2)
 struct LinearFunctionFactory<T: BinaryFloatingPoint> {
 
     //Returns linear function f(x) = k * x + b that contains points (x1, y1) and (x2, y2)

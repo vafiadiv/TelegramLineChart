@@ -35,17 +35,17 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
 
     // MARK: - Public methods
 
-    func setupWith(tapPoint: CGPoint, dataRect: DataRect, chartRect: CGRect) {
-        guard /*let chartRect = chartRect, let dataRect = dataRect, */let dataLines = dataLines else {
+    func setupWith(tapPoint: CGPoint, visibleDataRect: DataRect, chartRect: CGRect) {
+        guard let dataLines = dataLines else {
             return
         }
 
-        let unitMinX = CGFloat(dataRect.origin.x)
-        let unitMaxX = CGFloat(dataRect.origin.x + dataRect.width)
+        let unitMinX = CGFloat(visibleDataRect.origin.x)
+        let unitMaxX = CGFloat(visibleDataRect.origin.x + visibleDataRect.width)
 
         let tapDataPointX = DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * tapPoint.x / chartRect.width)
 
-        let pointInfos: [ChartPopupPointInfo] = dataLines.compactMap { dataLine in
+        let pointInfos: [PointPopupView.PointInfo] = dataLines.compactMap { dataLine in
             guard let leftPointUnit = dataLine.points.last(where: { $0.x < tapDataPointX }),
                   let rightPointUnit = dataLine.points.first(where: { $0.x > tapDataPointX }) else {
                 return nil
@@ -61,12 +61,12 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
 
             let dataPoint = DataPoint(x: tapDataPointX, y: dataPointY)
 
-            let graphPoint = dataPoint.convert(from: dataRect, to: chartRect)
+            let graphPoint = dataPoint.convert(from: visibleDataRect, to: chartRect)
 
             print("line \(dataLine.name): leftPoint = \(leftPointUnit), rightPoint = \(rightPointUnit)")
 
 //            return ChartPopupPointInfo(point: graphPoint, color: dataLine.color, dataPoint: dataPoint)
-            return ChartPopupPointInfo(pointY: graphPoint.y, color: dataLine.color, valueY: String(dataPoint.y))
+            return PointPopupView.PointInfo(pointY: graphPoint.y, color: dataLine.color, valueY: String(dataPoint.y))
         }
 
         let date = Date(timeIntervalSince1970: TimeInterval(tapDataPointX / 1000))
@@ -76,13 +76,11 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
         dateFormatter.dateFormat = "yyyy"
         let year = dateFormatter.string(from: date)
 
-        dateFormatter.dateFormat = "MM dd"
+        dateFormatter.dateFormat = "MMM dd"
         let monthDay = dateFormatter.string(from: date)
 
         rootView.DTO = PointPopupView.DTO(monthDay: monthDay, year: year, pointInfos: pointInfos)
+        rootView.DTO = PointPopupView.DTO(monthDay: monthDay, year: year, pointInfos: pointInfos)
         rootView.setNeedsDisplay()
     }
-
-    // MARK: - Private methods
-
 }

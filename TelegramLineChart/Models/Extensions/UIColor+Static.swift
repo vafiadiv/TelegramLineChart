@@ -22,4 +22,6 @@ extension UIColor {
     static let chartBackground = UIColor(named: "chart_background")!
 
     static let chartPopupLine = UIColor(named: "chart_popup_line")!
+
+    static let pointPopupTextColor = UIColor(named: "point_popup_text_color")!
 }

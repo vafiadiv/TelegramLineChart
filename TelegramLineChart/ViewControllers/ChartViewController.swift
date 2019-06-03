@@ -22,7 +22,9 @@ class ChartViewController: UIViewController {
 
         static let chartSelectViewHeight: CGFloat = 43
 
-        static let chartIndex: Int = 1
+        static let popupAnimationInterval: TimeInterval = 0.25
+
+        static let chartIndex: Int = 0
     }
 
     private var charts = [Chart]()
@@ -100,7 +102,7 @@ class ChartViewController: UIViewController {
 
 		chartView.dataLines = croppedLines
 */
-        let lines = charts[Constants.chartIndex].lines
+        let lines = charts[Constants.chartIndex].lines.sorted { $0.name < $1.name }
         chartView.dataLines = lines
         chartSelectViewController.dataLines = lines
         pointPopupViewController.dataLines = lines
@@ -126,47 +128,11 @@ class ChartViewController: UIViewController {
                 width: chartView.xRange.upperBound - chartView.xRange.lowerBound,
                 height: chartView.yRange.upperBound - chartView.yRange.lowerBound)
 
-        pointPopupViewController.setupWith(tapPoint: tapPoint, dataRect: dataRect, chartRect: chartView.bounds)
+        pointPopupViewController.setupWith(tapPoint: tapPoint, visibleDataRect: dataRect, chartRect: chartView.bounds)
         let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: chartView.frame.height))
         let tapPointInSelf = self.view.convert(tapPoint, from: chartView)
         pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: chartView.center.y), size: size)
         pointPopupViewController.view.isHidden = false
-        //TODO: comment
-/*
-
-        let unitMinX = CGFloat(chartView.xRange.lowerBound)
-        let unitMaxX = CGFloat(chartView.xRange.upperBound)
-
-        let tapDataPointX = DataPoint.DataType(unitMinX + (unitMaxX - unitMinX) * tapPoint.x / chartView.frame.width)
-
-        if chartView.highlightedPointsInfos != nil {
-            chartView.highlightedPointsInfos = nil
-        } else {
-            let popupPointInfos: [ChartPopupPointInfo] = chartView.dataLines.compactMap { dataLine in
-                guard let leftPointUnit = dataLine.points.last(where: { $0.x < tapDataPointX }),
-                      let rightPointUnit = dataLine.points.first(where: { $0.x > tapDataPointX }) else {
-                    return nil
-                }
-
-                let function = linearFunctionFactory.function(
-                        x1: CGFloat(leftPointUnit.x),
-                        y1: CGFloat(leftPointUnit.y),
-                        x2: CGFloat(rightPointUnit.x),
-                        y2: CGFloat(rightPointUnit.y))
-
-                let dataPointY = DataPoint.DataType(function(CGFloat(tapDataPointX)))
-
-                let dataPoint = DataPoint(x: tapDataPointX, y: dataPointY)
-
-                let graphPoint = dataPoint.convert(from: dataRect, to: chartView.bounds)
-
-                print("line \(dataLine.name): leftPoint = \(leftPointUnit), rightPoint = \(rightPointUnit)")
-                return ChartPopupPointInfo(point: graphPoint, color: dataLine.color, dataPoint: dataPoint)
-            }
-
-            chartView.highlightedPointsInfos = popupPointInfos
-        }
-*/
     }
 
     override func viewWillLayoutSubviews() {

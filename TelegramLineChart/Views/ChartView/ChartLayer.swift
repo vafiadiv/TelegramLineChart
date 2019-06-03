@@ -64,8 +64,6 @@ class ChartLayer: CALayer {
 
     private var horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
-    private var pointPopupDrawer = PointPopupDrawer()
-
     private var currentPointPerUnitY: CGFloat = 0
 
     private var lastDrawnTime: CFTimeInterval = 0
