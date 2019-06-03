@@ -117,7 +117,7 @@ class ChartViewController: UIViewController {
         }
 
         guard pointPopupViewController.view.isHidden else {
-            pointPopupViewController.view.isHidden = true
+            pointPopupViewController.view.setIsHiddenAnimated(true)
             return
         }
 
@@ -132,7 +132,7 @@ class ChartViewController: UIViewController {
         let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: chartView.frame.height))
         let tapPointInSelf = self.view.convert(tapPoint, from: chartView)
         pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: chartView.center.y), size: size)
-        pointPopupViewController.view.isHidden = false
+        pointPopupViewController.view.setIsHiddenAnimated(false)
     }
 
     override func viewWillLayoutSubviews() {
@@ -168,6 +168,8 @@ extension ChartViewController: ChartSelectViewControllerDelegate {
 */
 
         chartView.xRange = minUnitX...maxUnitX
-        pointPopupViewController.view.isHidden = true
+        if !pointPopupViewController.view.isHidden {
+            pointPopupViewController.view.setIsHiddenAnimated(true)
+        }
     }
 }

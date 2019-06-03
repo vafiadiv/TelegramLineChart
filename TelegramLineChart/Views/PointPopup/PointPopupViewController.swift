@@ -63,9 +63,6 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
 
             let graphPoint = dataPoint.convert(from: visibleDataRect, to: chartRect)
 
-            print("line \(dataLine.name): leftPoint = \(leftPointUnit), rightPoint = \(rightPointUnit)")
-
-//            return ChartPopupPointInfo(point: graphPoint, color: dataLine.color, dataPoint: dataPoint)
             return PointPopupView.PointInfo(pointY: graphPoint.y, color: dataLine.color, valueY: String(dataPoint.y))
         }
 
