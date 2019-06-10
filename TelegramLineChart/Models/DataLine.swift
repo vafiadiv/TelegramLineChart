@@ -48,4 +48,23 @@ extension DataLine {
         ]
         return DataLine(points: mockPoints, color: .green, name: "Line")
     }
+
+    static var mockDataLine2: DataLine {
+
+        let millisecondsInDay = 1000 * 60 * 60 * 24
+
+        let mockPoints = [
+            DataPoint(x: millisecondsInDay * 0, y: 5),
+            DataPoint(x: millisecondsInDay * 1, y: 10),
+            DataPoint(x: millisecondsInDay * 2, y: 5),
+            DataPoint(x: millisecondsInDay * 4, y: 10),
+            DataPoint(x: millisecondsInDay * 6, y: 5),
+            DataPoint(x: millisecondsInDay * 10, y: 10),
+            DataPoint(x: millisecondsInDay * 30, y: 5),
+            DataPoint(x: millisecondsInDay * 35, y: 10),
+            DataPoint(x: millisecondsInDay * 40, y: 333),
+            DataPoint(x: millisecondsInDay * 40, y: 10),
+        ]
+        return DataLine(points: mockPoints, color: .green, name: "Line")
+    }
 }

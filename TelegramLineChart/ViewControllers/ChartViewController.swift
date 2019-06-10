@@ -24,7 +24,7 @@ class ChartViewController: UIViewController {
 
         static let popupAnimationInterval: TimeInterval = 0.25
 
-        static let chartIndex: Int = 0
+        static let chartIndex: Int = 1
     }
 
     private var charts = [Chart]()
@@ -36,6 +36,8 @@ class ChartViewController: UIViewController {
     private var chartSelectViewController: ChartSelectViewController!
 
     private var pointPopupViewController: PointPopupViewController!
+
+    private var chartDateIndicatorViewController: ChartDateIndicatorViewController!
 
     private let linearFunctionFactory = LinearFunctionFactory<CGFloat>()
 
@@ -50,6 +52,7 @@ class ChartViewController: UIViewController {
         setupChartView()
         setupChartSelectViewController()
         setupPointPopupViewController()
+        setupDateIndicatorViewController()
         setupTapGestureRecognizer()
 	}
 
@@ -78,6 +81,15 @@ class ChartViewController: UIViewController {
         pointPopupViewController.didMove(toParent: self)
     }
 
+    private func setupDateIndicatorViewController() {
+        chartDateIndicatorViewController = ChartDateIndicatorViewController()
+        addChild(chartDateIndicatorViewController)
+        chartDateIndicatorViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(chartDateIndicatorViewController.view)
+        chartDateIndicatorViewController.view.backgroundColor = .white
+        chartDateIndicatorViewController.didMove(toParent: self)
+    }
+
     private func setupTapGestureRecognizer() {
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
         chartView.addGestureRecognizer(tapGestureRecognizer)
@@ -103,9 +115,11 @@ class ChartViewController: UIViewController {
 		chartView.dataLines = croppedLines
 */
         let lines = charts[Constants.chartIndex].lines.sorted { $0.name < $1.name }
+//        let lines = [DataLine.mockDataLine2]
         chartView.dataLines = lines
         chartSelectViewController.dataLines = lines
         pointPopupViewController.dataLines = lines
+        chartDateIndicatorViewController.totalXRange = lines.xRange
 //        chartView.dataLines = [DataLine.mockDataLine1]
 //        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}
@@ -138,16 +152,24 @@ class ChartViewController: UIViewController {
     override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 
+        let widthWithOffset = view.frame.width - 2 * Constants.chartViewXOffset
+
 		chartView.frame = CGRect(
                 x: Constants.chartViewXOffset,
                 y: view.safeAreaInsets.top + Constants.tempChartViewTop,
-                width: view.frame.width - 2 * Constants.chartViewXOffset,
+                width: widthWithOffset,
                 height: Constants.chartViewHeight)
+
+        chartDateIndicatorViewController.view.frame = CGRect(
+                x: Constants.chartViewXOffset,
+                y: chartView.frame.maxY,
+                width: widthWithOffset,
+                height: Constants.tempChartViewBottom)
 
         chartSelectViewController.view.frame = CGRect(
                 x: Constants.chartViewXOffset,
                 y: chartView.frame.maxY + Constants.tempChartViewBottom,
-                width: view.frame.width - 2 * Constants.chartViewXOffset,
+                width: widthWithOffset,
                 height: Constants.chartSelectViewHeight)
 
         //TODO: reset popupVC's frame
@@ -159,17 +181,16 @@ class ChartViewController: UIViewController {
 extension ChartViewController: ChartSelectViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.DataType, maxUnitX: DataPoint.DataType) {
-/*
-        let croppedDataLines: [DataLine] = chartSelectViewController.dataLines.map {
-            let pointsInRange = $0.points.filter { $0.x >= minUnitX && $0.x <= maxUnitX }
-            return DataLine(points: pointsInRange, color: $0.color, name: $0.name)
-        }
-        chartView.dataLines = croppedDataLines
-*/
 
-        chartView.xRange = minUnitX...maxUnitX
+        let range = minUnitX...maxUnitX
+
+        chartView.xRange = range
+
         if !pointPopupViewController.view.isHidden {
             pointPopupViewController.view.setIsHiddenAnimated(true)
         }
+
+//        chartDateIndicatorViewController.visibleXRange = (minUnitX / 1_000_000)...(maxUnitX / 1_000_000)
+        chartDateIndicatorViewController.visibleXRange = range
     }
 }

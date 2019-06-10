@@ -195,7 +195,7 @@ class ChartLayer: CALayer {
 
         if drawHorizontalLines && maxY - minY > 0 {
 
-            let lineUnitYs = Array(stride(from: minY, through: maxY, by: Int(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
+            let lineUnitYs = Array(stride(from: minY, through: maxY, by: DataPoint.DataType(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
 
             let currentLinesAlpha: CGFloat
 
