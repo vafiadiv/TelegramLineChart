@@ -23,7 +23,7 @@
 		1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */; };
 		1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B1C8F866A19AC8D9894 /* ChartLoader.swift */; };
 		A10AB045E7CB48323897387E /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB424548B37C0370DD7A4 /* NotImplemented.swift */; };
-		A10AB112B43E942AD9C5F8A6 /* ChartDateIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB44B975EEEF4F8498123 /* ChartDateIndicatorView.swift */; };
+		A10AB112B43E942AD9C5F8A6 /* ChartDateMarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB44B975EEEF4F8498123 /* ChartDateMarksView.swift */; };
 		A10AB16E7A1221359FB6876A /* PointPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABD65CE47B93A336429C7 /* PointPopupView.swift */; };
 		A10AB21D7CB28D155B6C0A80 /* ChartSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */; };
 		A10AB265DD78E54E80EC85A7 /* MainChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB770012C6AF46F55D8AB /* MainChartView.swift */; };
@@ -35,8 +35,9 @@
 		A10AB800009C9EE3557EC7AB /* ChartSelectWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */; };
 		A10AB96E6EB706061DBA5CB4 /* Date+DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABE509A7690534352C280 /* Date+DataPoint.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
-		A10AB99F19D3BC7133EBFCBA /* ChartDateIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */; };
+		A10AB99F19D3BC7133EBFCBA /* ChartDateMarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB9071D1400914A3E2E65 /* ChartDateMarksViewController.swift */; };
 		A10ABAE38F13352C3D0C5263 /* DataRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB5F6C2B767014B0D6261 /* DataRect.swift */; };
+		A10ABB7D779FC4DB1ED5E199 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB775733179863406A582 /* Stack.swift */; };
 		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
 		A10ABD5EE0714364DCC7B377 /* CGContext+DebugDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB7A5D0A9C154F586DAF7 /* CGContext+DebugDrawing.swift */; };
 		A10ABE07D3C182ABCCF61B44 /* PointPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCD8FBEFB54C650803EB /* PointPopupViewController.swift */; };
@@ -67,17 +68,18 @@
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
 		A10AB2457F49465C14BE4C13 /* ChartSelectViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
-		A10AB44B975EEEF4F8498123 /* ChartDateIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateIndicatorView.swift; sourceTree = "<group>"; };
+		A10AB44B975EEEF4F8498123 /* ChartDateMarksView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateMarksView.swift; sourceTree = "<group>"; };
 		A10AB5F6C2B767014B0D6261 /* DataRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRect.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		A10AB6CF9CC005000142AC86 /* ChartPointsCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointsCalculator.swift; sourceTree = "<group>"; };
 		A10AB770012C6AF46F55D8AB /* MainChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainChartView.swift; sourceTree = "<group>"; };
 		A10AB77279294F1540091DE5 /* UIViewController+ViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+ViewProtocol.swift"; sourceTree = "<group>"; };
+		A10AB775733179863406A582 /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		A10AB789F3458AD523C62D22 /* ChartSelectViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewDelegate.swift; sourceTree = "<group>"; };
 		A10AB7A5D0A9C154F586DAF7 /* CGContext+DebugDrawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+DebugDrawing.swift"; sourceTree = "<group>"; };
 		A10AB8A37B8A6868FE1187CB /* ChartSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectViewController.swift; sourceTree = "<group>"; };
 		A10AB8A773FC0D27B2348A50 /* ChartSelectWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartSelectWindowView.swift; sourceTree = "<group>"; };
-		A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateIndicatorViewController.swift; sourceTree = "<group>"; };
+		A10AB9071D1400914A3E2E65 /* ChartDateMarksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateMarksViewController.swift; sourceTree = "<group>"; };
 		A10AB9828F1A6DB3520B286B /* UIView+HiddenAnimated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+HiddenAnimated.swift"; sourceTree = "<group>"; };
 		A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataPoint+CGGeometry.swift"; sourceTree = "<group>"; };
 		A10ABCD8FBEFB54C650803EB /* PointPopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointPopupViewController.swift; sourceTree = "<group>"; };
@@ -166,17 +168,18 @@
 				1C7B49627C833376D46B1993 /* DecodingError.swift */,
 				A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */,
 				A10AB5F6C2B767014B0D6261 /* DataRect.swift */,
+				A10AB775733179863406A582 /* Stack.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		A10AB26C8F37CF85F974C6B2 /* ChartDateIndicatorView */ = {
+		A10AB26C8F37CF85F974C6B2 /* ChartDateMarksView */ = {
 			isa = PBXGroup;
 			children = (
-				A10AB44B975EEEF4F8498123 /* ChartDateIndicatorView.swift */,
-				A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */,
+				A10AB44B975EEEF4F8498123 /* ChartDateMarksView.swift */,
+				A10AB9071D1400914A3E2E65 /* ChartDateMarksViewController.swift */,
 			);
-			path = ChartDateIndicatorView;
+			path = ChartDateMarksView;
 			sourceTree = "<group>";
 		};
 		A10AB84C19A3C868EABF02D3 /* Utility */ = {
@@ -266,7 +269,7 @@
 				1C7B427912B18806AD9C8DC1 /* Extensions */,
 				1C7B434E17D0254CF3789765 /* ChartView */,
 				A10ABA46302B0884E75A2EE0 /* PointPopup */,
-				A10AB26C8F37CF85F974C6B2 /* ChartDateIndicatorView */,
+				A10AB26C8F37CF85F974C6B2 /* ChartDateMarksView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -394,9 +397,10 @@
 				A10ABE07D3C182ABCCF61B44 /* PointPopupViewController.swift in Sources */,
 				A10AB16E7A1221359FB6876A /* PointPopupView.swift in Sources */,
 				A10AB71EFA343405765CE70A /* UIView+HiddenAnimated.swift in Sources */,
-				A10AB112B43E942AD9C5F8A6 /* ChartDateIndicatorView.swift in Sources */,
-				A10AB99F19D3BC7133EBFCBA /* ChartDateIndicatorViewController.swift in Sources */,
+				A10AB112B43E942AD9C5F8A6 /* ChartDateMarksView.swift in Sources */,
+				A10AB99F19D3BC7133EBFCBA /* ChartDateMarksViewController.swift in Sources */,
 				A10AB96E6EB706061DBA5CB4 /* Date+DataPoint.swift in Sources */,
+				A10ABB7D779FC4DB1ED5E199 /* Stack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

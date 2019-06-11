@@ -225,7 +225,7 @@ class ChartLayer: CALayer {
                     pointsPerUnitY: currentPointPerUnitY,
                     chartRect: chartRect)
 
-            print("Drawing       current lines: |\(currentLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
+//            print("Drawing       current lines: |\(currentLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
 
             horizontalLinesDrawer.drawHorizontalLines(
                     lines: currentLines,
@@ -296,7 +296,7 @@ class ChartLayer: CALayer {
             let rightEdgeY = rightEdgeIntersectingLine(Double(xRange.upperBound))
             let rightEdgePoint = DataPoint(x: xRange.upperBound, y: DataPoint.DataType(rightEdgeY))
 
-            print("Now visible: left edge: \(leftEdgePoint), right edge: \(rightEdgePoint) for line \($0.name)")
+//            print("Now visible: left edge: \(leftEdgePoint), right edge: \(rightEdgePoint) for line \($0.name)")
 
             points[0] = leftEdgePoint
             points[points.count - 1] = rightEdgePoint
