@@ -12,7 +12,16 @@ class ChartDateIndicatorView: UIView {
 
     // MARK: -
 
-    private typealias Mark = (x: CGFloat, label: String, unitX: DataPoint.DataType)
+    fileprivate struct Mark {
+
+        let label: String
+
+        let unitX: DataPoint.DataType
+
+        func labelCenterXFor(frameWidth: CGFloat, minUnitX: DataPoint.DataType, unitXWidth: DataPoint.DataType) -> CGFloat {
+            return frameWidth * CGFloat(unitX - minUnitX) / CGFloat(unitXWidth)
+        }
+    }
 
     private enum Constants {
         static let millisecondsInDay: CGFloat = 1000 * 60 * 60 * 24
@@ -30,12 +39,6 @@ class ChartDateIndicatorView: UIView {
 
     var visibleXRange: ClosedRange<DataPoint.DataType> = 0...0 {
         didSet {
-//3 массива: visibleLabels, hiddenLabels, reusableLabels. Метод dequeueLabel() -> UILabel
-//На каждый set xRange:
-//Надо понять,
-//  1. (опционально) если visibleLabels.count и hiddenLabels.count < нужного кол-ва - добавляем лейблы до нужного кол-ва;
-//  2. Проверяем, надо ли добавлять видимые лейблы (zoom in):
-            setNeedsDisplay()
             setNeedsLayout()
         }
     }
@@ -43,8 +46,6 @@ class ChartDateIndicatorView: UIView {
     // MARK: - Private properties
 
     private var marks = [Mark]()
-
-    private var previousMarks = [Mark]()
 
     private var markUnitDistance: CGFloat = 0
 
@@ -66,7 +67,7 @@ class ChartDateIndicatorView: UIView {
 
     private var fadingOutLabels = [UILabel]()
 
-    private var fadingOutMarks = [Mark]()
+    private var fadingInLabels = [UILabel]()
 
     // MARK: - Overrides
 
@@ -75,126 +76,105 @@ class ChartDateIndicatorView: UIView {
 
         updateMarks()
 
-/*
+        let currentUnitXs = (visibleLabels + fadingInLabels).compactMap { $0.mark?.unitX }
         let markUnitXs = marks.map { $0.unitX }
-        let previousMarkUnitXs = previousMarks.map { $0.unitX }
 
+        //for detailed information about zooming algorithm see `updateMarks()`.
+
+        //3 cases with different animations:
+
+        //1. markUnitDistance increased, i.e. zoomed out past a threshold from the last call. Hide labels with fade out animation
         if markUnitDistance > previousMarkUnitDistance {
-        }
-        for (unitX, i) in markUnitXs.enumerated() {
 
-        }
-*/
-
-        //add more visibleLabels if necessary
-        while visibleLabels.count < marks.count {
-            visibleLabels.append(popReusableLabel())
-        }
-
-        //remove visibleLabels if necessary
-        while visibleLabels.count > marks.count, !visibleLabels.isEmpty {
-            let label = visibleLabels[visibleLabels.count - 1]
-            visibleLabels.removeLast()
-            pushReusableLabel(label)
-        }
-
-        guard visibleLabels.count == marks.count else {
-            print("")
-            return
-        }
-
-        //set all visible labels into place
-        for i in 0..<visibleLabels.count {
-            let label = visibleLabels[i]
-            let mark = marks[i]
-            label.text = mark.label
-            label.frame = CGRect(x: mark.x - maxLabelWidth / 2, y: 0, width: maxLabelWidth, height: bounds.height)
-        }
-
-        //1. запомнили текущее значение масштаба (или расст. между отметками) и отметки - текущее и предыдущее.
-        //   markUnitDistance, previousMarkUnitDistance, marks, previousMarks
-        //2. если не изменилось расстояние - делаем чтоб кол-во лейблов == кол-во отметок, проставляем лейблам тексты
-        //3. Если увеличилось (zoom out) - надо спрятать лейблы. Как определить, какие прятать? Пробегаться по marks?
-        //4. Если уменьшилось (zoom in) - надо показать лейблы. Как определить, на каких метках должны стоять прошлые, а
-        //   на какие нужно добавить с fade in?
-
-        //zoomed out between redraws - hide labels
-        if markUnitDistance > previousMarkUnitDistance {
-            //1. найти, какие пропали
-            //2. добавить для них лейблы в hiddenLabels
-            //3. скрыть с анимацией
-        } else if markUnitDistance < previousMarkUnitDistance {
-            //zoomed in between redraws - show labels
-            //1. найти, на каких позициях появились - те, которых не было в previous
-            //2. создать для них лейблы с альфа = 0, добавить в visible
-            //3. проиграть анимацию альфа = 1
-
-            let previousMarkUnitXs = previousMarks.map { $0.unitX }
-
-            var fadeInLabels = [UILabel]()
-            for i in 0..<marks.count {
-                //find marks that were not visible in the previous redraw
-                if !previousMarkUnitXs.contains(marks[i].unitX) {
-                    let label = visibleLabels[i]
-                    label.alpha = 0
-                    fadeInLabels.append(label)
+            for label in visibleLabels {
+                if let mark = label.mark, !markUnitXs.contains(mark.unitX) {
+                    //TODO: reuse, animation
+                    fadingOutLabels.append(label)
+                    UIView.animate(
+                            withDuration: Constants.animationDuration,
+                            animations: { label.alpha = 0 },
+                            completion: { _ in
+                                self.fadingOutLabels.removeAll { $0 == label }
+                                label.removeFromSuperview()
+                            })
                 }
             }
 
-            UIView.animate(withDuration: Constants.animationDuration) {
-                fadeInLabels.forEach { $0.alpha = 1 }
+            visibleLabels.removeAll { fadingOutLabels.contains($0) }
+
+        } else if markUnitDistance < previousMarkUnitDistance {
+        //2. markUnitDistance decreased, i.e. zoomed in past a threshold from in from the last call. Show new labels with fade in animation
+
+            visibleLabels.removeAll {
+                if let mark = $0.mark {
+                    //TODO: reuse
+                    return !markUnitXs.contains(mark.unitX)
+                } else {
+                    return true
+                }
             }
 
-            print()
+            var startAnimation = false
+
+            for mark in marks {
+                if !currentUnitXs.contains(mark.unitX) {
+                    let label = popReusableLabel()
+                    label.mark = mark
+                    label.alpha = 0
+                    fadingInLabels.append(label)
+                    startAnimation = true
+                }
+            }
+
+            if startAnimation {
+                UIView.animate(
+                        withDuration: Constants.animationDuration,
+                        animations: { [weak self] in
+                            self?.fadingInLabels.forEach {
+                                $0.alpha = 1
+                            }
+                        },
+                        completion: { [weak self] _ in
+                            guard let self = self else {
+                                return
+                            }
+
+                            self.visibleLabels.append(contentsOf: self.fadingInLabels)
+                            self.fadingInLabels.removeAll()
+                        })
+            }
         } else {
-            //zoom unchanged, adding/removing all labels without animation
-        }
+        //3. markUnitDistance unchanged, remove/add labels without animation
 
+            visibleLabels.removeAll {
+                if let mark = $0.mark {
+                    //TODO: reuse
+                    return !markUnitXs.contains(mark.unitX)
+                } else {
+                    return true
+                }
+            }
 
-
-        //TODO: tmp below
-        let markXs = marks.map { $0.unitX }
-        let prevMarkXs = previousMarks.map { $0.unitX }
-
-        var newMarks = 0
-        markXs.forEach {
-            if !prevMarkXs.contains($0) {
-                newMarks += 1
+            for mark in marks {
+                if !currentUnitXs.contains(mark.unitX) {
+                    let label = popReusableLabel()
+                    label.mark = mark
+                    visibleLabels.append(label)
+                }
             }
         }
-        if newMarks != 0 {
-            print("\(newMarks) newMarks" + (previousMarkUnitDistance != markUnitDistance ? " AND mUD changed" : ""))
+
+        let rangeWidth = visibleXRange.upperBound - visibleXRange.lowerBound
+        let allLabels = visibleLabels + fadingInLabels + fadingOutLabels
+
+        //set all labels into place (including ones that are animating)
+        for label in allLabels {
+            if let mark = label.mark {
+                label.text = mark.label
+                let labelCenterX = mark.labelCenterXFor(frameWidth: frame.width, minUnitX: visibleXRange.lowerBound, unitXWidth: rangeWidth)
+                label.frame = CGRect(x: labelCenterX - maxLabelWidth / 2, y: 0, width: maxLabelWidth, height: bounds.height)
+            }
         }
-    }
-
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return
-        }
-
-        context.setStrokeColor(UIColor.red.withAlphaComponent(0.5).cgColor)
-        context.setLineWidth(1)
-
-        let tmpTextWidth: CGFloat = 50
-
-        let tmpAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.pointPopupTextColor,
-            .font: UIFont.systemFont(ofSize: 12, weight: .light)
-        ]
-
-        marks.forEach { x, dateString, _ in
-/*
-            context.move(to: CGPoint(x: x, y: bounds.minY))
-            context.addLine(to: CGPoint(x: x, y: bounds.maxY))
-            let tmpNumberFormatter = NumberFormatter()
-            tmpNumberFormatter.maximumFractionDigits = 2
-            NSString(string: tmpNumberFormatter.string(for: x)!).draw(in: CGRect(center: CGPoint(x: x, y: bounds.midY), width: tmpTextWidth, height: bounds.height), withAttributes: tmpAttributes)
-*/
-        }
-
-        context.strokePath()
     }
 
     // MARK: - Private methods
@@ -226,15 +206,11 @@ class ChartDateIndicatorView: UIView {
         //5. Find all visible mark values by striding from first to last.
         let markUnitXs = stride(from: firstMarkUnitX, through: lastMarkUnitX, by: DataPoint.DataType(markUnitDistance))
 
-        if previousMarkUnitDistance != markUnitDistance {
-            previousMarks = marks
-        }
-
         marks = markUnitXs.map { [unowned self] markUnitX in
             let pointX = self.frame.width * CGFloat(markUnitX - self.visibleXRange.lowerBound) / rangeWidth
             //TODO: date string caching?
             let date = Date(dataPointX: markUnitX)
-            return (x: pointX, label: self.dateFormatter.string(from: date), unitX: markUnitX)
+            return Mark(label: self.dateFormatter.string(from: date), unitX: markUnitX)
         }
     }
 
@@ -283,5 +259,21 @@ class ChartDateIndicatorView: UIView {
         }
 
         return CGSize(width: maxSize.width + Constants.labelOffset, height: maxSize.height).ceiled
+    }
+}
+
+extension UILabel {
+
+    private enum AssociatedKeys {
+        static var Mark = "mark_key"
+    }
+
+    fileprivate var mark: ChartDateIndicatorView.Mark? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.Mark) as? ChartDateIndicatorView.Mark
+        }
+        set {
+            objc_setAssociatedObject(self, &AssociatedKeys.Mark, newValue, .OBJC_ASSOCIATION_RETAIN)
+        }
     }
 }
