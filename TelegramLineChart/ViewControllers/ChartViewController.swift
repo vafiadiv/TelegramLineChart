@@ -27,7 +27,13 @@ class ChartViewController: UIViewController {
         static let chartIndex: Int = 1
     }
 
-    private var charts = [Chart]()
+    private var lines = [DataLine]() {
+        didSet {
+            chartView.dataLines = lines
+            chartSelectViewController.dataLines = lines
+            pointPopupViewController.dataLines = lines
+        }
+    }
 
     private var chartView: MainChartView!
 
@@ -105,8 +111,6 @@ class ChartViewController: UIViewController {
 			return
 		}
 
-        self.charts = charts
-
 /*
 		let croppedLines = charts[0].lines.map { line in
 			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
@@ -114,21 +118,32 @@ class ChartViewController: UIViewController {
 
 		chartView.dataLines = croppedLines
 */
-        let lines = charts[Constants.chartIndex].lines.sorted { $0.name < $1.name }
-//        let lines = [DataLine.mockDataLine2]
-        chartView.dataLines = lines
-        chartSelectViewController.dataLines = lines
-        pointPopupViewController.dataLines = lines
+        lines = charts[Constants.chartIndex].lines.sorted { $0.name < $1.name }
         chartDateIndicatorViewController.totalXRange = lines.xRange
-//        chartView.dataLines = [DataLine.mockDataLine1]
-//        chartSelectViewController.dataLines = [DataLine.mockDataLine1]
 	}
+
+    var tmpBothLines = true
 
     @objc
     private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
         guard gestureRecognizer.state == .ended else {
             return
         }
+
+        let lines: [DataLine]
+        if tmpBothLines {
+            tmpBothLines = false
+            lines = [self.lines[1]]
+        } else {
+            tmpBothLines = true
+            lines = self.lines
+        }
+        chartView.dataLines = lines
+        chartSelectViewController.dataLines = lines
+        pointPopupViewController.dataLines = lines
+
+
+        return
 
         guard pointPopupViewController.view.isHidden else {
             pointPopupViewController.view.setIsHiddenAnimated(true)

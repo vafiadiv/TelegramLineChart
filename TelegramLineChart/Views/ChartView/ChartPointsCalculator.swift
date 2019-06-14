@@ -10,10 +10,7 @@ import UIKit
 
 class ChartPointsCalculator {
 
-    static func points(from dataPoints: [DataPoint], in rect: CGRect, bottomLeftPoint: DataPoint, topRightPoint: DataPoint) -> [CGPoint] {
-
-        let pointsPerUnitX = rect.width / CGFloat(topRightPoint.x - bottomLeftPoint.x)
-        let pointsPerUnitY = rect.height / CGFloat(topRightPoint.y - bottomLeftPoint.y)
+    static func points(from dataPoints: [DataPoint], in rect: CGRect, bottomLeftPoint: DataPoint, pointsPerUnitX: CGFloat, pointsPerUnitY: CGFloat) -> [CGPoint] {
 
         return dataPoints.map { dataPoint in
             let unitRelativeX = CGFloat(dataPoint.x - bottomLeftPoint.x)
@@ -24,7 +21,5 @@ class ChartPointsCalculator {
                     y: rect.origin.y + rect.height - (unitRelativeY * pointsPerUnitY))
             return screenPoint
         }
-//        for dataPoint in dataPoints {
-//        }
     }
 }

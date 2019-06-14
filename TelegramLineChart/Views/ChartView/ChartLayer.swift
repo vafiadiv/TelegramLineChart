@@ -10,7 +10,7 @@ class ChartLayer: CALayer {
 
     //caseless enum to avoid instantiation
     private enum Constants {
-        static let animationDuration: CFTimeInterval = 0.1
+        static let animationDuration: CFTimeInterval = 0.2
 
         //relative distance between horizontal chart lines measured in drawing rect height
         static let horizontalLinesRelativeY: CGFloat = 1 / 5
@@ -137,9 +137,6 @@ class ChartLayer: CALayer {
             currentPointPerUnitY = pointsPerUnitYRequired
         }
 
-        //TODO: tmp
-        currentPointPerUnitY = pointsPerUnitYRequired
-
         //if an animation is in progress
         if let animationInfo = animationInfo {
             if pointsPerUnitYRequired == animationInfo.animationEndPointPerUnitY {
@@ -160,7 +157,9 @@ class ChartLayer: CALayer {
                 } else {
                     //animation has reached its destination
 
-                    print("<<< animation ended;")
+                    print("<<< animation ended; reached in \(animationInfo.debugAnimationFramesNumber)")
+
+                    self.animationInfo?.debugAnimationFramesNumber = 0
 
                     currentPointPerUnitY = animationInfo.animationEndPointPerUnitY
 
@@ -186,11 +185,11 @@ class ChartLayer: CALayer {
                     animationStartPointPerUnitY: currentPointPerUnitY,
                     animationEndPointPerUnitY: pointsPerUnitYRequired,
                     animationRemainingTime: Constants.animationDuration,
-                    debugAnimationFramesNumber: 0)
+                    debugAnimationFramesNumber: self.animationInfo?.debugAnimationFramesNumber ?? 0)
             lastDrawnTime = displayLink.timestamp
 
             displayLink.isPaused = false
-            print(">>> animation started")
+            print(">>> animation started; animating to \(animationInfo?.animationEndPointPerUnitY)")
         }
 
         if drawHorizontalLines && maxY - minY > 0 {
@@ -203,13 +202,14 @@ class ChartLayer: CALayer {
 
                 currentLinesAlpha = CGFloat(animationInfo.animationRemainingTime / Constants.animationDuration)
 
+                //TODO: join method with horizontalLinesDrawer.drawHorizontalLines
                 let animationEndLines = ChartHorizontalLinesDrawer.HorizontalLine.horizontalLines(
                         lineUnitYs: lineUnitYs,
                         minY: minY,
                         pointsPerUnitY: pointsPerUnitYRequired,
                         chartRect: chartRect)
 
-                print("Drawing animation end lines: >\(animationEndLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
+//                print("Drawing animation end lines: >\(animationEndLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
                 horizontalLinesDrawer.drawHorizontalLines(
                         lines: animationEndLines,
                         drawingRect: chartRect,
@@ -322,7 +322,12 @@ class ChartLayer: CALayer {
         let path = UIBezierPath()
         path.lineWidth = lineWidth
 
-        let points = ChartPointsCalculator.points(from: line.points, in: rect, bottomLeftPoint: minDataPoint, topRightPoint: maxDataPoint)
+        let points = ChartPointsCalculator.points(
+                from: line.points,
+                in: rect,
+                bottomLeftPoint: minDataPoint,
+                pointsPerUnitX: pointsPerUnitX,
+                pointsPerUnitY: pointsPerUnitY)
 
         for i in 0..<points.count {
             let point = points[i]
@@ -334,7 +339,7 @@ class ChartLayer: CALayer {
             }
 
             if debugDrawing {
-                type(of: self).drawCoordinates(x: line.points[i].x, y: line.points[i].y, at: point)
+                self.drawCoordinates(x: line.points[i].x, y: line.points[i].y, at: point)
             }
         }
 
@@ -353,7 +358,7 @@ class ChartLayer: CALayer {
 
     // MARK: - debug drawing
 
-    private static func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
+    private func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
         guard let context = UIGraphicsGetCurrentContext() else {
             return
         }
