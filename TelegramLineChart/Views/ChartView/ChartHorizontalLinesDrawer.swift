@@ -13,19 +13,33 @@ internal struct ChartHorizontalLinesDrawer {
         let yUnit: DataPoint.DataType
     }
 
-	//enum to avoid instantiation
-	private enum Constants {
+    //enum to avoid instantiation
+    private enum Constants {
 
         static let textOffset = UIOffset(horizontal: 0, vertical: 0)
 
         static let fontSize: CGFloat = 11
-	}
 
-    internal func drawHorizontalLines(lines: [HorizontalLine],
+        static let horizontalLinesCount: CGFloat = 5
+    }
+
+    // MARK: - Public methods
+
+    internal func drawHorizontalLines(linesYRange: ClosedRange<DataPoint.DataType>,
+                                      drawingRectYRange: ClosedRange<DataPoint.DataType>,
                                       drawingRect: CGRect,
                                       context: CGContext,
                                       alpha: CGFloat = 1,
                                       debugPrint: Bool = false) {
+
+        let lineUnitYs = Array(stride(
+                from: linesYRange.lowerBound,
+                through: linesYRange.upperBound,
+                by: DataPoint.DataType(CGFloat(linesYRange.upperBound - linesYRange.lowerBound) / Constants.horizontalLinesCount)))
+
+        let pointsPerUnitY = drawingRect.height / CGFloat(drawingRectYRange.upperBound - drawingRectYRange.lowerBound)
+
+        let lines = horizontalLines(lineUnitYs: lineUnitYs, minY: drawingRectYRange.lowerBound, pointsPerUnitY: pointsPerUnitY, chartRect: drawingRect)
 
         UIGraphicsPushContext(context)
 
@@ -66,5 +80,34 @@ internal struct ChartHorizontalLinesDrawer {
         }
 
         UIGraphicsPopContext()
+
     }
+
+/*
+    internal func drawHorizontalLines(lines: [HorizontalLine],
+                                      drawingRect: CGRect,
+                                      context: CGContext,
+                                      alpha: CGFloat = 1,
+                                      debugPrint: Bool = false) {
+
+    }
+*/
+
+    // MARK: - Private methods
+
+    private func horizontalLines(
+            lineUnitYs: [DataPoint.DataType],
+            minY: DataPoint.DataType,
+            pointsPerUnitY: CGFloat,
+            chartRect: CGRect) -> [ChartHorizontalLinesDrawer.HorizontalLine] {
+
+        let lines = lineUnitYs.map { yUnit -> ChartHorizontalLinesDrawer.HorizontalLine in
+            let unitRelativeY = CGFloat(yUnit - minY)
+            let yPoint = chartRect.maxY - floor(unitRelativeY * pointsPerUnitY)
+            return ChartHorizontalLinesDrawer.HorizontalLine(yPoint: yPoint, yUnit: yUnit)
+        }
+        return lines
+    }
+
+
 }
