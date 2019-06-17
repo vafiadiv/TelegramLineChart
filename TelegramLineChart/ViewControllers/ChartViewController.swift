@@ -24,7 +24,7 @@ class ChartViewController: UIViewController {
 
         static let popupAnimationInterval: TimeInterval = 0.25
 
-        static let chartIndex: Int = 1
+        static let chartIndex: Int = 2
     }
 
     private var lines = [DataLine]() {
@@ -143,6 +143,7 @@ class ChartViewController: UIViewController {
         pointPopupViewController.dataLines = lines
 
 
+        //TODO: remove when implemented line hiding
         return
 
         guard pointPopupViewController.view.isHidden else {

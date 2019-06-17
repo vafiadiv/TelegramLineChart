@@ -10,7 +10,7 @@ class ChartLayer: CALayer {
 
     //caseless enum to avoid instantiation
     private enum Constants {
-        static let animationDuration: CFTimeInterval = 0.2
+        static let animationDuration: CFTimeInterval = 0.25
 
         //relative distance between horizontal chart lines measured in drawing rect height
         static let horizontalLinesRelativeY: CGFloat = 1 / 5
@@ -70,7 +70,11 @@ class ChartLayer: CALayer {
 
     private var animationInfo: AnimationInfo?
 
+    private var animationEnabled = true
+
     private var displayLink: CADisplayLink?
+
+    private var animationTimer: Timer?
 
     //TODO: remove, replace usages with self.bounds
     private var border = CGSize(width: 0, height: 0)
@@ -111,11 +115,10 @@ class ChartLayer: CALayer {
             return
         }
 
-
         let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
         //point with min Y value across all points in all lines
-        let minY = dataLines.compactMap { dataLine in
+        let minY = visibleDataLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.min()
         }.min() ?? 0
 
@@ -139,66 +142,50 @@ class ChartLayer: CALayer {
 
         //if an animation is in progress
         if let animationInfo = animationInfo {
-            if pointsPerUnitYRequired == animationInfo.animationEndPointPerUnitY {
+            lastDrawnTime = displayLink.timestamp
 
-                lastDrawnTime = displayLink.timestamp
+            //if animation is unfinished, advance currentPointPerUnitY towards targetPointPerUnitY
+            if animationInfo.animationRemainingTime > 0 {
 
-                //if animation is unfinished, advance currentPointPerUnitY towards targetPointPerUnitY
-                if animationInfo.animationRemainingTime > 0 {
+                let frameDuration = displayLink.targetTimestamp - lastDrawnTime
+                currentPointPerUnitY += animationInfo.pointsPerUnitYPerSecond * CGFloat(frameDuration)
+                self.animationInfo?.animationRemainingTime -= frameDuration
+                self.animationInfo?.debugAnimationFramesNumber += 1
 
-                    let frameDuration = displayLink.targetTimestamp - lastDrawnTime
+            } else {
+                //animation has reached its destination
 
-                    currentPointPerUnitY += animationInfo.pointsPerUnitYPerSecond * CGFloat(frameDuration)
-
-                    self.animationInfo?.animationRemainingTime -= frameDuration
-
-                    self.animationInfo?.debugAnimationFramesNumber += 1
-
-                } else {
-                    //animation has reached its destination
-
-                    print("<<< animation ended; reached in \(animationInfo.debugAnimationFramesNumber)")
-
-                    self.animationInfo?.debugAnimationFramesNumber = 0
-
-                    currentPointPerUnitY = animationInfo.animationEndPointPerUnitY
-
-                    self.animationInfo = nil
-
-                    displayLink.isPaused = true
-                }
+                print("<<< animation ended; reached in \(animationInfo.debugAnimationFramesNumber)")
+                self.animationInfo?.debugAnimationFramesNumber = 0
+                currentPointPerUnitY = animationInfo.animationEndPointPerUnitY
+                self.animationInfo = nil
+                displayLink.isPaused = true
+                animationDidEnd()
             }
         }
-
 
         //start or restart the animation in 2 cases:
         //1. No animation is in progress and currentPointPerUnitY should be changed;
         //2. Animation is in progress, but animates towards a wrong value (animationEndPointPerUnitY). This can happen
         //   if pointPerUnitYRequired was changed during animation
+//        if (animationInfo == nil && pointsPerUnitYRequired != currentPointPerUnitY) {
         if (animationInfo == nil && pointsPerUnitYRequired != currentPointPerUnitY) ||
-                   (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
+           (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
 
-            let pointsPerUnitYDiff = pointsPerUnitYRequired - currentPointPerUnitY
-
-            animationInfo = AnimationInfo(
-                    pointsPerUnitYPerSecond: pointsPerUnitYDiff / CGFloat(Constants.animationDuration),
-                    animationStartPointPerUnitY: currentPointPerUnitY,
-                    animationEndPointPerUnitY: pointsPerUnitYRequired,
-                    animationRemainingTime: Constants.animationDuration,
-                    debugAnimationFramesNumber: self.animationInfo?.debugAnimationFramesNumber ?? 0)
-            lastDrawnTime = displayLink.timestamp
-
-            displayLink.isPaused = false
-            print(">>> animation started; animating to \(animationInfo?.animationEndPointPerUnitY)")
+            if animationEnabled {
+                startAnimation(pointsPerUnitY: pointsPerUnitYRequired)
+            } else {
+                animationRequired()
+            }
         }
 
-        if drawHorizontalLines && maxY - minY > 0 {
+        if drawHorizontalLines && maxY > minY {
 
             let lineUnitYs = Array(stride(from: minY, through: maxY, by: DataPoint.DataType(CGFloat(maxY - minY) * Constants.horizontalLinesRelativeY)))
 
             let currentLinesAlpha: CGFloat
 
-            if let animationInfo = animationInfo {
+            if let animationInfo = animationInfo, animationEnabled {
 
                 currentLinesAlpha = CGFloat(animationInfo.animationRemainingTime / Constants.animationDuration)
 
@@ -225,7 +212,7 @@ class ChartLayer: CALayer {
                     pointsPerUnitY: currentPointPerUnitY,
                     chartRect: chartRect)
 
-//            print("Drawing       current lines: |\(currentLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
+            print("Drawing       current lines: |\(currentLines.map { "\(Int($0.yPoint))-\($0.yUnit)" })")
 
             horizontalLinesDrawer.drawHorizontalLines(
                     lines: currentLines,
@@ -239,14 +226,54 @@ class ChartLayer: CALayer {
         }
 
         context.restoreGState()
+
+        debugDrawMinMaxY(context: context, minY: minDataPoint.y, maxY: maxDataPoint.y)
     }
 
     // MARK: - Private methods
+
+    // MARK: - Animation
+
+    private func animationRequired() {
+
+        if animationTimer == nil || !animationTimer!.isValid {
+            print("||| animation required")
+            animationTimer = Timer.scheduledTimer(withTimeInterval: Constants.animationDuration, repeats: false) { [weak self] _ in
+                self?.animationEnabled = true
+                self?.setNeedsDisplay()
+            }
+        }
+    }
+
+    private func startAnimation(pointsPerUnitY: CGFloat) {
+        guard let displayLink = displayLink else {
+            return
+        }
+
+        let pointsPerUnitYDiff = pointsPerUnitY - currentPointPerUnitY
+
+        animationInfo = AnimationInfo(
+                pointsPerUnitYPerSecond: pointsPerUnitYDiff / CGFloat(Constants.animationDuration),
+                animationStartPointPerUnitY: currentPointPerUnitY,
+                animationEndPointPerUnitY: pointsPerUnitY,
+                animationRemainingTime: Constants.animationDuration,
+                debugAnimationFramesNumber: self.animationInfo?.debugAnimationFramesNumber ?? 0)
+        lastDrawnTime = displayLink.timestamp
+
+        displayLink.isPaused = false
+        print(">>> animation started; animating to \(animationInfo?.animationEndPointPerUnitY ?? 0)")
+    }
+
+    private func animationDidEnd() {
+        animationEnabled = false
+    }
 
     @objc
     private func displayLinkFire() {
         self.setNeedsDisplay()
     }
+
+    // MARK: - Data lines
 
     private func updateVisibleDataLines() {
 /*
@@ -339,7 +366,7 @@ class ChartLayer: CALayer {
             }
 
             if debugDrawing {
-                self.drawCoordinates(x: line.points[i].x, y: line.points[i].y, at: point)
+                self.debugDrawCoordinates(x: line.points[i].x, y: line.points[i].y, at: point)
             }
         }
 
@@ -358,7 +385,19 @@ class ChartLayer: CALayer {
 
     // MARK: - debug drawing
 
-    private func drawCoordinates(x: Int, y: Int, at point: CGPoint) {
+    private func debugDrawMinMaxY(context: CGContext, minY: DataPoint.DataType, maxY: DataPoint.DataType) {
+        UIGraphicsPushContext(context)
+
+        let string = """
+                     minY = \(minY)
+                     maxY = \(maxY)
+                     """
+        NSString(string: string).draw(at: .zero, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.black])
+
+        UIGraphicsPopContext()
+    }
+
+    private func debugDrawCoordinates(x: Int, y: Int, at point: CGPoint) {
         guard let context = UIGraphicsGetCurrentContext() else {
             return
         }
