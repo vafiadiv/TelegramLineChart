@@ -116,7 +116,7 @@ class ChartLayer: CALayer {
     // MARK: - Public methods
 
     func setDataLineHidden(_ isHidden: Bool, at index: Int) {
-        dataLines[index].targetHidden = isHidden
+        lineTargetHiddenFlags[index] = isHidden
         animationEnabled = true
         setNeedsDisplay()
     }
@@ -138,7 +138,12 @@ class ChartLayer: CALayer {
 
         let chartRect = rect.insetBy(dx: border.width, dy: border.height)
 
-        let visibleLines = onScreenLines.compactMap { !$0.targetHidden ? $0 : nil }
+        var visibleLines = [DataLine]()
+        for i in 0..<onScreenLines.count {
+            if !lineTargetHiddenFlags[i] {
+                visibleLines.append(onScreenLines[i])
+            }
+        }
 
         //point with min Y value across all points in all lines
         let minY = visibleLines.compactMap { dataLine in
@@ -205,17 +210,14 @@ class ChartLayer: CALayer {
             }
         }
 
-        onScreenLines.forEach { dataLine in
-            if dataLine.alpha == 0 { //TODO: currentHidden instead?
-                return
-            }
-
-            drawLine(dataLine,
+        for i in 0..<onScreenLines.count {
+            drawLine(onScreenLines[i],
                     to: context,
                     in: chartRect,
                     minDataPoint: DataPoint(x: xRange.lowerBound, y: minY),
                     pointsPerUnitX: pointsPerUnitXRequired,
-                    pointsPerUnitY: currentPointPerUnitY)
+                    pointsPerUnitY: currentPointPerUnitY,
+                    alpha: linesAlpha[i])
         }
 
         context.restoreGState()
@@ -228,6 +230,47 @@ class ChartLayer: CALayer {
     // MARK: - Private methods
 
     // MARK: - Animation
+
+    private func advanceAnimation(animationInfo: AnimationInfo) {
+        guard let displayLink = displayLink else {
+            return
+        }
+
+        lastDrawnTime = displayLink.timestamp
+
+        //if animation is unfinished, advance currentPointPerUnitY towards targetPointPerUnitY
+        if animationInfo.animationRemainingTime > 0 {
+
+            let minYStart = animationInfo.unitYRangeStart.lowerBound
+            let maxYStart = animationInfo.unitYRangeStart.upperBound
+            let minYEnd = animationInfo.unitYRangeEnd.lowerBound
+            let maxYEnd = animationInfo.unitYRangeEnd.upperBound
+
+            let frameDuration = displayLink.targetTimestamp - lastDrawnTime
+            let frameDurationRelative = frameDuration / Constants.animationDuration
+            let remainingTimeRelative = animationInfo.animationRemainingTime  / Constants.animationDuration
+
+            let unitYMinDiff = Double(minYEnd - minYStart) * frameDurationRelative
+            let unitYMaxDiff = Double(maxYEnd - maxYStart) * frameDurationRelative
+
+            yRange = DataPoint.DataType(Double(yRange.lowerBound) + unitYMinDiff)...DataPoint.DataType(Double(yRange.upperBound) + unitYMaxDiff)
+
+            for i in 0..<onScreenLines.count {
+                let targetHidden = lineTargetHiddenFlags[i]
+                let currentHidden = lineCurrentHiddenFlags[i]
+                if targetHidden != currentHidden {
+                    linesAlpha[i] = CGFloat(targetHidden ? remainingTimeRelative : (1.0 - remainingTimeRelative))
+                }
+            }
+
+            self.animationInfo?.animationRemainingTime -= frameDuration
+            self.animationInfo?.debugAnimationFramesNumber += 1
+
+        } else {
+            //animation has reached its destination
+            animationDidEnd(animationInfo: animationInfo)
+        }
+    }
 
     private func animationRequired() {
 
@@ -260,61 +303,20 @@ class ChartLayer: CALayer {
         print(">>> animation started; animating to \(animationInfo?.animationEndPointPerUnitY ?? 0)")
     }
 
-    private func animationDidEnd() {
+    private func animationDidEnd(animationInfo: AnimationInfo) {
+        print("<<< animation ended; reached in \(animationInfo.debugAnimationFramesNumber)")
+        self.animationInfo?.debugAnimationFramesNumber = 0
+        yRange = animationInfo.unitYRangeEnd
+        self.animationInfo = nil
+
+        displayLink.isPaused = true
+        for i in 0..<onScreenLines.count {
+            let targetHidden = lineTargetHiddenFlags[i]
+            lineCurrentHiddenFlags[i] = targetHidden
+            linesAlpha[i] = targetHidden ? 0.0 : 1.0
+        }
+
         animationEnabled = false
-    }
-
-    private func advanceAnimation(animationInfo: AnimationInfo) {
-        guard let displayLink = displayLink else {
-            return
-        }
-
-        lastDrawnTime = displayLink.timestamp
-
-        //if animation is unfinished, advance currentPointPerUnitY towards targetPointPerUnitY
-        if animationInfo.animationRemainingTime > 0 {
-
-            let minYStart = animationInfo.unitYRangeStart.lowerBound
-            let maxYStart = animationInfo.unitYRangeStart.upperBound
-            let minYEnd = animationInfo.unitYRangeEnd.lowerBound
-            let maxYEnd = animationInfo.unitYRangeEnd.upperBound
-
-            let frameDuration = displayLink.targetTimestamp - lastDrawnTime
-            let frameDurationRelative = frameDuration / Constants.animationDuration
-            let remainingTimeRelative = animationInfo.animationRemainingTime  / Constants.animationDuration
-
-            let unitYMinDiff = Double(minYEnd - minYStart) * frameDurationRelative
-            let unitYMaxDiff = Double(maxYEnd - maxYStart) * frameDurationRelative
-
-            yRange = DataPoint.DataType(Double(yRange.lowerBound) + unitYMinDiff)...DataPoint.DataType(Double(yRange.upperBound) + unitYMaxDiff)
-
-            for i in 0..<onScreenLines.count {
-                let line = onScreenLines[i]
-                if line.targetHidden != line.currentHidden {
-                    onScreenLines[i].alpha = CGFloat(line.targetHidden ? remainingTimeRelative : (1.0 - remainingTimeRelative))
-                }
-            }
-
-            self.animationInfo?.animationRemainingTime -= frameDuration
-            self.animationInfo?.debugAnimationFramesNumber += 1
-
-        } else {
-            //animation has reached its destination
-
-            print("<<< animation ended; reached in \(animationInfo.debugAnimationFramesNumber)")
-            self.animationInfo?.debugAnimationFramesNumber = 0
-            yRange = animationInfo.unitYRangeEnd
-            self.animationInfo = nil
-
-            displayLink.isPaused = true
-            for i in 0..<onScreenLines.count {
-                let targetHidden = onScreenLines[i].targetHidden
-                onScreenLines[i].currentHidden = targetHidden
-                onScreenLines[i].alpha = targetHidden ? 0.0 : 1.0
-            }
-
-            animationDidEnd()
-        }
     }
 
     @objc
@@ -389,9 +391,10 @@ class ChartLayer: CALayer {
                           in rect: CGRect,
                           minDataPoint: DataPoint,
                           pointsPerUnitX: CGFloat,
-                          pointsPerUnitY: CGFloat) {
+                          pointsPerUnitY: CGFloat,
+                          alpha: CGFloat = 1.0) {
 
-        guard !line.points.isEmpty else {
+        guard !line.points.isEmpty, alpha != 0 else {
             return
         }
 
@@ -421,8 +424,8 @@ class ChartLayer: CALayer {
             }
         }
 
-        context.setStrokeColor(line.color.withAlphaComponent(line.alpha).cgColor)
-        print("Drawing line \(line.name) with alpha = \(line.alpha)")
+        context.setStrokeColor(line.color.withAlphaComponent(alpha).cgColor)
+        print("Drawing line \(line.name) with alpha = \(alpha)")
         path.lineJoinStyle = .round
         path.stroke()
 

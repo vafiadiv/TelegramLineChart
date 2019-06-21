@@ -13,11 +13,6 @@ struct DataLine {
 
     var points: [DataPoint]
 
-    //TODO: tmp, figure out a way to make this private to ChartLayer.swift
-    var targetHidden: Bool = false
-    var currentHidden: Bool = false
-    var alpha: CGFloat = 1.0
-
     init(points: [DataPoint], color: UIColor, name: String) {
         self.points = points
         self.color = color
