@@ -28,6 +28,9 @@ class MainChartView: UIView  {
         return chartLayer.yRange
     }
 
+    func setDataLineHidden(_ isHidden: Bool, at index: Int) {
+        chartLayer.setDataLineHidden(isHidden, at: index)
+    }
 
     // MARK: - Private properties
 

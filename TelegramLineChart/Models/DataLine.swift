@@ -1,5 +1,6 @@
 //
 //  DataLine.swift
+//TODO: headers
 //  Copyright © 2019 Cleverpumpkin, Ltd. All rights reserved.
 //
 
@@ -7,9 +8,21 @@ import Foundation
 import UIKit.UIColor
 
 struct DataLine {
-	let points: [DataPoint]
-	let color: UIColor
-	let name: String
+    let color: UIColor
+    let name: String
+
+    var points: [DataPoint]
+
+    //TODO: tmp, figure out a way to make this private to ChartLayer.swift
+    var targetHidden: Bool = false
+    var currentHidden: Bool = false
+    var alpha: CGFloat = 1.0
+
+    init(points: [DataPoint], color: UIColor, name: String) {
+        self.points = points
+        self.color = color
+        self.name = name
+    }
 }
 
 // MARK: - Convenience extensions

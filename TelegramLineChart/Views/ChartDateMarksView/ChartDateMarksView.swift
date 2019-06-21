@@ -107,7 +107,7 @@ class ChartDateIndicatorView: UIView {
 
             visibleLabels.removeAll {
                 if let mark = $0.mark {
-                    //TODO: reuse
+                    //TODO: reuse?
                     return !markUnitXs.contains(mark.unitX)
                 } else {
                     return true
@@ -240,6 +240,7 @@ class ChartDateIndicatorView: UIView {
             NSAttributedString.Key.font: Constants.font,
         ]
 
+        //TODO: constants
         let dayWithMaxTextWidth = 30
 
         var maxSize: CGSize = .zero

@@ -48,8 +48,7 @@ internal struct ChartHorizontalLinesDrawer {
 
         let linePath = UIBezierPath()
         linePath.move(to: CGPoint(x: minX, y: 0))
-//        context.setStrokeColor(UIColor.chartHorizontalLines.withAlphaComponent(alpha).cgColor)
-        context.setStrokeColor(UIColor.chartHorizontalLines.cgColor)
+        context.setStrokeColor(UIColor.chartHorizontalLines.withAlphaComponent(alpha).cgColor)
         context.setLineWidth(1.0)
         lines.forEach {
             linePath.move(to: CGPoint(x: minX, y: $0.yPoint))
@@ -82,16 +81,6 @@ internal struct ChartHorizontalLinesDrawer {
         UIGraphicsPopContext()
 
     }
-
-/*
-    internal func drawHorizontalLines(lines: [HorizontalLine],
-                                      drawingRect: CGRect,
-                                      context: CGContext,
-                                      alpha: CGFloat = 1,
-                                      debugPrint: Bool = false) {
-
-    }
-*/
 
     // MARK: - Private methods
 

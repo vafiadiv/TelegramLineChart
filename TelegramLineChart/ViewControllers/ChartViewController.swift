@@ -138,8 +138,9 @@ class ChartViewController: UIViewController {
             tmpBothLines = true
             lines = self.lines
         }
-        chartView.dataLines = lines
-        chartSelectViewController.dataLines = lines
+
+        chartView.setDataLineHidden(!tmpBothLines, at: 0)
+        chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
         pointPopupViewController.dataLines = lines
 
 
