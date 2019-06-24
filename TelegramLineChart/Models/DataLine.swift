@@ -8,16 +8,10 @@ import Foundation
 import UIKit.UIColor
 
 struct DataLine {
-    let color: UIColor
-    let name: String
 
     var points: [DataPoint]
-
-    init(points: [DataPoint], color: UIColor, name: String) {
-        self.points = points
-        self.color = color
-        self.name = name
-    }
+    let color: UIColor
+    let name: String
 }
 
 // MARK: - Convenience extensions

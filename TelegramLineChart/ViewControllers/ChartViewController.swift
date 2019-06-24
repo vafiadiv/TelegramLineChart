@@ -143,7 +143,6 @@ class ChartViewController: UIViewController {
         chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
         pointPopupViewController.dataLines = lines
 
-
         //TODO: remove when implemented line hiding
         return
 

@@ -289,8 +289,6 @@ class ChartLayer: CALayer {
             return
         }
 
-        let pointsPerUnitYDiff = pointsPerUnitY - currentPointPerUnitY
-
         animationInfo = AnimationInfo(
                 unitYRangeStart: yRange,
                 unitYRangeEnd: yRangeEnd,
@@ -309,7 +307,7 @@ class ChartLayer: CALayer {
         yRange = animationInfo.unitYRangeEnd
         self.animationInfo = nil
 
-        displayLink.isPaused = true
+        displayLink?.isPaused = true
         for i in 0..<onScreenLines.count {
             let targetHidden = lineTargetHiddenFlags[i]
             lineCurrentHiddenFlags[i] = targetHidden
