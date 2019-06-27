@@ -11,7 +11,7 @@ struct ChartJSONParser {
 	static func charts(from JSON: Data) throws -> [Chart] {
 
 		let decoder = JSONDecoder()
-		let chartDTOs = try decoder.decode([ChartDTO].self, from: JSON)
+		let chartDTOs = try decoder.decode([ChartJSONDTO].self, from: JSON)
 
 		return try chartDTOs.map { try Chart(DTO: $0) }
 	}
@@ -21,7 +21,7 @@ struct ChartJSONParser {
 
 private extension Chart {
 
-	init(DTO: ChartDTO) throws {
+	init(DTO: ChartJSONDTO) throws {
 		guard let xColumnName = (DTO.types.first { _, value in value == "x" }?.key),
 			  let xColumn = DTO.columns[xColumnName] else {
 			throw DecodingError.general("Error finding \"x\" column")

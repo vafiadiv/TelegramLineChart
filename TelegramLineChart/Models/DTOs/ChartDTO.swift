@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct ChartDTO: Decodable {
+struct ChartJSONDTO: Decodable {
 //	let columns: [[Int]]
 	let types: [String: String]
 	let columns: [String: [Int]]

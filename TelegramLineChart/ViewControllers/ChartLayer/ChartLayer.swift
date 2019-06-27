@@ -44,7 +44,7 @@ class ChartLayer: CALayer {
             linesAlpha = [CGFloat](repeating: 1.0, count: dataLines.count)
             lineTargetHiddenFlags = [Bool](repeating: false, count: dataLines.count)
             lineCurrentHiddenFlags = [Bool](repeating: false, count: dataLines.count)
-            animationEnabled = true
+            skipAnimation = true
             setNeedsDisplay()
         }
     }
@@ -97,6 +97,8 @@ class ChartLayer: CALayer {
     private var lineTargetHiddenFlags = [Bool]()
 
     private var lineCurrentHiddenFlags = [Bool]()
+
+    private var skipAnimation: Bool = true
 
     // MARK: - Initialization
 
@@ -155,8 +157,9 @@ class ChartLayer: CALayer {
             dataLine.points.map { $0.y }.max()
         }.max() ?? 0
 
-        if yRange == 0...0 {
+        if skipAnimation {
             yRange = minY...maxY
+            skipAnimation = false
         }
 
         //calculate the required scale for the current data

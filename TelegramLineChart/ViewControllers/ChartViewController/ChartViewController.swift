@@ -27,11 +27,46 @@ class ChartViewController: UIViewController {
         static let chartIndex: Int = 2
     }
 
-    private var lines = [DataLine]() {
+    // MARK: - Public properties
+
+    var model: ChartViewControllerModel {
         didSet {
-            chartView.dataLines = lines
-            chartSelectViewController.dataLines = lines
-            pointPopupViewController.dataLines = lines
+            updateModel(model: model)
+        }
+    }
+
+    private func updateModel(model: ChartViewControllerModel) {
+        chartView.dataLines = model.lines
+        chartSelectViewController.dataLines = model.lines
+        pointPopupViewController.dataLines = model.lines
+        selectedXRange = model.selectedXRange
+        lineHiddenFlags = model.lineHiddenFlags
+        chartDateIndicatorViewController.totalXRange = model.lines.xRange
+    }
+
+    // MARK: - Private properties
+
+    private var selectedXRange: ClosedRange<DataPoint.DataType> {
+        didSet {
+            model.selectedXRange = selectedXRange
+
+            chartView.xRange = selectedXRange
+
+            if !pointPopupViewController.view.isHidden {
+                pointPopupViewController.view.setIsHiddenAnimated(true)
+            }
+            chartDateIndicatorViewController.visibleXRange = selectedXRange
+        }
+    }
+
+    private var lineHiddenFlags: [Bool] {
+        didSet {
+            model.lineHiddenFlags = lineHiddenFlags
+
+            for i in 0..<lineHiddenFlags.count {
+                chartView.setDataLineHidden(lineHiddenFlags[i], at: i)
+                chartSelectViewController.setDataLineHidden(lineHiddenFlags[i], at: i)
+            }
         }
     }
 
@@ -47,20 +82,82 @@ class ChartViewController: UIViewController {
 
     private let linearFunctionFactory = LinearFunctionFactory<CGFloat>()
 
+    // MARK: - Initialization
+
+    init(model: ChartViewControllerModel) {
+        self.model = model
+        self.selectedXRange = model.selectedXRange
+        self.lineHiddenFlags = model.lineHiddenFlags
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        notImplemented()
+    }
+
+    // MARK: - Overrides
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupUI()
 		setupData()
+        updateModel(model: model)
 	}
 
-	private func setupUI() {
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
+        let widthWithOffset = view.frame.width - 2 * Constants.chartViewXOffset
+
+        chartView.frame = CGRect(
+                x: Constants.chartViewXOffset,
+                y: view.safeAreaInsets.top + Constants.tempChartViewTop,
+                width: widthWithOffset,
+                height: Constants.chartViewHeight)
+
+        chartDateIndicatorViewController.view.frame = CGRect(
+                x: Constants.chartViewXOffset,
+                y: chartView.frame.maxY,
+                width: widthWithOffset,
+                height: Constants.tempChartViewBottom)
+
+        chartSelectViewController.view.frame = CGRect(
+                x: Constants.chartViewXOffset,
+                y: chartView.frame.maxY + Constants.tempChartViewBottom,
+                width: widthWithOffset,
+                height: Constants.chartSelectViewHeight)
+
+        //TODO: reset popupVC's frame
+    }
+
+    // MARK: - Private methods
+
+    private func setupUI() {
         view.backgroundColor = .white
         setupChartView()
         setupChartSelectViewController()
         setupPointPopupViewController()
         setupDateIndicatorViewController()
         setupTapGestureRecognizer()
+        setupTmpButton()
 	}
+
+    private func setupTmpButton() {
+        let button = UIButton(type: .system)
+        button.addTarget(self, action: #selector(tmpButtonTapped), for: .touchUpInside)
+        button.setTitle("Switch model", for: .normal)
+        button.frame = CGRect(x: self.view.bounds.midX - 100, y: self.view.bounds.maxY - 50, width: 200, height: 50)
+        view.addSubview(button)
+    }
+
+    var tmpModels = [ChartViewControllerModel]()
+    var tmpModelsIndex = 0
+
+    @objc
+    private func tmpButtonTapped() {
+        model = tmpModels[tmpModelsIndex % 2]
+        tmpModelsIndex += 1
+    }
 
     private func setupChartView() {
         chartView = MainChartView()
@@ -111,16 +208,11 @@ class ChartViewController: UIViewController {
 			return
 		}
 
-/*
-		let croppedLines = charts[0].lines.map { line in
-			return DataLine(points: Array(line.points[0...9]), color: line.color, name: line.name)
-		}
+        let model1 = ChartViewControllerModel(chart: charts[0])
+        let model2 = ChartViewControllerModel(chart: charts[1])
+        tmpModels = [model1, model2]
 
-		chartView.dataLines = croppedLines
-*/
-        lines = charts[Constants.chartIndex].lines.sorted { $0.name < $1.name }
-        chartDateIndicatorViewController.totalXRange = lines.xRange
-	}
+    }
 
     var tmpBothLines = true
 
@@ -130,18 +222,15 @@ class ChartViewController: UIViewController {
             return
         }
 
-        let lines: [DataLine]
         if tmpBothLines {
             tmpBothLines = false
-            lines = [self.lines[1]]
         } else {
             tmpBothLines = true
-            lines = self.lines
         }
 
-        chartView.setDataLineHidden(!tmpBothLines, at: 0)
-        chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
-        pointPopupViewController.dataLines = lines
+        lineHiddenFlags[0] = !tmpBothLines
+//        chartView.setDataLineHidden(!tmpBothLines, at: 0)
+//        chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
 
         //TODO: remove when implemented line hiding
         return
@@ -164,32 +253,6 @@ class ChartViewController: UIViewController {
         pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: chartView.center.y), size: size)
         pointPopupViewController.view.setIsHiddenAnimated(false)
     }
-
-    override func viewWillLayoutSubviews() {
-		super.viewWillLayoutSubviews()
-
-        let widthWithOffset = view.frame.width - 2 * Constants.chartViewXOffset
-
-		chartView.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: view.safeAreaInsets.top + Constants.tempChartViewTop,
-                width: widthWithOffset,
-                height: Constants.chartViewHeight)
-
-        chartDateIndicatorViewController.view.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: chartView.frame.maxY,
-                width: widthWithOffset,
-                height: Constants.tempChartViewBottom)
-
-        chartSelectViewController.view.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: chartView.frame.maxY + Constants.tempChartViewBottom,
-                width: widthWithOffset,
-                height: Constants.chartSelectViewHeight)
-
-        //TODO: reset popupVC's frame
-	}
 }
 
 // MARK: -
@@ -200,13 +263,7 @@ extension ChartViewController: ChartSelectViewControllerDelegate {
 
         let range = minUnitX...maxUnitX
 
-        chartView.xRange = range
-
-        if !pointPopupViewController.view.isHidden {
-            pointPopupViewController.view.setIsHiddenAnimated(true)
-        }
-
-//        chartDateIndicatorViewController.visibleXRange = (minUnitX / 1_000_000)...(maxUnitX / 1_000_000)
-        chartDateIndicatorViewController.visibleXRange = range
+        model.selectedXRange = range
+        selectedXRange = range
     }
 }

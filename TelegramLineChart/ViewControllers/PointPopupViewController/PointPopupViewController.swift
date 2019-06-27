@@ -19,6 +19,7 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
 //
 //    var dataRect: DataRect?
 
+//TODO: hidden flags
     var dataLines: [DataLine]?
 
     // MARK: - Private properties

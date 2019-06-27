@@ -190,6 +190,11 @@ class ChartDateIndicatorView: UIView {
         //   i.e. find `numberOfDivisions` - how many times do we have to divide the number of marks by 2 to get to `maxMarks`;
         let rangeWidth = CGFloat(visibleXRange.upperBound - visibleXRange.lowerBound)
 
+        guard rangeWidth != 0 else {
+            //TODO: error
+            return
+        }
+
         let numberOfDivisions = ceil(log2(rangeWidth / (Constants.millisecondsInDay * maxMarks)))
 
         //3. Find the distance between marks after thinning out;
