@@ -28,8 +28,8 @@ class ChartSelectViewController: UIViewController, RootViewProtocol {
 
     // MARK: - Public methods
 
-    func setDataLineHidden(_ isHidden: Bool, at index: Int) {
-        rootView.setDataLineHidden(isHidden, at: index)
+    func setDataLineHidden(_ isHidden: Bool, at index: Int, animated: Bool = true) {
+        rootView.setDataLineHidden(isHidden, at: index, animated: animated)
     }
 
     // MARK: - Private methods

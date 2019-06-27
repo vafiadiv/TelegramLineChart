@@ -41,7 +41,7 @@ class ChartLayer: CALayer {
     ///Data points of the chart in measurement units; assuming that are sorted in ascending order by X coordinate
     var dataLines = [DataLine]() {
         didSet {
-            linesAlpha = [CGFloat](repeating: 1.0, count: dataLines.count)
+            lineAlphas = [CGFloat](repeating: 1.0, count: dataLines.count)
             lineTargetHiddenFlags = [Bool](repeating: false, count: dataLines.count)
             lineCurrentHiddenFlags = [Bool](repeating: false, count: dataLines.count)
             skipAnimation = true
@@ -92,7 +92,7 @@ class ChartLayer: CALayer {
     //visible segment
     private var onScreenLines = [DataLine]()
 
-    private var linesAlpha = [CGFloat]()
+    private var lineAlphas = [CGFloat]()
 
     private var lineTargetHiddenFlags = [Bool]()
 
@@ -117,9 +117,14 @@ class ChartLayer: CALayer {
 
     // MARK: - Public methods
 
-    func setDataLineHidden(_ isHidden: Bool, at index: Int) {
+    func setDataLineHidden(_ isHidden: Bool, at index: Int, animated: Bool = true) {
         lineTargetHiddenFlags[index] = isHidden
-        animationEnabled = true
+        if animated {
+            animationEnabled = true
+        } else {
+            lineCurrentHiddenFlags[index] = isHidden
+            lineAlphas[index] = isHidden ? 0.0 : 1.0
+        }
         setNeedsDisplay()
     }
 
@@ -220,7 +225,7 @@ class ChartLayer: CALayer {
                     minDataPoint: DataPoint(x: xRange.lowerBound, y: minY),
                     pointsPerUnitX: pointsPerUnitXRequired,
                     pointsPerUnitY: currentPointPerUnitY,
-                    alpha: linesAlpha[i])
+                    alpha: lineAlphas[i])
         }
 
         context.restoreGState()
@@ -262,7 +267,7 @@ class ChartLayer: CALayer {
                 let targetHidden = lineTargetHiddenFlags[i]
                 let currentHidden = lineCurrentHiddenFlags[i]
                 if targetHidden != currentHidden {
-                    linesAlpha[i] = CGFloat(targetHidden ? remainingTimeRelative : (1.0 - remainingTimeRelative))
+                    lineAlphas[i] = CGFloat(targetHidden ? remainingTimeRelative : (1.0 - remainingTimeRelative))
                 }
             }
 
@@ -314,7 +319,7 @@ class ChartLayer: CALayer {
         for i in 0..<onScreenLines.count {
             let targetHidden = lineTargetHiddenFlags[i]
             lineCurrentHiddenFlags[i] = targetHidden
-            linesAlpha[i] = targetHidden ? 0.0 : 1.0
+            lineAlphas[i] = targetHidden ? 0.0 : 1.0
         }
 
         animationEnabled = false

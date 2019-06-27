@@ -40,7 +40,7 @@ class ChartViewController: UIViewController {
         chartSelectViewController.dataLines = model.lines
         pointPopupViewController.dataLines = model.lines
         selectedXRange = model.selectedXRange
-        lineHiddenFlags = model.lineHiddenFlags
+        setLineHiddenFlags(model.lineHiddenFlags, animated: false)
         chartDateIndicatorViewController.totalXRange = model.lines.xRange
     }
 
@@ -61,12 +61,7 @@ class ChartViewController: UIViewController {
 
     private var lineHiddenFlags: [Bool] {
         didSet {
-            model.lineHiddenFlags = lineHiddenFlags
-
-            for i in 0..<lineHiddenFlags.count {
-                chartView.setDataLineHidden(lineHiddenFlags[i], at: i)
-                chartSelectViewController.setDataLineHidden(lineHiddenFlags[i], at: i)
-            }
+            setLineHiddenFlags(lineHiddenFlags, animated: false)
         }
     }
 
@@ -198,20 +193,28 @@ class ChartViewController: UIViewController {
         chartView.addGestureRecognizer(tapGestureRecognizer)
     }
 
+    private func setLineHiddenFlags(_ flags:[Bool], animated: Bool = true) {
+        model.lineHiddenFlags = flags
+
+        for i in 0..<flags.count {
+            chartView.setDataLineHidden(flags[i], at: i, animated: animated)
+            chartSelectViewController.setDataLineHidden(flags[i], at: i, animated: animated)
+        }
+    }
+
+    //TODO: remove
     private func setupData() {
 		guard let data = ChartLoader.loadChartData() else {
 			return
 		}
 
 		guard let charts = try? ChartJSONParser.charts(from: data) else {
-			//TODO: error
 			return
 		}
 
         let model1 = ChartViewControllerModel(chart: charts[0])
         let model2 = ChartViewControllerModel(chart: charts[1])
         tmpModels = [model1, model2]
-
     }
 
     var tmpBothLines = true
@@ -228,7 +231,9 @@ class ChartViewController: UIViewController {
             tmpBothLines = true
         }
 
-        lineHiddenFlags[0] = !tmpBothLines
+        var flags = lineHiddenFlags
+        flags[0] = !tmpBothLines
+        setLineHiddenFlags(flags, animated: true)
 //        chartView.setDataLineHidden(!tmpBothLines, at: 0)
 //        chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
 
