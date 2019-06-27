@@ -95,7 +95,6 @@ class ChartViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupUI()
-		setupData()
         updateModel(model: model)
 	}
 
@@ -134,25 +133,7 @@ class ChartViewController: UIViewController {
         setupPointPopupViewController()
         setupDateIndicatorViewController()
         setupTapGestureRecognizer()
-        setupTmpButton()
 	}
-
-    private func setupTmpButton() {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(tmpButtonTapped), for: .touchUpInside)
-        button.setTitle("Switch model", for: .normal)
-        button.frame = CGRect(x: self.view.bounds.midX - 100, y: self.view.bounds.maxY - 50, width: 200, height: 50)
-        view.addSubview(button)
-    }
-
-    var tmpModels = [ChartViewControllerModel]()
-    var tmpModelsIndex = 0
-
-    @objc
-    private func tmpButtonTapped() {
-        model = tmpModels[tmpModelsIndex % 2]
-        tmpModelsIndex += 1
-    }
 
     private func setupChartView() {
         chartView = MainChartView()
@@ -164,6 +145,7 @@ class ChartViewController: UIViewController {
     private func setupChartSelectViewController() {
         chartSelectViewController = ChartSelectViewController()
         chartSelectViewController.delegate = self
+
         addChild(chartSelectViewController)
         chartSelectViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(chartSelectViewController.view)
@@ -172,19 +154,22 @@ class ChartViewController: UIViewController {
 
     private func setupPointPopupViewController() {
         pointPopupViewController = PointPopupViewController()
+        pointPopupViewController.view.isHidden = true
+
         addChild(pointPopupViewController)
         pointPopupViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        pointPopupViewController.view.isHidden = true
         view.addSubview(pointPopupViewController.view)
         pointPopupViewController.didMove(toParent: self)
     }
 
     private func setupDateIndicatorViewController() {
         chartDateIndicatorViewController = ChartDateIndicatorViewController()
+        //TODO: remove?
+        chartDateIndicatorViewController.view.backgroundColor = .white
+
         addChild(chartDateIndicatorViewController)
         chartDateIndicatorViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(chartDateIndicatorViewController.view)
-        chartDateIndicatorViewController.view.backgroundColor = .white
         chartDateIndicatorViewController.didMove(toParent: self)
     }
 
@@ -202,43 +187,8 @@ class ChartViewController: UIViewController {
         }
     }
 
-    //TODO: remove
-    private func setupData() {
-		guard let data = ChartLoader.loadChartData() else {
-			return
-		}
-
-		guard let charts = try? ChartJSONParser.charts(from: data) else {
-			return
-		}
-
-        let model1 = ChartViewControllerModel(chart: charts[0])
-        let model2 = ChartViewControllerModel(chart: charts[1])
-        tmpModels = [model1, model2]
-    }
-
-    var tmpBothLines = true
-
     @objc
     private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
-        guard gestureRecognizer.state == .ended else {
-            return
-        }
-
-        if tmpBothLines {
-            tmpBothLines = false
-        } else {
-            tmpBothLines = true
-        }
-
-        var flags = lineHiddenFlags
-        flags[0] = !tmpBothLines
-        setLineHiddenFlags(flags, animated: true)
-//        chartView.setDataLineHidden(!tmpBothLines, at: 0)
-//        chartSelectViewController.setDataLineHidden(!tmpBothLines, at: 0)
-
-        //TODO: remove when implemented line hiding
-        return
 
         guard pointPopupViewController.view.isHidden else {
             pointPopupViewController.view.setIsHiddenAnimated(true)

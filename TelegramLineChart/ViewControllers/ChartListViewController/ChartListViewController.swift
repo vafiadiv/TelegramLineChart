@@ -10,6 +10,10 @@ import UIKit
 
 class ChartListViewController: UITableViewController {
 
+    private enum Constants {
+        static let reuseIdentifier = "cellReuseIdentifier"
+    }
+
     // MARK: - Private properties
 
     private var chartViewControllers = [ChartViewController]()
@@ -18,7 +22,8 @@ class ChartListViewController: UITableViewController {
 
     override func loadView() {
         super.loadView()
-
+        setupData()
+        setupTableView()
     }
 
     // MARK: - Private methods
@@ -32,12 +37,35 @@ class ChartListViewController: UITableViewController {
             //TODO: error
             return
         }
+
+        chartViewControllers = charts.map {
+            let model = ChartViewControllerModel(chart: $0)
+            return ChartViewController(model: model)
+        }
+    }
+
+    private func setupTableView() {
+        tableView.register(ChartCell.self, forCellReuseIdentifier: Constants.reuseIdentifier)
     }
 
     // MARK: - UITableViewDataSource
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return super.tableView(tableView, cellForRowAt: indexPath)
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return chartViewControllers.count
     }
 
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.reuseIdentifier, for: indexPath) as? ChartCell else {
+            fatalError("Cell not registered")
+        }
+
+        cell.hostedView = chartViewControllers[indexPath.row].view
+        return cell
+    }
+
+    // MARK: - UITableViewDelegate
+
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 500
+    }
 }
