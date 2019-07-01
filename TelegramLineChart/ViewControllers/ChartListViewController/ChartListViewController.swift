@@ -11,7 +11,7 @@ import UIKit
 class ChartListViewController: UITableViewController {
 
     private enum Constants {
-        static let reuseIdentifier = "cellReuseIdentifier"
+        static let cellReuseIdentifier = "cellReuseIdentifier"
     }
 
     // MARK: - Private properties
@@ -45,7 +45,7 @@ class ChartListViewController: UITableViewController {
     }
 
     private func setupTableView() {
-        tableView.register(ChartCell.self, forCellReuseIdentifier: Constants.reuseIdentifier)
+        tableView.register(ChartCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
     }
 
     // MARK: - UITableViewDataSource
@@ -55,7 +55,7 @@ class ChartListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.reuseIdentifier, for: indexPath) as? ChartCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellReuseIdentifier, for: indexPath) as? ChartCell else {
             fatalError("Cell not registered")
         }
 

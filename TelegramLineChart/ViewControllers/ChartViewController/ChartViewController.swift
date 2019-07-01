@@ -75,6 +75,8 @@ class ChartViewController: UIViewController {
 
     private var chartDateIndicatorViewController: ChartDateIndicatorViewController!
 
+    private var dataLineSelectViewController: DataLineSelectViewController!
+
     private let linearFunctionFactory = LinearFunctionFactory<CGFloat>()
 
     // MARK: - Initialization
@@ -146,36 +148,41 @@ class ChartViewController: UIViewController {
         chartSelectViewController = ChartSelectViewController()
         chartSelectViewController.delegate = self
 
-        addChild(chartSelectViewController)
-        chartSelectViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(chartSelectViewController.view)
-        chartSelectViewController.didMove(toParent: self)
+        setupChildViewController(chartSelectViewController)
     }
 
     private func setupPointPopupViewController() {
         pointPopupViewController = PointPopupViewController()
         pointPopupViewController.view.isHidden = true
 
-        addChild(pointPopupViewController)
-        pointPopupViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(pointPopupViewController.view)
-        pointPopupViewController.didMove(toParent: self)
+        setupChildViewController(pointPopupViewController)
     }
+
 
     private func setupDateIndicatorViewController() {
         chartDateIndicatorViewController = ChartDateIndicatorViewController()
         //TODO: remove?
         chartDateIndicatorViewController.view.backgroundColor = .white
 
-        addChild(chartDateIndicatorViewController)
-        chartDateIndicatorViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(chartDateIndicatorViewController.view)
-        chartDateIndicatorViewController.didMove(toParent: self)
+        setupChildViewController(chartDateIndicatorViewController)
+    }
+
+    private func setupDataLineSelectViewController() {
+        dataLineSelectViewController = DataLineSelectViewController()
+
+        setupChildViewController(dataLineSelectViewController)
     }
 
     private func setupTapGestureRecognizer() {
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
         chartView.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    private func setupChildViewController(_ viewController: UIViewController) {
+        addChild(viewController)
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(viewController.view)
+        viewController.didMove(toParent: self)
     }
 
     private func setLineHiddenFlags(_ flags:[Bool], animated: Bool = true) {
