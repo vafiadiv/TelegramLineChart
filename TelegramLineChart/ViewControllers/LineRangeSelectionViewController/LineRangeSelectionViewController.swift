@@ -1,5 +1,5 @@
 //
-//  ChartSelectViewController.swift
+//  LineRangeSelectionViewController.swift
 //  TelegramLineChart
 //
 //  Created by Valentin Vafiadi
@@ -8,13 +8,13 @@
 
 import UIKit
 
-class ChartSelectViewController: UIViewController, RootViewProtocol {
+class LineRangeSelectionViewController: UIViewController, RootViewProtocol {
 
-    typealias RootViewType = ChartSelectView
+    typealias RootViewType = LineRangeSelectionView
 
     // MARK: - Public properties
 
-    weak var delegate: ChartSelectViewControllerDelegate?
+    weak var delegate: LineRangeSelectionViewControllerDelegate?
 
     var dataLines = [DataLine]() {
         didSet {
@@ -35,15 +35,15 @@ class ChartSelectViewController: UIViewController, RootViewProtocol {
     // MARK: - Private methods
 
     override func loadView() {
-        let chartSelectView = ChartSelectView()
-        chartSelectView.delegate = self
-        self.view = chartSelectView
+        let lineRangeSelectionView = LineRangeSelectionView()
+        lineRangeSelectionView.delegate = self
+        self.view = lineRangeSelectionView
     }
 }
 
 // MARK: -
 
-extension ChartSelectViewController: ChartSelectViewDelegate {
+extension LineRangeSelectionViewController: LineRangeSelectionViewDelegate {
 
     func selectedRangeDidChange() {
 

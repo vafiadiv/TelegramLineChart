@@ -1,5 +1,5 @@
 //
-//  ChartSelectView.swift
+//  LineRangeSelectionView.swift
 //  TelegramLineChart
 //
 //  Created by Valentin Vafiadi
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartSelectView: UIView {
+class LineRangeSelectionView: UIView {
 
     private enum Constants {
         static let selectionWindowTouchArea: CGFloat = 90.0 //TODO: tmp
@@ -30,7 +30,7 @@ class ChartSelectView: UIView {
         }
     }
 
-    weak var delegate: ChartSelectViewDelegate?
+    weak var delegate: LineRangeSelectionViewDelegate?
 
     ///
     ///Range of selected portion of the chart relative to the whole chart width.
@@ -141,7 +141,7 @@ class ChartSelectView: UIView {
 
 // MARK: -
 
-extension ChartSelectView: SelectionWindowPanHandlerDelegate {
+extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
 
     fileprivate func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint) {
 

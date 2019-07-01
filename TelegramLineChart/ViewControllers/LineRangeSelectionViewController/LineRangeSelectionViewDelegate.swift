@@ -1,5 +1,5 @@
 //
-//  ChartSelectViewDelegate.swift
+//  LineRangeSelectionViewDelegate.swift
 //  TelegramLineChart
 //
 //  Created by Valentin Vafiadi
@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol ChartSelectViewDelegate: AnyObject {
+protocol LineRangeSelectionViewDelegate: AnyObject {
     func selectedRangeDidChange()
 }

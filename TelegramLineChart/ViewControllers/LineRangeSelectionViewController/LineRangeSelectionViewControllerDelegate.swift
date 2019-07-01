@@ -1,5 +1,5 @@
 //
-//  ChartSelectViewControllerDelegate.swift
+//  LineRangeSelectionViewControllerDelegate.swift
 //  TelegramLineChart
 //
 //  Created by Valentin Vafiadi
@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol ChartSelectViewControllerDelegate: AnyObject {
+protocol LineRangeSelectionViewControllerDelegate: AnyObject {
     func didSelectChartPartition(minUnitX: DataPoint.DataType, maxUnitX: DataPoint.DataType)
 }

@@ -20,7 +20,7 @@ class ChartViewController: UIViewController {
 
         static let chartViewXOffset: CGFloat = 16
 
-        static let chartSelectViewHeight: CGFloat = 43
+        static let LineRangeSelectionViewHeight: CGFloat = 43
 
         static let popupAnimationInterval: TimeInterval = 0.25
 
@@ -37,7 +37,7 @@ class ChartViewController: UIViewController {
 
     private func updateModel(model: ChartViewControllerModel) {
         chartView.dataLines = model.lines
-        chartSelectViewController.dataLines = model.lines
+        lineRangeSelectionViewController.dataLines = model.lines
         pointPopupViewController.dataLines = model.lines
         selectedXRange = model.selectedXRange
         setLineHiddenFlags(model.lineHiddenFlags, animated: false)
@@ -69,7 +69,7 @@ class ChartViewController: UIViewController {
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
-    private var chartSelectViewController: ChartSelectViewController!
+    private var lineRangeSelectionViewController: LineRangeSelectionViewController!
 
     private var pointPopupViewController: PointPopupViewController!
 
@@ -117,11 +117,11 @@ class ChartViewController: UIViewController {
                 width: widthWithOffset,
                 height: Constants.tempChartViewBottom)
 
-        chartSelectViewController.view.frame = CGRect(
+        lineRangeSelectionViewController.view.frame = CGRect(
                 x: Constants.chartViewXOffset,
                 y: chartView.frame.maxY + Constants.tempChartViewBottom,
                 width: widthWithOffset,
-                height: Constants.chartSelectViewHeight)
+                height: Constants.LineRangeSelectionViewHeight)
 
         //TODO: reset popupVC's frame
     }
@@ -131,7 +131,7 @@ class ChartViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .white
         setupChartView()
-        setupChartSelectViewController()
+        setupLineRangeSelectionViewController()
         setupPointPopupViewController()
         setupDateIndicatorViewController()
         setupTapGestureRecognizer()
@@ -144,11 +144,11 @@ class ChartViewController: UIViewController {
         view.addSubview(chartView)
     }
 
-    private func setupChartSelectViewController() {
-        chartSelectViewController = ChartSelectViewController()
-        chartSelectViewController.delegate = self
+    private func setupLineRangeSelectionViewController() {
+        lineRangeSelectionViewController = LineRangeSelectionViewController()
+        lineRangeSelectionViewController.delegate = self
 
-        setupChildViewController(chartSelectViewController)
+        setupChildViewController(lineRangeSelectionViewController)
     }
 
     private func setupPointPopupViewController() {
@@ -190,7 +190,7 @@ class ChartViewController: UIViewController {
 
         for i in 0..<flags.count {
             chartView.setDataLineHidden(flags[i], at: i, animated: animated)
-            chartSelectViewController.setDataLineHidden(flags[i], at: i, animated: animated)
+            lineRangeSelectionViewController.setDataLineHidden(flags[i], at: i, animated: animated)
         }
     }
 
@@ -219,7 +219,7 @@ class ChartViewController: UIViewController {
 
 // MARK: -
 
-extension ChartViewController: ChartSelectViewControllerDelegate {
+extension ChartViewController: LineRangeSelectionViewControllerDelegate {
 
     func didSelectChartPartition(minUnitX: DataPoint.DataType, maxUnitX: DataPoint.DataType) {
 
