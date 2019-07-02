@@ -18,6 +18,16 @@ class ChartListViewController: UITableViewController {
 
     private var chartViewControllers = [ChartViewController]()
 
+    // MARK: - Initialization
+
+    init() {
+        super.init(style: .grouped)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        notImplemented()
+    }
+
     // MARK: - Overrides
 
     override func loadView() {
@@ -50,7 +60,15 @@ class ChartListViewController: UITableViewController {
 
     // MARK: - UITableViewDataSource
 
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "FOLLOWERS" //TODO
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return chartViewControllers.count
     }
 
@@ -59,13 +77,14 @@ class ChartListViewController: UITableViewController {
             fatalError("Cell not registered")
         }
 
-        cell.hostedView = chartViewControllers[indexPath.row].view
+        cell.hostedView = chartViewControllers[indexPath.section].view
         return cell
     }
 
     // MARK: - UITableViewDelegate
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 500
+        let numberOfLines = chartViewControllers[indexPath.section].model.lines.count
+        return ChartView.height(for: tableView.frame.width, numberOfLines: numberOfLines)
     }
 }

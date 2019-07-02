@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ChartViewController: UIViewController {
+class ChartViewController: UIViewController, RootViewProtocol {
+
+    typealias RootViewType = ChartView
 
     private enum Constants {
 
@@ -23,8 +25,6 @@ class ChartViewController: UIViewController {
         static let LineRangeSelectionViewHeight: CGFloat = 43
 
         static let popupAnimationInterval: TimeInterval = 0.25
-
-        static let chartIndex: Int = 2
     }
 
     // MARK: - Public properties
@@ -36,12 +36,14 @@ class ChartViewController: UIViewController {
     }
 
     private func updateModel(model: ChartViewControllerModel) {
-        chartView.dataLines = model.lines
+        rootView.chartView.dataLines = model.lines
         lineRangeSelectionViewController.dataLines = model.lines
         pointPopupViewController.dataLines = model.lines
+        lineSelectionViewController.dataLines = model.lines
         selectedXRange = model.selectedXRange
         setLineHiddenFlags(model.lineHiddenFlags, animated: false)
         chartDateIndicatorViewController.totalXRange = model.lines.xRange
+        view.setNeedsLayout()
     }
 
     // MARK: - Private properties
@@ -50,7 +52,7 @@ class ChartViewController: UIViewController {
         didSet {
             model.selectedXRange = selectedXRange
 
-            chartView.xRange = selectedXRange
+            rootView.chartView.xRange = selectedXRange
 
             if !pointPopupViewController.view.isHidden {
                 pointPopupViewController.view.setIsHiddenAnimated(true)
@@ -65,7 +67,7 @@ class ChartViewController: UIViewController {
         }
     }
 
-    private var chartView: MainChartView!
+//    private var chartView: MainChartView!
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
@@ -75,9 +77,10 @@ class ChartViewController: UIViewController {
 
     private var chartDateIndicatorViewController: ChartDateIndicatorViewController!
 
-    private var dataLineSelectViewController: DataLineSelectViewController!
+    private var lineSelectionViewController: LineSelectionViewController!
 
-    private let linearFunctionFactory = LinearFunctionFactory<CGFloat>()
+    //ViewControllers that are created by ChartViewController and added as children
+    private var managedViewControllers = [UIViewController]()
 
     // MARK: - Initialization
 
@@ -94,12 +97,38 @@ class ChartViewController: UIViewController {
 
     // MARK: - Overrides
 
-	override func viewDidLoad() {
+    override func loadView() {
+
+        setupUI()
+
+        view = ChartView(
+                lineRangeSelectionView: lineRangeSelectionViewController.rootView,
+                pointPopupView: pointPopupViewController.rootView,
+                chartDateIndicatorView: chartDateIndicatorViewController.rootView,
+                lineSelectionView: lineSelectionViewController.rootView)
+
+        managedViewControllers = [
+            lineRangeSelectionViewController,
+            pointPopupViewController,
+            chartDateIndicatorViewController,
+            lineSelectionViewController]
+
+        managedViewControllers.forEach { [unowned self] in
+            self.addChild($0)
+        }
+    }
+
+    override func viewDidLoad() {
 		super.viewDidLoad()
-		setupUI()
+
+        managedViewControllers.forEach { [unowned self] in
+            $0.didMove(toParent: self)
+        }
+        setupTapGestureRecognizer()
         updateModel(model: model)
 	}
 
+/*
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
@@ -107,7 +136,7 @@ class ChartViewController: UIViewController {
 
         chartView.frame = CGRect(
                 x: Constants.chartViewXOffset,
-                y: view.safeAreaInsets.top + Constants.tempChartViewTop,
+                y: 0,
                 width: widthWithOffset,
                 height: Constants.chartViewHeight)
 
@@ -123,26 +152,53 @@ class ChartViewController: UIViewController {
                 width: widthWithOffset,
                 height: Constants.LineRangeSelectionViewHeight)
 
+        let maxHeightSize = CGSize(width: widthWithOffset, height: .greatestFiniteMagnitude)
+        lineSelectionViewController.view.frame = CGRect(
+                x: Constants.chartViewXOffset,
+                y: lineRangeSelectionViewController.view.frame.maxY,
+                width: widthWithOffset,
+                height: lineSelectionViewController.view.sizeThatFits(maxHeightSize).height)
+
+*/
+/*
+        lineSelectionViewController.view.frame.size = CGSize(width: widthWithOffset, height: .greatestFiniteMagnitude)
+        lineSelectionViewController.view.sizeToFit()
+        lineSelectionViewController.view.frame.origin = CGPoint(
+                x: Constants.chartViewXOffset,
+                y: lineSelectionViewController.view.frame.maxY)
+*//*
+
+
+//                CGRect(
+//                x: Constants.chartViewXOffset,
+//                y: lineRangeSelectionViewController.view.frame.maxY,
+//                width: widthWithOffset,
+//                height: lineRangeSelectionViewController.view.)
+//        )
+
         //TODO: reset popupVC's frame
     }
+*/
 
     // MARK: - Private methods
 
     private func setupUI() {
-        view.backgroundColor = .white
-        setupChartView()
+//        view.backgroundColor = .white
+//        setupChartView()
         setupLineRangeSelectionViewController()
+        setupLineSelectionViewController()
         setupPointPopupViewController()
         setupDateIndicatorViewController()
-        setupTapGestureRecognizer()
 	}
 
+/*
     private func setupChartView() {
         chartView = MainChartView()
         chartView.translatesAutoresizingMaskIntoConstraints = false
         chartView.backgroundColor = .white
         view.addSubview(chartView)
     }
+*/
 
     private func setupLineRangeSelectionViewController() {
         lineRangeSelectionViewController = LineRangeSelectionViewController()
@@ -158,7 +214,6 @@ class ChartViewController: UIViewController {
         setupChildViewController(pointPopupViewController)
     }
 
-
     private func setupDateIndicatorViewController() {
         chartDateIndicatorViewController = ChartDateIndicatorViewController()
         //TODO: remove?
@@ -167,29 +222,33 @@ class ChartViewController: UIViewController {
         setupChildViewController(chartDateIndicatorViewController)
     }
 
-    private func setupDataLineSelectViewController() {
-        dataLineSelectViewController = DataLineSelectViewController()
+    private func setupLineSelectionViewController() {
+        lineSelectionViewController = LineSelectionViewController()
+        lineSelectionViewController.delegate = self
 
-        setupChildViewController(dataLineSelectViewController)
+        setupChildViewController(lineSelectionViewController)
     }
 
     private func setupTapGestureRecognizer() {
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
-        chartView.addGestureRecognizer(tapGestureRecognizer)
+        rootView.chartView.addGestureRecognizer(tapGestureRecognizer)
     }
 
     private func setupChildViewController(_ viewController: UIViewController) {
+/*
         addChild(viewController)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(viewController.view)
         viewController.didMove(toParent: self)
+*/
     }
 
     private func setLineHiddenFlags(_ flags:[Bool], animated: Bool = true) {
         model.lineHiddenFlags = flags
+        lineSelectionViewController.dataLineHiddenFlags = flags
 
         for i in 0..<flags.count {
-            chartView.setDataLineHidden(flags[i], at: i, animated: animated)
+            rootView.chartView.setDataLineHidden(flags[i], at: i, animated: animated)
             lineRangeSelectionViewController.setDataLineHidden(flags[i], at: i, animated: animated)
         }
     }
@@ -202,17 +261,17 @@ class ChartViewController: UIViewController {
             return
         }
 
-        let tapPoint = gestureRecognizer.location(in: chartView)
+        let tapPoint = gestureRecognizer.location(in: rootView.chartView)
 
         let dataRect = DataRect(
-                origin: DataPoint(x: chartView.xRange.lowerBound, y: chartView.yRange.lowerBound),
-                width: chartView.xRange.upperBound - chartView.xRange.lowerBound,
-                height: chartView.yRange.upperBound - chartView.yRange.lowerBound)
+                origin: DataPoint(x: rootView.chartView.xRange.lowerBound, y: rootView.chartView.yRange.lowerBound),
+                width: rootView.chartView.xRange.upperBound - rootView.chartView.xRange.lowerBound,
+                height: rootView.chartView.yRange.upperBound - rootView.chartView.yRange.lowerBound)
 
-        pointPopupViewController.setupWith(tapPoint: tapPoint, visibleDataRect: dataRect, chartRect: chartView.bounds)
-        let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: chartView.frame.height))
-        let tapPointInSelf = self.view.convert(tapPoint, from: chartView)
-        pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: chartView.center.y), size: size)
+        pointPopupViewController.setupWith(tapPoint: tapPoint, visibleDataRect: dataRect, chartRect: rootView.chartView.bounds)
+        let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: rootView.chartView.frame.height))
+        let tapPointInSelf = self.view.convert(tapPoint, from: rootView.chartView)
+        pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: rootView.chartView.center.y), size: size)
         pointPopupViewController.view.setIsHiddenAnimated(false)
     }
 }
@@ -227,5 +286,15 @@ extension ChartViewController: LineRangeSelectionViewControllerDelegate {
 
         model.selectedXRange = range
         selectedXRange = range
+    }
+}
+
+// MARK: -
+
+extension ChartViewController: LineSelectionViewControllerDelegate {
+    func didSelectLine(at index: Int) {
+        var flags = self.lineHiddenFlags
+        flags[index] = !flags[index]
+        setLineHiddenFlags(flags)
     }
 }

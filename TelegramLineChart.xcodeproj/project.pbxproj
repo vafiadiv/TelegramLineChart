@@ -34,14 +34,17 @@
 		A10AB74B1032FED56F0B2A93 /* DataPoint+CGGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */; };
 		A10AB76756F0EF2F76DBDC31 /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB438441F8CDDD77C92C1 /* ChartViewController.swift */; };
 		A10AB800009C9EE3557EC7AB /* LineRangeSelectionWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* LineRangeSelectionWindowView.swift */; };
+		A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB82D521342DDD9243967 /* ChartView.swift */; };
 		A10AB96E6EB706061DBA5CB4 /* Date+DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABE509A7690534352C280 /* Date+DataPoint.swift */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
 		A10AB99F19D3BC7133EBFCBA /* ChartDateMarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB9071D1400914A3E2E65 /* ChartDateMarksViewController.swift */; };
+		A10ABA07B0B7E5756EDB8A15 /* LineSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFA0FF8F8AFE0E50BE9F /* LineSelectionView.swift */; };
 		A10ABA144E0D99C4E747D329 /* ChartListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABE0EA412F9C510331232 /* ChartListViewController.swift */; };
-		A10ABA7E441BC460AF11852D /* DataLineSelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB7B0A442B6186D8BCC29 /* DataLineSelectViewController.swift */; };
+		A10ABA7E441BC460AF11852D /* LineSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB7B0A442B6186D8BCC29 /* LineSelectionViewController.swift */; };
 		A10ABAE38F13352C3D0C5263 /* DataRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB5F6C2B767014B0D6261 /* DataRect.swift */; };
 		A10ABB7D779FC4DB1ED5E199 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB775733179863406A582 /* Stack.swift */; };
 		A10ABBB56DC3259896401CC3 /* UIColor+Static.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */; };
+		A10ABD1912B90022DAA26F8B /* LineSelectionViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2FC55E28D33350D5913 /* LineSelectionViewControllerDelegate.swift */; };
 		A10ABD5EE0714364DCC7B377 /* CGContext+DebugDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB7A5D0A9C154F586DAF7 /* CGContext+DebugDrawing.swift */; };
 		A10ABE07D3C182ABCCF61B44 /* PointPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCD8FBEFB54C650803EB /* PointPopupViewController.swift */; };
 		A10ABF33773F3BA35193E9A1 /* LinearFunctionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */; };
@@ -70,6 +73,7 @@
 		1C7B4D2221C3C0295AC667CC /* DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
 		A10AB2457F49465C14BE4C13 /* LineRangeSelectionViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionViewControllerDelegate.swift; sourceTree = "<group>"; };
+		A10AB2FC55E28D33350D5913 /* LineSelectionViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineSelectionViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		A10AB438441F8CDDD77C92C1 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		A10AB44B975EEEF4F8498123 /* ChartDateMarksView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateMarksView.swift; sourceTree = "<group>"; };
@@ -82,7 +86,8 @@
 		A10AB789F3458AD523C62D22 /* LineRangeSelectionViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionViewDelegate.swift; sourceTree = "<group>"; };
 		A10AB7A3DA44B7191B92D53F /* MainChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainChartView.swift; sourceTree = "<group>"; };
 		A10AB7A5D0A9C154F586DAF7 /* CGContext+DebugDrawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGContext+DebugDrawing.swift"; sourceTree = "<group>"; };
-		A10AB7B0A442B6186D8BCC29 /* DataLineSelectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataLineSelectViewController.swift; sourceTree = "<group>"; };
+		A10AB7B0A442B6186D8BCC29 /* LineSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineSelectionViewController.swift; sourceTree = "<group>"; };
+		A10AB82D521342DDD9243967 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		A10AB8A37B8A6868FE1187CB /* LineRangeSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionViewController.swift; sourceTree = "<group>"; };
 		A10AB8A773FC0D27B2348A50 /* LineRangeSelectionWindowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionWindowView.swift; sourceTree = "<group>"; };
 		A10AB9071D1400914A3E2E65 /* ChartDateMarksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateMarksViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +100,7 @@
 		A10ABE0EA412F9C510331232 /* ChartListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartListViewController.swift; sourceTree = "<group>"; };
 		A10ABE509A7690534352C280 /* Date+DataPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+DataPoint.swift"; sourceTree = "<group>"; };
 		A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Static.swift"; sourceTree = "<group>"; };
+		A10ABFA0FF8F8AFE0E50BE9F /* LineSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineSelectionView.swift; sourceTree = "<group>"; };
 		A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearFunctionFactory.swift; sourceTree = "<group>"; };
 		A99656BB228B6EB000D5B9E5 /* LineRangeSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionView.swift; sourceTree = "<group>"; };
 		A9D5ABFE223ED48B00AF87FB /* TelegramLineChart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramLineChart.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -187,6 +193,7 @@
 				A10AB7A3DA44B7191B92D53F /* MainChartView.swift */,
 				A10AB438441F8CDDD77C92C1 /* ChartViewController.swift */,
 				A10AB5D4BE0D2565E7AB4AE8 /* ChartViewControllerModel.swift */,
+				A10AB82D521342DDD9243967 /* ChartView.swift */,
 			);
 			path = ChartViewController;
 			sourceTree = "<group>";
@@ -200,12 +207,14 @@
 			path = ChartDateMarksViewController;
 			sourceTree = "<group>";
 		};
-		A10AB7D7E96BEC4718E0A6F1 /* DataLineSelectViewController */ = {
+		A10AB7D7E96BEC4718E0A6F1 /* LineSelectionViewController */ = {
 			isa = PBXGroup;
 			children = (
-				A10AB7B0A442B6186D8BCC29 /* DataLineSelectViewController.swift */,
+				A10AB7B0A442B6186D8BCC29 /* LineSelectionViewController.swift */,
+				A10ABFA0FF8F8AFE0E50BE9F /* LineSelectionView.swift */,
+				A10AB2FC55E28D33350D5913 /* LineSelectionViewControllerDelegate.swift */,
 			);
-			path = DataLineSelectViewController;
+			path = LineSelectionViewController;
 			sourceTree = "<group>";
 		};
 		A10AB84C19A3C868EABF02D3 /* Utility */ = {
@@ -297,7 +306,7 @@
 				A10AB26C8F37CF85F974C6B2 /* ChartDateMarksViewController */,
 				A10AB20819E73CC22ED63DF0 /* ChartViewController */,
 				A10AB06AEE7023ACF3F0EFDE /* ChartListViewController */,
-				A10AB7D7E96BEC4718E0A6F1 /* DataLineSelectViewController */,
+				A10AB7D7E96BEC4718E0A6F1 /* LineSelectionViewController */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -432,7 +441,10 @@
 				A10ABA144E0D99C4E747D329 /* ChartListViewController.swift in Sources */,
 				A10AB4FE4CB0E1DAE30C1452 /* ChartCell.swift in Sources */,
 				A10ABF34F8D91946FB0BA627 /* ChartViewControllerModel.swift in Sources */,
-				A10ABA7E441BC460AF11852D /* DataLineSelectViewController.swift in Sources */,
+				A10ABA7E441BC460AF11852D /* LineSelectionViewController.swift in Sources */,
+				A10ABA07B0B7E5756EDB8A15 /* LineSelectionView.swift in Sources */,
+				A10ABD1912B90022DAA26F8B /* LineSelectionViewControllerDelegate.swift in Sources */,
+				A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
