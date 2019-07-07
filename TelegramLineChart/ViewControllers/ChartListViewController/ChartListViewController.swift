@@ -22,6 +22,7 @@ class ChartListViewController: UITableViewController {
 
     init() {
         super.init(style: .grouped)
+        title = "Statistics".localized
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -61,7 +62,7 @@ class ChartListViewController: UITableViewController {
     // MARK: - UITableViewDataSource
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "FOLLOWERS" //TODO
+        return String.localizedStringWithFormat("Chart #%d".localized, section)
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
