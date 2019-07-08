@@ -69,6 +69,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
+    private var panGestureRecognizer: UIPanGestureRecognizer!
+
     private var lineRangeSelectionViewController: LineRangeSelectionViewController!
 
     private var pointPopupViewController: PointPopupViewController!
@@ -99,6 +101,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
         setupUI()
 
+        //TODO: comment
         view = ChartView(
                 lineRangeSelectionView: lineRangeSelectionViewController.rootView,
                 pointPopupView: pointPopupViewController.rootView,
@@ -122,123 +125,46 @@ class ChartViewController: UIViewController, RootViewProtocol {
         managedViewControllers.forEach { [unowned self] in
             $0.didMove(toParent: self)
         }
-        setupTapGestureRecognizer()
+        setupGestureRecognizers()
         updateModel(model: model)
 	}
-
-/*
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-
-        let widthWithOffset = view.frame.width - 2 * Constants.chartViewXOffset
-
-        chartView.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: 0,
-                width: widthWithOffset,
-                height: Constants.chartViewHeight)
-
-        chartDateIndicatorViewController.view.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: chartView.frame.maxY,
-                width: widthWithOffset,
-                height: Constants.tempChartViewBottom)
-
-        lineRangeSelectionViewController.view.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: chartView.frame.maxY + Constants.tempChartViewBottom,
-                width: widthWithOffset,
-                height: Constants.LineRangeSelectionViewHeight)
-
-        let maxHeightSize = CGSize(width: widthWithOffset, height: .greatestFiniteMagnitude)
-        lineSelectionViewController.view.frame = CGRect(
-                x: Constants.chartViewXOffset,
-                y: lineRangeSelectionViewController.view.frame.maxY,
-                width: widthWithOffset,
-                height: lineSelectionViewController.view.sizeThatFits(maxHeightSize).height)
-
-*/
-/*
-        lineSelectionViewController.view.frame.size = CGSize(width: widthWithOffset, height: .greatestFiniteMagnitude)
-        lineSelectionViewController.view.sizeToFit()
-        lineSelectionViewController.view.frame.origin = CGPoint(
-                x: Constants.chartViewXOffset,
-                y: lineSelectionViewController.view.frame.maxY)
-*//*
-
-
-//                CGRect(
-//                x: Constants.chartViewXOffset,
-//                y: lineRangeSelectionViewController.view.frame.maxY,
-//                width: widthWithOffset,
-//                height: lineRangeSelectionViewController.view.)
-//        )
-
-        //TODO: reset popupVC's frame
-    }
-*/
 
     // MARK: - Private methods
 
     private func setupUI() {
-//        view.backgroundColor = .white
-//        setupChartView()
         setupLineRangeSelectionViewController()
         setupLineSelectionViewController()
         setupPointPopupViewController()
         setupDateIndicatorViewController()
 	}
 
-/*
-    private func setupChartView() {
-        chartView = MainChartView()
-        chartView.translatesAutoresizingMaskIntoConstraints = false
-        chartView.backgroundColor = .white
-        view.addSubview(chartView)
-    }
-*/
-
     private func setupLineRangeSelectionViewController() {
         lineRangeSelectionViewController = LineRangeSelectionViewController()
         lineRangeSelectionViewController.delegate = self
-
-        setupChildViewController(lineRangeSelectionViewController)
     }
 
     private func setupPointPopupViewController() {
         pointPopupViewController = PointPopupViewController()
         pointPopupViewController.view.isHidden = true
-
-        setupChildViewController(pointPopupViewController)
     }
 
     private func setupDateIndicatorViewController() {
         chartDateIndicatorViewController = ChartDateIndicatorViewController()
         //TODO: remove?
         chartDateIndicatorViewController.view.backgroundColor = .white
-
-        setupChildViewController(chartDateIndicatorViewController)
     }
 
     private func setupLineSelectionViewController() {
         lineSelectionViewController = LineSelectionViewController()
         lineSelectionViewController.delegate = self
-
-        setupChildViewController(lineSelectionViewController)
     }
 
-    private func setupTapGestureRecognizer() {
+    private func setupGestureRecognizers() {
         tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
         rootView.chartView.addGestureRecognizer(tapGestureRecognizer)
-    }
 
-    private func setupChildViewController(_ viewController: UIViewController) {
-/*
-        addChild(viewController)
-        viewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(viewController.view)
-        viewController.didMove(toParent: self)
-*/
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gestureRecognizer:)))
+        rootView.chartView.addGestureRecognizer(panGestureRecognizer)
     }
 
     private func setLineHiddenFlags(_ flags:[Bool], animated: Bool = true) {
@@ -261,6 +187,17 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
         let tapPoint = gestureRecognizer.location(in: rootView.chartView)
 
+        showPointPopupViewController(at: tapPoint)
+    }
+
+    @objc
+    private func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
+        let point = gestureRecognizer.location(in: gestureRecognizer.view?.superview)
+
+        showPointPopupViewController(at: point)
+    }
+
+    private func showPointPopupViewController(at tapPoint: CGPoint) {
         let dataRect = DataRect(
                 origin: DataPoint(x: rootView.chartView.xRange.lowerBound, y: rootView.chartView.yRange.lowerBound),
                 width: rootView.chartView.xRange.upperBound - rootView.chartView.xRange.lowerBound,
