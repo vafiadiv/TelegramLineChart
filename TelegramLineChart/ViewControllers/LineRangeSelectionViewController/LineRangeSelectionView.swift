@@ -61,7 +61,9 @@ class LineRangeSelectionView: UIView {
 
     private var selectionWindowView: LineRangeSelectionWindowView!
 
-    private var gestureRecognizer: UIPanGestureRecognizer!
+    private var panGestureRecognizer: UIPanGestureRecognizer!
+
+    private var tapGestureRecognizer: UITapGestureRecognizer!
 
     private var mainChartView: MainChartView!
 
@@ -141,19 +143,22 @@ class LineRangeSelectionView: UIView {
         leftDimmingView = UIView()
         rightDimmingView = UIView()
 
-        leftDimmingView.backgroundColor = .black
-        rightDimmingView.backgroundColor = .black
+        leftDimmingView.backgroundColor = .selectionChartBackground
+        rightDimmingView.backgroundColor = .selectionChartBackground
 
-        leftDimmingView.alpha = 0.1
-        rightDimmingView.alpha = 0.1
+        rightDimmingView.isOpaque = false
+        leftDimmingView.isOpaque = false
 
         addSubview(leftDimmingView)
         addSubview(rightDimmingView)
     }
 
     private func setupGestureRecognizer() {
-        gestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gestureRecognizer:)))
-        addGestureRecognizer(gestureRecognizer)
+        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gestureRecognizer:)))
+        addGestureRecognizer(panGestureRecognizer)
+
+        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
+        addGestureRecognizer(tapGestureRecognizer)
 
         panHandler = SelectionWindowPanHandler(selectionWindowView: selectionWindowView)
         panHandler.delegate = self
@@ -193,6 +198,11 @@ class LineRangeSelectionView: UIView {
     private func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
         self.panHandler.handlePan(of: gestureRecognizer, in: self)
     }
+
+    @objc
+    private func handleTap(gestureRecognizer: UIPanGestureRecognizer) {
+        self.panHandler.handleTap(of: gestureRecognizer, in: self)
+    }
 }
 
 // MARK: -
@@ -223,6 +233,9 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
                     width: selectionWindowView.frame.maxX - leftAfterTranslation,
                     height: selectionWindowView.frame.height)
 
+            self.selectionWindowView.isLeftHighlighted = true
+            self.selectionWindowView.isRightHighlighted = false
+
         case .rightSide:
 
             let minX = selectionWindowView.frame.minX + Constants.selectionWindowMinWidth
@@ -243,6 +256,9 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
                     width: widthAfterTranslation,
                     height: selectionWindowView.frame.height)
 
+            self.selectionWindowView.isLeftHighlighted = false
+            self.selectionWindowView.isRightHighlighted = true
+
         case .wholeWindow:
 
             let minX: CGFloat = 0
@@ -258,6 +274,9 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
             } else {
                 selectionWindowView.frame.x += translation.x
             }
+
+            self.selectionWindowView.isLeftHighlighted = true
+            self.selectionWindowView.isRightHighlighted = true
         }
 
         layoutDimmingViews()
@@ -271,6 +290,11 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
         selectedRelativeRange = minSelectedXRelative...maxSelectedXRelative
 
         self.delegate?.selectedRangeDidChange()
+    }
+
+    fileprivate func didFinishPanning() {
+        self.selectionWindowView.isLeftHighlighted = false
+        self.selectionWindowView.isRightHighlighted = false
     }
 }
 
@@ -331,27 +355,49 @@ private class SelectionWindowPanHandler {
     // MARK: - Public methods
 
     func handlePan(of gestureRecognizer: UIPanGestureRecognizer, in view: UIView) {
-        let translation = gestureRecognizer.translation(in: view.superview)
+
+        guard gestureRecognizer.state != .ended else {
+            self.delegate?.didFinishPanning()
+            return
+        }
 
         if gestureRecognizer.state == .began {
-            let touchLocation = gestureRecognizer.location(in: view)
-            if centralTouchArea.contains(touchLocation) {
-                panningArea = .wholeWindow
-            } else if leftSideTouchArea.contains(touchLocation) {
-                panningArea = .leftSide
-            } else if rightSideTouchArea.contains(touchLocation) {
-                panningArea = .rightSide
-            }
+            panningArea = panningArea(of: gestureRecognizer.location(in: view))
         }
 
         if let panningArea = panningArea {
+            let translation = gestureRecognizer.translation(in: view.superview)
             self.delegate?.didPanArea(panningArea, by: translation)
         }
 
         gestureRecognizer.setTranslation(.zero, in: view.superview)
     }
+
+    func handleTap(of gestureRecognizer: UIPanGestureRecognizer, in view: UIView) {
+        if let panningArea = panningArea(of: gestureRecognizer.location(in: view)) {
+            self.delegate?.didPanArea(panningArea, by: .zero)
+        }
+    }
+
+    func panningArea(of touchLocation: CGPoint) -> PanningArea? {
+        var panningArea: PanningArea?
+
+        if centralTouchArea.contains(touchLocation) {
+            panningArea = .wholeWindow
+        } else if leftSideTouchArea.contains(touchLocation) {
+            panningArea = .leftSide
+        } else if rightSideTouchArea.contains(touchLocation) {
+            panningArea = .rightSide
+        }
+
+        return panningArea
+    }
 }
+
+// MARK: -
 
 private protocol SelectionWindowPanHandlerDelegate: AnyObject {
     func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint)
+
+    func didFinishPanning()
 }

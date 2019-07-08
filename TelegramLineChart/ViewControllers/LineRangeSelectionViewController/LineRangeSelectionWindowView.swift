@@ -14,6 +14,20 @@ class LineRangeSelectionWindowView: UIView {
         static let sideViewWidth: CGFloat = 11
     }
 
+    // MARK: - Public properties
+
+    var isLeftHighlighted = false {
+        didSet {
+            self.leftSideView.backgroundColor = isLeftHighlighted ? .selectionWindowBackgroundHighlighted : .selectionWindowBackground
+        }
+    }
+
+    var isRightHighlighted = false {
+        didSet {
+            self.rightSideView.backgroundColor = isRightHighlighted ? .selectionWindowBackgroundHighlighted : .selectionWindowBackground
+        }
+    }
+
     // MARK: - Private properties
 
     private let leftSideView = LineRangeSelectionWindowSideView(orientation: .left)
@@ -74,13 +88,13 @@ fileprivate class LineRangeSelectionWindowSideView: UIView {
         case right
     }
 
-    private let imageView = UIImageView(image: .leftArrowImage)
+    private let arrowImageView = UIImageView(image: .leftArrowImage)
 
     init(orientation: Orientation) {
 
         super.init(frame: .zero)
 
-        addSubview(imageView)
+        addSubview(arrowImageView)
 
         layer.masksToBounds = true
         layer.cornerRadius = 2
@@ -90,7 +104,7 @@ fileprivate class LineRangeSelectionWindowSideView: UIView {
             layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
         case .right:
             layer.maskedCorners = [.layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-            imageView.transform = CGAffineTransform(scaleX: -1, y: 1)
+            arrowImageView.transform = CGAffineTransform(scaleX: -1, y: 1)
         }
     }
 
@@ -100,7 +114,7 @@ fileprivate class LineRangeSelectionWindowSideView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        imageView.sizeToFit()
-        imageView.center = bounds.center
+        arrowImageView.sizeToFit()
+        arrowImageView.center = bounds.center
     }
 }
