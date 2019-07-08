@@ -12,7 +12,7 @@ class ChartDateIndicatorView: UIView {
 
     // MARK: -
 
-    fileprivate struct Mark {
+    fileprivate struct Mark: Hashable {
 
         let label: String
 
@@ -20,6 +20,10 @@ class ChartDateIndicatorView: UIView {
 
         func labelCenterXFor(frameWidth: CGFloat, minUnitX: DataPoint.DataType, unitXWidth: DataPoint.DataType) -> CGFloat {
             return frameWidth * CGFloat(unitX - minUnitX) / CGFloat(unitXWidth)
+        }
+
+        static func ==(lhs: Mark, rhs: Mark) -> Bool {
+            return lhs.unitX == rhs.unitX
         }
     }
 
@@ -32,7 +36,7 @@ class ChartDateIndicatorView: UIView {
 
         static let labelOffset: CGFloat = 10
 
-        static let animationDuration: TimeInterval = 0.5
+        static let animationDuration: TimeInterval = 0.25
     }
 
     // MARK: - Public properties
@@ -87,15 +91,14 @@ class ChartDateIndicatorView: UIView {
         if markUnitDistance > previousMarkUnitDistance {
 
             for label in visibleLabels {
-                if let mark = label.mark, !markUnitXs.contains(mark.unitX) {
-                    //TODO: reuse, animation
+                //label's mark isn't in current visible marks, hence it was removed and has to be removed with fade out
+                if let mark = label.mark, !marks.contains(mark) {
                     fadingOutLabels.append(label)
                     UIView.animate(
                             withDuration: Constants.animationDuration,
                             animations: { label.alpha = 0 },
-                            completion: { _ in
-                                self.fadingOutLabels.removeAll { $0 == label }
-                                label.removeFromSuperview()
+                            completion: { [weak self] _ in
+                                self?.fadingOutLabels.removeAll { $0 == label }
                             })
                 }
             }
@@ -105,9 +108,8 @@ class ChartDateIndicatorView: UIView {
         } else if markUnitDistance < previousMarkUnitDistance {
         //2. markUnitDistance decreased, i.e. zoomed in past a threshold from in from the last call. Show new labels with fade in animation
 
-            visibleLabels.removeAll {
+            visibleLabels.removeAll { [weak self] in
                 if let mark = $0.mark {
-                    //TODO: reuse?
                     return !markUnitXs.contains(mark.unitX)
                 } else {
                     return true
@@ -146,9 +148,8 @@ class ChartDateIndicatorView: UIView {
         } else {
         //3. markUnitDistance unchanged, remove/add labels without animation
 
-            visibleLabels.removeAll {
+            visibleLabels.removeAll { [weak self] in
                 if let mark = $0.mark {
-                    //TODO: reuse
                     return !markUnitXs.contains(mark.unitX)
                 } else {
                     return true
@@ -165,7 +166,7 @@ class ChartDateIndicatorView: UIView {
         }
 
         let rangeWidth = visibleXRange.upperBound - visibleXRange.lowerBound
-        let allLabels = visibleLabels + fadingInLabels + fadingOutLabels
+        let allLabels: [UILabel] = visibleLabels + fadingInLabels + fadingOutLabels
 
         //set all labels into place (including ones that are animating)
         for label in allLabels {
@@ -175,6 +176,15 @@ class ChartDateIndicatorView: UIView {
                 label.frame = CGRect(x: labelCenterX - maxLabelWidth / 2, y: 0, width: maxLabelWidth, height: bounds.height)
             }
         }
+
+        //cleanup: remove and reuse all labels that aren't visible and are not animating
+        for case let label as UILabel in subviews {
+            if !allLabels.contains(label) {
+                self.pushReusableLabel(label)
+            }
+        }
+
+        print("Showing \(subviews.count) labels")
     }
 
     // MARK: - Private methods
@@ -191,7 +201,6 @@ class ChartDateIndicatorView: UIView {
         let rangeWidth = CGFloat(visibleXRange.upperBound - visibleXRange.lowerBound)
 
         guard rangeWidth != 0 else {
-            //TODO: error
             return
         }
 
@@ -221,6 +230,7 @@ class ChartDateIndicatorView: UIView {
 
     private func popReusableLabel() -> UILabel {
         if let label = reusableLabels.pop() {
+            label.alpha = 1
             addSubview(label)
             return label
         } else {
