@@ -11,12 +11,16 @@ import UIKit
 class LineSelectionView: UITableView {
 
     private enum Constants {
-        static let rowHeight: CGFloat = 44.0
+        static let rowHeight: CGFloat = 44
+
+        static let separatorHeight: CGFloat = 1
     }
 
+    //TODO: comment for why this workaround is needed or remove it (нужно знать rowHeight в static-методе, поэтому либо копипастить константу,
+    //либо перегружать init
     override var rowHeight: CGFloat {
         get {
-            return 44.0
+            return Constants.rowHeight
         }
         set {
 
@@ -26,7 +30,7 @@ class LineSelectionView: UITableView {
     // MARK: - Public methods
 
     static func height(for numberOfRows: Int) -> CGFloat {
-        return CGFloat(numberOfRows) * Constants.rowHeight
+        return CGFloat(numberOfRows) * (Constants.rowHeight + Constants.separatorHeight)
     }
 
     // MARK: - Overrides

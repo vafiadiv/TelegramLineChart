@@ -11,8 +11,9 @@ import UIKit
 class LineRangeSelectionView: UIView {
 
     private enum Constants {
-        static let selectionWindowTouchArea: CGFloat = 90 //TODO: tmp
         static let mainChartViewYOffset: CGFloat = 3
+
+        static let selectionWindowMinWidth: CGFloat = 26
     }
 
     // MARK: - Public properties
@@ -96,14 +97,15 @@ class LineRangeSelectionView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let tmpRect = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
         mainChartView.frame = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
 
-        let selectionMinX = ceil(bounds.maxX * selectedRelativeRange.lowerBound)
-        let selectionWidth = ceil(bounds.maxX * selectedRelativeRange.upperBound - selectionMinX)
+        let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
+        let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX
         selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
 
         layoutDimmingViews()
+
+        setNeedsDisplay()
     }
 
     private func layoutDimmingViews() {
@@ -128,17 +130,6 @@ class LineRangeSelectionView: UIView {
         setupDimmingViews()
         setupGestureRecognizer()
     }
-
-/*
-    private func setupChartLayer() {
-        chartLayer.lineWidth = 1
-        chartLayer.drawHorizontalLines = false
-        chartLayer.border = CGSize(width: 0, height: 10)
-        chartLayer.contentsScale = UIScreen.main.scale
-//        chartLayer.backgroundColor = UIColor.selectionChartBackground
-        backgroundColor = UIColor.selectionChartBackground
-    }
-*/
 
     private func setupSelectionWindow() {
         selectionWindowView = LineRangeSelectionWindowView()
@@ -168,6 +159,25 @@ class LineRangeSelectionView: UIView {
         panHandler.delegate = self
     }
 
+/*
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return
+        }
+
+        context.saveGState()
+
+        context.setFillColor(UIColor.black.cgColor)
+        context.fill(bounds)
+        context.setFillColor(UIColor.red.cgColor)
+
+        context.fill([panHandler.rightSideTouchArea, panHandler.leftSideTouchArea, panHandler.centralTouchArea])
+
+        context.restoreGState()
+    }
+*/
 
     private func setupMainChartView() {
         mainChartView = MainChartView()
@@ -191,11 +201,11 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
 
     fileprivate func didPanArea(_ area: SelectionWindowPanHandler.PanningArea, by translation: CGPoint) {
 
-        let minX: CGFloat = 0
-        let maxX = bounds.width
-
         switch area {
         case .leftSide:
+
+            let minX: CGFloat = 0
+            let maxX = selectionWindowView.frame.maxX - Constants.selectionWindowMinWidth
 
             let leftAfterTranslation: CGFloat
 
@@ -215,12 +225,15 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
 
         case .rightSide:
 
+            let minX = selectionWindowView.frame.minX + Constants.selectionWindowMinWidth
+            let maxX = bounds.width
+
             let widthAfterTranslation: CGFloat
 
             if selectionWindowView.frame.maxX + translation.x > maxX {
                 widthAfterTranslation = maxX - selectionWindowView.frame.minX
             } else if selectionWindowView.frame.maxX + translation.x < minX {
-                widthAfterTranslation = 0
+                widthAfterTranslation = Constants.selectionWindowMinWidth
             } else {
                 widthAfterTranslation = selectionWindowView.frame.width + translation.x
             }
@@ -232,8 +245,12 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
 
         case .wholeWindow:
 
+            let minX: CGFloat = 0
+            let maxX = bounds.width
+
             let leftAfterTranslation = selectionWindowView.frame.minX + translation.x
             let rightAfterTranslation = selectionWindowView.frame.maxX + translation.x
+
             if leftAfterTranslation < minX {
                 selectionWindowView.frame.x = minX
             } else if rightAfterTranslation > maxX {
@@ -248,14 +265,16 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
         let minSelectionViewX = selectionWindowView.frame.minX
         let maxSelectionViewX = selectionWindowView.frame.maxX
 
-        let minSelectedXRelative = minSelectionViewX / maxX
-        let maxSelectedXRelative = maxSelectionViewX / maxX
+        let minSelectedXRelative = minSelectionViewX / bounds.width
+        let maxSelectedXRelative = maxSelectionViewX / bounds.width
 
         selectedRelativeRange = minSelectedXRelative...maxSelectedXRelative
 
         self.delegate?.selectedRangeDidChange()
     }
 }
+
+// MARK: -
 
 private class SelectionWindowPanHandler {
 

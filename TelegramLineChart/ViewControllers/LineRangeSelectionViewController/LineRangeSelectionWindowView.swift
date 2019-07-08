@@ -49,6 +49,7 @@ class LineRangeSelectionWindowView: UIView {
 
         //two lines at the top and bottom between side views
         let path = UIBezierPath()
+        path.lineWidth = 2.0
         path.move(to: CGPoint(x: Constants.sideViewWidth, y: 0))
         path.addLine(to: CGPoint(x: bounds.width - Constants.sideViewWidth, y: 0))
         path.move(to: CGPoint(x: Constants.sideViewWidth, y: bounds.height))

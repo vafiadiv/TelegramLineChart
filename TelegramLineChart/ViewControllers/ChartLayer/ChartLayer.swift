@@ -12,8 +12,9 @@ class ChartLayer: CALayer {
     private enum Constants {
         static let animationDuration: CFTimeInterval = 0.25
 
-        //relative distance between horizontal chart lines measured in drawing rect height
-        static let horizontalLinesRelativeY: CGFloat = 1 / 5
+        //after calculating minY and maxY points of visible part of the graph, the space has to be extended up and down
+        //by `additionalYSpaceRelative` to avoid min and max points "hugging" the edges
+        static let additionalYSpaceRelative = 0.15
     }
 
     private struct AnimationInfo {
@@ -152,14 +153,18 @@ class ChartLayer: CALayer {
         }
 
         //point with min Y value across all points in all lines
-        let minY = visibleLines.compactMap { dataLine in
+        let minVisibleY = visibleLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.min()
         }.min() ?? 0
 
         //point with max Y value across all points in all lines
-        let maxY = visibleLines.compactMap { dataLine in
+        let maxVisibleY = visibleLines.compactMap { dataLine in
             dataLine.points.map { $0.y }.max()
         }.max() ?? 0
+
+        let additionalYSpace = DataPoint.DataType(Double(maxVisibleY) * Constants.additionalYSpaceRelative)
+        let minY = max(minVisibleY - additionalYSpace, 0)
+        let maxY = maxVisibleY + additionalYSpace
 
         if skipAnimation {
             yRange = minY...maxY
@@ -430,7 +435,7 @@ class ChartLayer: CALayer {
         }
 
         context.setStrokeColor(line.color.withAlphaComponent(alpha).cgColor)
-        print("Drawing line \(line.name) with alpha = \(alpha)")
+//        print("Drawing line \(line.name) with alpha = \(alpha)")
         path.lineJoinStyle = .round
         path.stroke()
 
