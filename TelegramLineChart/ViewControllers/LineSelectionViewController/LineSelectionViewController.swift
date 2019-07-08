@@ -20,7 +20,11 @@ class LineSelectionViewController: UIViewController, RootViewProtocol {
 
     var dataLines = [DataLine]()
 
-    var dataLineHiddenFlags = [Bool]()
+    var dataLineHiddenFlags = [Bool]() {
+        didSet {
+            rootView.reloadData()
+        }
+    }
 
     weak var delegate: LineSelectionViewControllerDelegate?
 
@@ -58,19 +62,16 @@ extension LineSelectionViewController: UITableViewDataSource {
             fatalError("Cell not registered")
         }
 
-        cell.textLabel?.text = dataLines[indexPath.row].name
+        let dataLine = dataLines[indexPath.row]
+        cell.textLabel?.text = dataLine.name
         cell.accessoryType = dataLineHiddenFlags[indexPath.row] ? .none : .checkmark
-
+        cell.imageView?.image = .lineSelectionIcon
+        cell.imageView?.tintColor = dataLine.color
         return cell
     }
 }
 
 extension LineSelectionViewController: UITableViewDelegate {
-/*
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 54.0
-    }
-*/
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

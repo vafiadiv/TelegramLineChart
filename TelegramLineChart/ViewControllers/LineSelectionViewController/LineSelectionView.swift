@@ -14,17 +14,6 @@ class LineSelectionView: UITableView {
         static let rowHeight: CGFloat = 44.0
     }
 
-/*
-    // MARK: - Initialization
-    override init() {
-        super.init(frame: .zero, style: .plain)
-        rowHeight = Constants.rowHeight
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        notImplemented()
-    }
-*/
     override var rowHeight: CGFloat {
         get {
             return 44.0

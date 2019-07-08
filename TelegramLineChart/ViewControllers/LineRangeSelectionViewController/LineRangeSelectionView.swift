@@ -99,8 +99,8 @@ class LineRangeSelectionView: UIView {
         let tmpRect = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
         mainChartView.frame = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
 
-        let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
-        let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX
+        let selectionMinX = ceil(bounds.maxX * selectedRelativeRange.lowerBound)
+        let selectionWidth = ceil(bounds.maxX * selectedRelativeRange.upperBound - selectionMinX)
         selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
 
         layoutDimmingViews()

@@ -93,7 +93,7 @@ class ChartView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let widthWithOffset = frame.width - 2 * Constants.chartViewXOffset
+        let widthWithOffset = bounds.width - 2 * Constants.chartViewXOffset
 
         chartView.frame = CGRect(
                 x: Constants.chartViewXOffset,
@@ -113,12 +113,12 @@ class ChartView: UIView {
                 width: widthWithOffset,
                 height: Constants.lineRangeSelectionViewHeight)
 
-        let maxHeightSize = CGSize(width: widthWithOffset, height: .greatestFiniteMagnitude)
+        let maxHeightSize = CGSize(width: bounds.width, height: .greatestFiniteMagnitude)
 
         lineSelectionView.frame = CGRect(
-                x: Constants.chartViewXOffset,
+                x: 0,
                 y: lineRangeSelectionView.frame.maxY,
-                width: widthWithOffset,
+                width: bounds.width,
                 height: lineSelectionView.sizeThatFits(maxHeightSize).height)
     }
 

@@ -36,13 +36,17 @@ class ChartViewController: UIViewController, RootViewProtocol {
     }
 
     private func updateModel(model: ChartViewControllerModel) {
+
         rootView.chartView.dataLines = model.lines
         lineRangeSelectionViewController.dataLines = model.lines
         pointPopupViewController.dataLines = model.lines
         lineSelectionViewController.dataLines = model.lines
+
         selectedXRange = model.selectedXRange
-        setLineHiddenFlags(model.lineHiddenFlags, animated: false)
         chartDateIndicatorViewController.totalXRange = model.lines.xRange
+
+        setLineHiddenFlags(model.lineHiddenFlags, animated: false)
+
         view.setNeedsLayout()
     }
 
@@ -58,12 +62,6 @@ class ChartViewController: UIViewController, RootViewProtocol {
                 pointPopupViewController.view.setIsHiddenAnimated(true)
             }
             chartDateIndicatorViewController.visibleXRange = selectedXRange
-        }
-    }
-
-    private var lineHiddenFlags: [Bool] {
-        didSet {
-            setLineHiddenFlags(lineHiddenFlags, animated: false)
         }
     }
 
@@ -87,7 +85,7 @@ class ChartViewController: UIViewController, RootViewProtocol {
     init(model: ChartViewControllerModel) {
         self.model = model
         self.selectedXRange = model.selectedXRange
-        self.lineHiddenFlags = model.lineHiddenFlags
+
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -293,8 +291,22 @@ extension ChartViewController: LineRangeSelectionViewControllerDelegate {
 
 extension ChartViewController: LineSelectionViewControllerDelegate {
     func didSelectLine(at index: Int) {
-        var flags = self.lineHiddenFlags
-        flags[index] = !flags[index]
-        setLineHiddenFlags(flags)
+        var hiddenFlags = model.lineHiddenFlags
+
+        var numberOfVisibleLines = 0
+        hiddenFlags.forEach {
+            if $0 == false {
+                numberOfVisibleLines += 1
+            }
+        }
+
+        //hiding all lines make no sense from UX standpoint, so skip the flag switch if we are trying to hide the last
+        //visible line
+        guard numberOfVisibleLines > 1 || hiddenFlags[index] else {
+            return
+        }
+
+        hiddenFlags[index] = !hiddenFlags[index]
+        setLineHiddenFlags(hiddenFlags)
     }
 }

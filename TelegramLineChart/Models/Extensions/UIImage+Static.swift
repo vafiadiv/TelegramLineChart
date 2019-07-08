@@ -10,4 +10,6 @@ import UIKit
 
 extension UIImage {
     static let leftArrowImage = #imageLiteral(resourceName: "chart_selection_window_arrow")
+
+    static let lineSelectionIcon = #imageLiteral(resourceName: "line_selection_icon")
 }
