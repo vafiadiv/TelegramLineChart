@@ -184,7 +184,7 @@ class ChartDateIndicatorView: UIView {
             }
         }
 
-        print("Showing \(subviews.count) labels")
+//        print("Showing \(subviews.count) labels")
     }
 
     // MARK: - Private methods

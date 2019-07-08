@@ -164,12 +164,14 @@ class ChartViewController: UIViewController, RootViewProtocol {
         rootView.chartView.addGestureRecognizer(tapGestureRecognizer)
 
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gestureRecognizer:)))
+        panGestureRecognizer.delegate = self
         rootView.chartView.addGestureRecognizer(panGestureRecognizer)
     }
 
     private func setLineHiddenFlags(_ flags:[Bool], animated: Bool = true) {
         model.lineHiddenFlags = flags
         lineSelectionViewController.dataLineHiddenFlags = flags
+        pointPopupViewController.dataLineHiddenFlags = flags
 
         for i in 0..<flags.count {
             rootView.chartView.setDataLineHidden(flags[i], at: i, animated: animated)
@@ -211,6 +213,14 @@ class ChartViewController: UIViewController, RootViewProtocol {
     }
 }
 
+extension ChartViewController: UIGestureRecognizerDelegate {
+
+    //to allow this chart popup gesture recognizer to work simultaneously with scroll view's pan gesture recognizer
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return otherGestureRecognizer is UIPanGestureRecognizer
+    }
+}
+
 // MARK: -
 
 extension ChartViewController: LineRangeSelectionViewControllerDelegate {
@@ -245,5 +255,9 @@ extension ChartViewController: LineSelectionViewControllerDelegate {
 
         hiddenFlags[index] = !hiddenFlags[index]
         setLineHiddenFlags(hiddenFlags)
+
+        if !pointPopupViewController.view.isHidden {
+            pointPopupViewController.view.setIsHiddenAnimated(true)
+        }
     }
 }

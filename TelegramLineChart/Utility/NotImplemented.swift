@@ -9,6 +9,6 @@
 import Foundation
 
 @inlinable
-public func notImplemented(file: String = #file, line: Int = #line, function: StaticString = #function) -> Never {
+func notImplemented(file: String = #file, line: Int = #line, function: StaticString = #function) -> Never {
     fatalError("\(file):\(line) \(function) is not implemented")
 }
