@@ -11,14 +11,15 @@ import UIKit
 class LineRangeSelectionView: UIView {
 
     private enum Constants {
-        static let selectionWindowTouchArea: CGFloat = 90.0 //TODO: tmp
+        static let selectionWindowTouchArea: CGFloat = 90 //TODO: tmp
+        static let mainChartViewYOffset: CGFloat = 3
     }
 
     // MARK: - Public properties
 
     var dataLines = [DataLine]() {
         didSet {
-            chartLayer.dataLines = dataLines
+            mainChartView.dataLines = dataLines
         }
     }
 
@@ -26,7 +27,7 @@ class LineRangeSelectionView: UIView {
     ///Subrange of graph lines that should be displayed in full view
     var graphXRange: ClosedRange<DataPoint.DataType> = 0...0 {
         didSet {
-            chartLayer.xRange = graphXRange
+            mainChartView.xRange = graphXRange
         }
     }
 
@@ -57,18 +58,17 @@ class LineRangeSelectionView: UIView {
 
     // MARK: - Private properties
 
-    private var selectionWindowView: ChartSelectWindowView!
+    private var selectionWindowView: LineRangeSelectionWindowView!
 
     private var gestureRecognizer: UIPanGestureRecognizer!
 
+    private var mainChartView: MainChartView!
+
     private var panHandler: SelectionWindowPanHandler!
 
-    private var chartLayer: ChartLayer {
-        guard let chartLayer = layer as? ChartLayer else {
-            fatalError("Wrong layer class")
-        }
-        return chartLayer
-    }
+    private var leftDimmingView: UIView!
+
+    private var rightDimmingView: UIView!
 
     override class var layerClass: AnyClass {
         return ChartLayer.self
@@ -88,29 +88,76 @@ class LineRangeSelectionView: UIView {
     // MARK: - Public methods
 
     func setDataLineHidden(_ isHidden: Bool, at index: Int, animated: Bool = true) {
-        chartLayer.setDataLineHidden(isHidden, at: index, animated: animated)
+        mainChartView.setDataLineHidden(isHidden, at: index, animated: animated)
+    }
+
+    // MARK: - Overrides
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let tmpRect = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
+        mainChartView.frame = bounds.insetBy(dx: 0, dy: Constants.mainChartViewYOffset)
+
+        let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
+        let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX
+        selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
+
+        layoutDimmingViews()
+    }
+
+    private func layoutDimmingViews() {
+        leftDimmingView.frame = CGRect(
+                x: 0,
+                y: mainChartView.frame.y,
+                width: selectionWindowView.frame.minX,
+                height: mainChartView.frame.height)
+        rightDimmingView.frame = CGRect(
+                x: selectionWindowView.frame.maxX,
+                y: mainChartView.frame.y,
+                width: bounds.width - selectionWindowView.frame.maxX,
+                height: mainChartView.frame.height)
     }
 
     // MARK: - Private methods
     
     private func setupUI() {
-        setupChartLayer()
+//        setupChartLayer()
+        setupMainChartView()
         setupSelectionWindow()
+        setupDimmingViews()
         setupGestureRecognizer()
-        backgroundColor = .selectionChartBackground
     }
 
+/*
     private func setupChartLayer() {
         chartLayer.lineWidth = 1
-//        chartLayer.backgroundColor = UIColor.selectionChartBackground.cgColor
         chartLayer.drawHorizontalLines = false
+        chartLayer.border = CGSize(width: 0, height: 10)
         chartLayer.contentsScale = UIScreen.main.scale
+//        chartLayer.backgroundColor = UIColor.selectionChartBackground
+        backgroundColor = UIColor.selectionChartBackground
     }
+*/
 
     private func setupSelectionWindow() {
-        selectionWindowView = ChartSelectWindowView()
+        selectionWindowView = LineRangeSelectionWindowView()
         selectionWindowView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(selectionWindowView)
+    }
+
+    private func setupDimmingViews() {
+        leftDimmingView = UIView()
+        rightDimmingView = UIView()
+
+        leftDimmingView.backgroundColor = .black
+        rightDimmingView.backgroundColor = .black
+
+        leftDimmingView.alpha = 0.1
+        rightDimmingView.alpha = 0.1
+
+        addSubview(leftDimmingView)
+        addSubview(rightDimmingView)
     }
 
     private func setupGestureRecognizer() {
@@ -121,21 +168,20 @@ class LineRangeSelectionView: UIView {
         panHandler.delegate = self
     }
 
+
+    private func setupMainChartView() {
+        mainChartView = MainChartView()
+        mainChartView.drawHorizontalLines = false
+        mainChartView.lineWidth = 1.0
+        mainChartView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(mainChartView)
+    }
+
     // MARK: - Pan handling
 
     @objc
     private func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
         self.panHandler.handlePan(of: gestureRecognizer, in: self)
-    }
-
-    // MARK: - Public methods
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        let selectionMinX = bounds.maxX * selectedRelativeRange.lowerBound
-        let selectionWidth = bounds.maxX * selectedRelativeRange.upperBound - selectionMinX
-        selectionWindowView.frame = CGRect(x: selectionMinX, y: 0, width: selectionWidth, height: bounds.height)
     }
 }
 
@@ -196,6 +242,8 @@ extension LineRangeSelectionView: SelectionWindowPanHandlerDelegate {
                 selectionWindowView.frame.x += translation.x
             }
         }
+
+        layoutDimmingViews()
 
         let minSelectionViewX = selectionWindowView.frame.minX
         let maxSelectionViewX = selectionWindowView.frame.maxX

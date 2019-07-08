@@ -32,7 +32,7 @@ class ChartLayer: CALayer {
 
     // MARK: - Public properties
 
-    var lineWidth: CGFloat = 2.0 {
+    var lineWidth: CGFloat = 1.0 {
         didSet {
             setNeedsDisplay()
         }
@@ -63,6 +63,9 @@ class ChartLayer: CALayer {
         }
     }
 
+    //TODO: remove, replace usages with self.bounds
+    var border = CGSize(width: 0, height: 0)
+
     var debugDrawing = false
 
     // MARK: - Private properties
@@ -70,7 +73,7 @@ class ChartLayer: CALayer {
     private var horizontalLinesDrawer = ChartHorizontalLinesDrawer()
 
     private var currentPointPerUnitY: CGFloat {
-        return bounds.height / CGFloat(yRange.upperBound - yRange.lowerBound)
+        return (bounds.height - 2 * border.height) / CGFloat(yRange.upperBound - yRange.lowerBound)
     }
 
     private var lastDrawnTime: CFTimeInterval = 0
@@ -82,9 +85,6 @@ class ChartLayer: CALayer {
     private var displayLink: CADisplayLink?
 
     private var animationDelayTimer: Timer?
-
-    //TODO: remove, replace usages with self.bounds
-    private var border = CGSize(width: 0, height: 0)
 
     private var linearFunctionFactory = LinearFunctionFactory<Double>()
 
@@ -104,7 +104,6 @@ class ChartLayer: CALayer {
 
     override init() {
         super.init()
-        backgroundColor = UIColor.white.cgColor
         isOpaque = true
         displayLink = CADisplayLink(target: self, selector: #selector(displayLinkFire))
         displayLink?.isPaused = true

@@ -47,7 +47,7 @@ class ChartView: UIView {
          lineSelectionView: LineSelectionView) {
 
         self.chartView = MainChartView()
-        chartView.backgroundColor = .white
+        self.chartView.lineWidth = 2.0
 
         self.lineRangeSelectionView = lineRangeSelectionView
         self.pointPopupView = pointPopupView

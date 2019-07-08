@@ -32,6 +32,18 @@ class MainChartView: UIView  {
         chartLayer.setDataLineHidden(isHidden, at: index, animated: animated)
     }
 
+    var drawHorizontalLines: Bool = true {
+        didSet {
+            chartLayer.drawHorizontalLines = drawHorizontalLines
+        }
+    }
+
+    var lineWidth: CGFloat = 1.0 {
+        didSet {
+            chartLayer.lineWidth = lineWidth
+        }
+    }
+
     // MARK: - Private properties
 
     override class var layerClass: AnyClass {
@@ -44,9 +56,6 @@ class MainChartView: UIView  {
         }
         return chartLayer
     }
-
-
-    private var tapGestureRecognizer: UITapGestureRecognizer!
 
     // MARK: - Initialization
 
@@ -62,8 +71,8 @@ class MainChartView: UIView  {
     // MARK: - Private methods
 
     private func setupUI() {
-        backgroundColor = .white
         setupChartLayer()
+        backgroundColor = .white
     }
 
     private func setupChartLayer() {

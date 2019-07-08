@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartSelectWindowView: UIView {
+class LineRangeSelectionWindowView: UIView {
 
     private enum Constants {
         static let sideViewWidth: CGFloat = 11
@@ -16,8 +16,8 @@ class ChartSelectWindowView: UIView {
 
     // MARK: - Private properties
 
-    private let leftSideView = ChartSelectWindowSideView(orientation: .left)
-    private let rightSideView = ChartSelectWindowSideView(orientation: .right)
+    private let leftSideView = LineRangeSelectionWindowSideView(orientation: .left)
+    private let rightSideView = LineRangeSelectionWindowSideView(orientation: .right)
 
     // MARK: - Initialization
 
@@ -39,11 +39,13 @@ class ChartSelectWindowView: UIView {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
 
-        let context = UIGraphicsGetCurrentContext()
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return
+        }
 
-        context?.saveGState()
+        context.saveGState()
 
-        context?.setStrokeColor(UIColor.selectionWindowBackground.cgColor)
+        context.setStrokeColor(UIColor.selectionWindowBackground.cgColor)
 
         //two lines at the top and bottom between side views
         let path = UIBezierPath()
@@ -53,17 +55,18 @@ class ChartSelectWindowView: UIView {
         path.addLine(to: CGPoint(x: bounds.width - Constants.sideViewWidth, y: bounds.height))
         path.stroke()
 
-        context?.restoreGState()
+        context.restoreGState()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
         leftSideView.frame = CGRect(x: 0, y: 0, width: Constants.sideViewWidth, height: bounds.height)
         rightSideView.frame = CGRect(x: bounds.width - Constants.sideViewWidth, y: 0, width: Constants.sideViewWidth, height: bounds.height)
+        setNeedsDisplay()
     }
 }
 
-fileprivate class ChartSelectWindowSideView: UIView {
+fileprivate class LineRangeSelectionWindowSideView: UIView {
 
     enum Orientation {
         case left
@@ -79,7 +82,7 @@ fileprivate class ChartSelectWindowSideView: UIView {
         addSubview(imageView)
 
         layer.masksToBounds = true
-        layer.cornerRadius = 1
+        layer.cornerRadius = 2
 
         switch orientation {
         case .left:
