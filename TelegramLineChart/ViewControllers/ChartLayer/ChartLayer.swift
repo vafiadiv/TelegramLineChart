@@ -180,12 +180,14 @@ class ChartLayer: CALayer {
             advanceAnimation(animationInfo: animationInfo)
         }
 
-        //start or restart the animation in 2 cases:
+        //start or restart the animation in 3 cases:
         //1. No animation is in progress and currentPointPerUnitY should be changed;
-        //2. Animation is in progress, but animates towards a wrong value (animationEndPointPerUnitY). This can happen
+        //2. No animation is in progress and current lines hidden states should be changed;
+        //3. Animation is in progress, but animates towards a wrong value (animationEndPointPerUnitY). This can happen
         //   if pointPerUnitYRequired was changed during animation
         if (animationInfo == nil && pointsPerUnitYRequired != currentPointPerUnitY) ||
-           (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY) {
+           (animationInfo == nil && lineTargetHiddenFlags != lineCurrentHiddenFlags) ||
+           (animationInfo != nil && pointsPerUnitYRequired != animationInfo!.animationEndPointPerUnitY){
 
             if animationEnabled {
                 startAnimation(pointsPerUnitY: pointsPerUnitYRequired, yRangeEnd: minY...maxY)
