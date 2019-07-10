@@ -8,4 +8,4 @@ No 3rd party libraries used, all drawing is done via Quartz2D and CoreAnimation 
 
 # Demo
 
-![Line Charts Animation Demo](demo/demo.gif)
+![Line Charts Animation Demo](Demo/demo.gif)

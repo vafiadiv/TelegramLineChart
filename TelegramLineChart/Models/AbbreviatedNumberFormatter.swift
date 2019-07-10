@@ -10,7 +10,7 @@ import Foundation
 
 ///
 ///Converts a big number into a short and readable format: 12345 -> "12.3K", 1_000_000 -> "1M", -1 etc.
-/// - Note: conversion from short-formatted string to number is not implemented
+/// - Note: Conversion from short-formatted string to number is not implemented
 class AbbreviatedNumberFormatter: NumberFormatter {
 
     override init() {
