@@ -55,9 +55,11 @@ class ChartDateIndicatorView: UIView {
 
     private var previousMarkUnitDistance: CGFloat = 0
 
-    private lazy var maxLabelWidth: CGFloat = maxLabelSize().width
+    private static var maxLabelWidth: CGFloat = {
+        return ChartDateIndicatorView.maxLabelSize().width
+    }()
 
-    private let dateFormatter: DateFormatter = {
+    private static let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM dd"
         return dateFormatter
@@ -173,7 +175,7 @@ class ChartDateIndicatorView: UIView {
             if let mark = label.mark {
                 label.text = mark.label
                 let labelCenterX = mark.labelCenterXFor(frameWidth: frame.width, minUnitX: visibleXRange.lowerBound, unitXWidth: rangeWidth)
-                label.frame = CGRect(x: labelCenterX - maxLabelWidth / 2, y: 0, width: maxLabelWidth, height: bounds.height)
+                label.frame = CGRect(x: labelCenterX - type(of: self).maxLabelWidth / 2, y: 0, width: type(of: self).maxLabelWidth, height: bounds.height)
             }
         }
 
@@ -194,7 +196,7 @@ class ChartDateIndicatorView: UIView {
         //To achieve correct zooming and panning of the dates view, the following algorithm is used:
 
         //1. Determine, how many marks can be displayed;
-        maxMarks = floor(bounds.width / maxLabelWidth)
+        maxMarks = floor(bounds.width / type(of: self).maxLabelWidth)
 
         //2. Thin out the day marks by removing every 2nd mark enough times so that number of marks inside `visibleXRange` < `maxMarks`,
         //   i.e. find `numberOfDivisions` - how many times do we have to divide the number of marks by 2 to get to `maxMarks`;
@@ -222,9 +224,8 @@ class ChartDateIndicatorView: UIView {
 
         marks = markUnitXs.map { [unowned self] markUnitX in
             let pointX = self.frame.width * CGFloat(markUnitX - self.visibleXRange.lowerBound) / rangeWidth
-            //TODO: date string caching?
             let date = Date(dataPointX: markUnitX)
-            return Mark(label: self.dateFormatter.string(from: date), unitX: markUnitX)
+            return Mark(label: type(of: self).dateFormatter.string(from: date), unitX: markUnitX)
         }
     }
 
@@ -247,19 +248,18 @@ class ChartDateIndicatorView: UIView {
         reusableLabels.push(label)
     }
 
-    //Calculates max label size across all month names.
-    //Might not work correctly in locales with different digit text sizes
-    private func maxLabelSize() -> CGSize {
+    //Calculates max label size across all month names to avoid calculating each date label width (since they are all
+    //roughly the same width: "Feb 01", "Jul 30" etc.
+    private static func maxLabelSize() -> CGSize {
         let attributes = [
             NSAttributedString.Key.foregroundColor: Constants.textColor,
             NSAttributedString.Key.font: Constants.font,
         ]
 
-        //TODO: constants
         let dayWithMaxTextWidth = 30
 
         var maxSize: CGSize = .zero
-        var dateComponents = DateComponents(calendar: Calendar.current, year: 2019, day: dayWithMaxTextWidth)
+        var dateComponents = DateComponents(calendar: Calendar.current, day: dayWithMaxTextWidth)
 
         for i in 0..<12 {
             dateComponents.month = i

@@ -63,7 +63,7 @@ class LineRangeSelectionView: UIView {
 
     private var panGestureRecognizer: UIPanGestureRecognizer!
 
-    private var tapGestureRecognizer: UITapGestureRecognizer!
+    private var longPressGestureRecognizer: UILongPressGestureRecognizer!
 
     private var mainChartView: MainChartView!
 
@@ -126,7 +126,6 @@ class LineRangeSelectionView: UIView {
     // MARK: - Private methods
     
     private func setupUI() {
-//        setupChartLayer()
         setupMainChartView()
         setupSelectionWindow()
         setupDimmingViews()
@@ -157,32 +156,16 @@ class LineRangeSelectionView: UIView {
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gestureRecognizer:)))
         addGestureRecognizer(panGestureRecognizer)
 
-        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
-        addGestureRecognizer(tapGestureRecognizer)
+        //we need to detect touch down events on the view, so tap gesture recognizer won't do the trick. Instead,
+        //we use a longPressGestureRecognizer with minimumPressDuration = 0
+        longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleTap(gestureRecognizer:)))
+        longPressGestureRecognizer.minimumPressDuration = 0
+        longPressGestureRecognizer.delegate = self
+        addGestureRecognizer(longPressGestureRecognizer)
 
         panHandler = SelectionWindowPanHandler(selectionWindowView: selectionWindowView)
         panHandler.delegate = self
     }
-
-/*
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-
-        guard let context = UIGraphicsGetCurrentContext() else {
-            return
-        }
-
-        context.saveGState()
-
-        context.setFillColor(UIColor.black.cgColor)
-        context.fill(bounds)
-        context.setFillColor(UIColor.red.cgColor)
-
-        context.fill([panHandler.rightSideTouchArea, panHandler.leftSideTouchArea, panHandler.centralTouchArea])
-
-        context.restoreGState()
-    }
-*/
 
     private func setupMainChartView() {
         mainChartView = MainChartView()
@@ -200,8 +183,16 @@ class LineRangeSelectionView: UIView {
     }
 
     @objc
-    private func handleTap(gestureRecognizer: UIPanGestureRecognizer) {
+    private func handleTap(gestureRecognizer: UILongPressGestureRecognizer) {
         self.panHandler.handleTap(of: gestureRecognizer, in: self)
+    }
+}
+
+// MARK: -
+
+extension LineRangeSelectionView: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return otherGestureRecognizer == panGestureRecognizer
     }
 }
 
@@ -373,9 +364,16 @@ private class SelectionWindowPanHandler {
         gestureRecognizer.setTranslation(.zero, in: view.superview)
     }
 
-    func handleTap(of gestureRecognizer: UIPanGestureRecognizer, in view: UIView) {
-        if let panningArea = panningArea(of: gestureRecognizer.location(in: view)) {
-            self.delegate?.didPanArea(panningArea, by: .zero)
+    func handleTap(of gestureRecognizer: UILongPressGestureRecognizer, in view: UIView) {
+        switch gestureRecognizer.state {
+        case .began:
+            if let panningArea = panningArea(of: gestureRecognizer.location(in: view)) {
+                self.delegate?.didPanArea(panningArea, by: .zero)
+            }
+        case .ended:
+            self.delegate?.didFinishPanning()
+        default:
+            return
         }
     }
 
