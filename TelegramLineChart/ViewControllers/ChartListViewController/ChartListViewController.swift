@@ -45,7 +45,9 @@ class ChartListViewController: UITableViewController {
         }
 
         guard let charts = try? ChartJSONParser.charts(from: data) else {
-            //TODO: error
+            let alert = UIAlertController(title: nil, message: "Error loading data".localized, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
             return
         }
 

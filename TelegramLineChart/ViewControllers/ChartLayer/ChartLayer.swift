@@ -23,7 +23,6 @@ class ChartLayer: CALayer {
 
         var unitYRangeEnd: ClosedRange<DataPoint.DataType>
 
-        //TODO: remove?
         var animationEndPointPerUnitY: CGFloat
 
         var animationRemainingTime: CFTimeInterval
@@ -64,7 +63,6 @@ class ChartLayer: CALayer {
         }
     }
 
-    //TODO: remove, replace usages with self.bounds
     var border = CGSize(width: 0, height: 0)
 
     var debugDrawing = false
@@ -297,7 +295,6 @@ class ChartLayer: CALayer {
         }
     }
 
-    //TODO: remove pointsPerUnitY? Pro: readability, con: re-calculating it => slight performance loss
     private func startAnimation(pointsPerUnitY: CGFloat, yRangeEnd: ClosedRange<DataPoint.DataType>) {
         guard let displayLink = displayLink else {
             return

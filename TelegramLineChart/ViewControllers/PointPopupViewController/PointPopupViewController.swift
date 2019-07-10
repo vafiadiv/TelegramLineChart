@@ -15,7 +15,6 @@ class PointPopupViewController: UIViewController, RootViewProtocol {
 
     // MARK: - Public properties
 
-    //TODO: hidden flags
     var dataLines = [DataLine]()
 
     var dataLineHiddenFlags = [Bool]()

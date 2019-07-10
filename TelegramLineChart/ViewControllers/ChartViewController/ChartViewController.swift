@@ -35,21 +35,6 @@ class ChartViewController: UIViewController, RootViewProtocol {
         }
     }
 
-    private func updateModel(model: ChartViewControllerModel) {
-
-        rootView.chartView.dataLines = model.lines
-        lineRangeSelectionViewController.dataLines = model.lines
-        pointPopupViewController.dataLines = model.lines
-        lineSelectionViewController.dataLines = model.lines
-
-        selectedXRange = model.selectedXRange
-        chartDateIndicatorViewController.totalXRange = model.lines.xRange
-
-        setLineHiddenFlags(model.lineHiddenFlags, animated: false)
-
-        view.setNeedsLayout()
-    }
-
     // MARK: - Private properties
 
     private var selectedXRange: ClosedRange<DataPoint.DataType> {
@@ -64,8 +49,6 @@ class ChartViewController: UIViewController, RootViewProtocol {
             chartDateIndicatorViewController.visibleXRange = selectedXRange
         }
     }
-
-//    private var chartView: MainChartView!
 
     private var tapGestureRecognizer: UITapGestureRecognizer!
 
@@ -101,7 +84,8 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
         setupUI()
 
-        //TODO: comment
+        //since ChartViewController is a container, its view has to contain all other views that come from child ViewControllers,
+        //therefore it
         view = ChartView(
                 lineRangeSelectionView: lineRangeSelectionViewController.rootView,
                 pointPopupView: pointPopupViewController.rootView,
@@ -150,8 +134,6 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
     private func setupDateIndicatorViewController() {
         chartDateIndicatorViewController = ChartDateIndicatorViewController()
-        //TODO: remove?
-        chartDateIndicatorViewController.view.backgroundColor = .white
     }
 
     private func setupLineSelectionViewController() {
@@ -179,6 +161,36 @@ class ChartViewController: UIViewController, RootViewProtocol {
         }
     }
 
+    private func updateModel(model: ChartViewControllerModel) {
+
+        rootView.chartView.dataLines = model.lines
+        lineRangeSelectionViewController.dataLines = model.lines
+        pointPopupViewController.dataLines = model.lines
+        lineSelectionViewController.dataLines = model.lines
+
+        selectedXRange = model.selectedXRange
+        chartDateIndicatorViewController.totalXRange = model.lines.xRange
+
+        setLineHiddenFlags(model.lineHiddenFlags, animated: false)
+
+        view.setNeedsLayout()
+    }
+
+    private func showPointPopupViewController(at tapPoint: CGPoint) {
+        let dataRect = DataRect(
+                origin: DataPoint(x: rootView.chartView.xRange.lowerBound, y: rootView.chartView.yRange.lowerBound),
+                width: rootView.chartView.xRange.upperBound - rootView.chartView.xRange.lowerBound,
+                height: rootView.chartView.yRange.upperBound - rootView.chartView.yRange.lowerBound)
+
+        pointPopupViewController.setupWith(tapPoint: tapPoint, visibleDataRect: dataRect, chartRect: rootView.chartView.bounds)
+        let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: rootView.chartView.frame.height))
+        let tapPointInSelf = self.view.convert(tapPoint, from: rootView.chartView)
+        pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: rootView.chartView.center.y), size: size)
+        pointPopupViewController.view.setIsHiddenAnimated(false)
+    }
+
+    // MARK: - Touch handling
+
     @objc
     private func handleTap(gestureRecognizer: UITapGestureRecognizer) {
 
@@ -198,20 +210,9 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
         showPointPopupViewController(at: point)
     }
-
-    private func showPointPopupViewController(at tapPoint: CGPoint) {
-        let dataRect = DataRect(
-                origin: DataPoint(x: rootView.chartView.xRange.lowerBound, y: rootView.chartView.yRange.lowerBound),
-                width: rootView.chartView.xRange.upperBound - rootView.chartView.xRange.lowerBound,
-                height: rootView.chartView.yRange.upperBound - rootView.chartView.yRange.lowerBound)
-
-        pointPopupViewController.setupWith(tapPoint: tapPoint, visibleDataRect: dataRect, chartRect: rootView.chartView.bounds)
-        let size = pointPopupViewController.view.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: rootView.chartView.frame.height))
-        let tapPointInSelf = self.view.convert(tapPoint, from: rootView.chartView)
-        pointPopupViewController.view.frame = CGRect(center: CGPoint(x: tapPointInSelf.x, y: rootView.chartView.center.y), size: size)
-        pointPopupViewController.view.setIsHiddenAnimated(false)
-    }
 }
+
+// MARK: -
 
 extension ChartViewController: UIGestureRecognizerDelegate {
 
