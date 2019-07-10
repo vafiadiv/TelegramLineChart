@@ -36,6 +36,7 @@
 		A10AB800009C9EE3557EC7AB /* LineRangeSelectionWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* LineRangeSelectionWindowView.swift */; };
 		A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB82D521342DDD9243967 /* ChartView.swift */; };
 		A10AB96E6EB706061DBA5CB4 /* Date+DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABE509A7690534352C280 /* Date+DataPoint.swift */; };
+		A10AB97A9C268FBE02B7894C /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = A10AB35C6F14BF4791B3F8D0 /* README.md */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
 		A10AB99F19D3BC7133EBFCBA /* ChartDateIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */; };
 		A10ABA07B0B7E5756EDB8A15 /* LineSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFA0FF8F8AFE0E50BE9F /* LineSelectionView.swift */; };
@@ -75,6 +76,7 @@
 		1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Conventience.swift"; sourceTree = "<group>"; };
 		A10AB2457F49465C14BE4C13 /* LineRangeSelectionViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineRangeSelectionViewControllerDelegate.swift; sourceTree = "<group>"; };
 		A10AB2FC55E28D33350D5913 /* LineSelectionViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineSelectionViewControllerDelegate.swift; sourceTree = "<group>"; };
+		A10AB35C6F14BF4791B3F8D0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A10AB424548B37C0370DD7A4 /* NotImplemented.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		A10AB438441F8CDDD77C92C1 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		A10AB44B975EEEF4F8498123 /* ChartDateIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateIndicatorView.swift; sourceTree = "<group>"; };
@@ -212,13 +214,6 @@
 			path = ChartDateMarksViewController;
 			sourceTree = "<group>";
 		};
-		A10AB2EB74879D73FFC36AD8 /* Demo */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Demo;
-			sourceTree = "<group>";
-		};
 		A10AB7D7E96BEC4718E0A6F1 /* LineSelectionViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,7 +271,7 @@
 			children = (
 				A9D5AC00223ED48B00AF87FB /* TelegramLineChart */,
 				A9D5ABFF223ED48B00AF87FB /* Products */,
-				A10AB2EB74879D73FFC36AD8 /* Demo */,
+				A10AB35C6F14BF4791B3F8D0 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -461,6 +456,7 @@
 				A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */,
 				A10AB05516699A4EB72D744D /* String+Localized.swift in Sources */,
 				A10ABE2604B1CBBA305215DD /* AbbreviatedNumberFormatter.swift in Sources */,
+				A10AB97A9C268FBE02B7894C /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,3 +7,5 @@ The goal of the app is to parse a bundled JSON file and to display a set of line
 No 3rd party libraries used, all drawing is done via Quartz2D and CoreAnimation frameworks.
 
 # Demo
+
+![Line Charts Animation Demo](demo/demo.gif)
