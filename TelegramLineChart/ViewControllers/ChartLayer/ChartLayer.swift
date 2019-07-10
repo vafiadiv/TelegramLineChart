@@ -1,6 +1,9 @@
 //
 //  ChartView.swift
-//  Copyright © 2019 Cleverpumpkin, Ltd. All rights reserved.
+//  TelegramLineChart
+//
+//  Created by Valentin Vafiadi
+//  Copyright © 2019 VFD. All rights reserved.
 //
 
 import UIKit
@@ -87,8 +90,8 @@ class ChartLayer: CALayer {
 
     private var linearFunctionFactory = LinearFunctionFactory<Double>()
 
-    //data lines containing points that are inside xRange; includes 2 "fake" edge points for drawing first and last
-    //visible segment
+    //data lines containing points that are inside xRange; includes 2 "fake" edge points where the edges of the screen
+    //intersect the first and last visible segments
     private var onScreenLines = [DataLine]()
 
     private var lineAlphas = [CGFloat]()
@@ -336,23 +339,11 @@ class ChartLayer: CALayer {
     // MARK: - Data lines
 
     private func updateOnScreenLines() {
-//TODO: comment
-/*
-        1. найти ближайшую слева точку к lowerBound (lowerThanLowerBound, lowerThanLowerBoundIndex):
-            2.1 бежим по dataLine, если lowerBound < текущей:
-               если (индекс текущей > 0) - берём (индекс текущей - 1)
-               иначе берём 0.
-       2. Аналогично ближайшую справа от upperBound;
-       3. Находим пересечение lowerBound и линии (lowerThanLowerBound, lowerThanLowerBound+1) - это minFakePoint
-       4. Находим пересечение upperBound и линии (higherThanUpperBound-1, higherThanUpperBound) - это maxFakePoint
-       4.5 - сделать guard на lowerThanLowerBoundIndex+1 > higherThanUpperBound-1 ?
-       5. Возвращаем [minFakePoint, lowerThanLowerBoundIndex+1, ... higherThanUpperBound-1, maxFakePoint]
-*/
 
         onScreenLines = dataLines.map {
 
             //1. To find visible portion of the graph in `xRange` first we need to find all that are on the screen (inside xRange)
-            // plus two points that are just outside of it (to the left and to the right).
+            // plus two points that are just outside of it (to the left and to the right). See comment for `points(containing:)`.
             var points = $0.points(containing: xRange)
 
             guard let pointOutsideRangeLeft = points.first,
@@ -383,8 +374,6 @@ class ChartLayer: CALayer {
 
             let rightEdgeY = rightEdgeIntersectingLine(Double(xRange.upperBound))
             let rightEdgePoint = DataPoint(x: xRange.upperBound, y: DataPoint.DataType(rightEdgeY))
-
-//            print("Now visible: left edge: \(leftEdgePoint), right edge: \(rightEdgePoint) for line \($0.name)")
 
             points[0] = leftEdgePoint
             points[points.count - 1] = rightEdgePoint
@@ -460,7 +449,6 @@ class ChartLayer: CALayer {
             return
         }
         context.saveGState()
-//		let string = "x: \(x), y: \(y)"
         let string = "y: \(y)"
 
         NSString(string: string).draw(at: point, withAttributes: [NSAttributedString.Key.foregroundColor: UIColor.black])

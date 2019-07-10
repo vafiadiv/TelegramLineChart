@@ -84,8 +84,9 @@ class ChartViewController: UIViewController, RootViewProtocol {
 
         setupUI()
 
-        //since ChartViewController is a container, its view has to contain all other views that come from child ViewControllers,
-        //therefore it
+        //Since ChartViewController is a container, its view has to contain all other views that come from child ViewControllers.
+        //Unfortunately, the proper setup of child view controllers and views has to be done in two methods and is kind of clunky
+        //(add subview / add child / did move to parent)
         view = ChartView(
                 lineRangeSelectionView: lineRangeSelectionViewController.rootView,
                 pointPopupView: pointPopupViewController.rootView,
@@ -101,14 +102,15 @@ class ChartViewController: UIViewController, RootViewProtocol {
         managedViewControllers.forEach { [unowned self] in
             self.addChild($0)
         }
+
+        managedViewControllers.forEach { [unowned self] in
+            $0.didMove(toParent: self)
+        }
     }
 
     override func viewDidLoad() {
 		super.viewDidLoad()
 
-        managedViewControllers.forEach { [unowned self] in
-            $0.didMove(toParent: self)
-        }
         setupGestureRecognizers()
         updateModel(model: model)
 	}
