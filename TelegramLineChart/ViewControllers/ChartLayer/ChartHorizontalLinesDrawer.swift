@@ -24,6 +24,10 @@ internal struct ChartHorizontalLinesDrawer {
         static let fontSize: CGFloat = 11
 
         static let horizontalLinesCount: CGFloat = 5
+
+        static let formatter = AbbreviatedNumberFormatter()
+
+        static let color = UIColor(white: 0, alpha: 0.05)
     }
 
     // MARK: - Public methods
@@ -51,7 +55,7 @@ internal struct ChartHorizontalLinesDrawer {
 
         let linePath = UIBezierPath()
         linePath.move(to: CGPoint(x: minX, y: 0))
-        context.setStrokeColor(UIColor.chartHorizontalLines.withAlphaComponent(alpha).cgColor)
+        context.setStrokeColor(Constants.color.withAlphaComponent(0.05 * alpha).cgColor)
         context.setLineWidth(1.0)
         lines.forEach {
             linePath.move(to: CGPoint(x: minX, y: $0.yPoint))
@@ -76,7 +80,8 @@ internal struct ChartHorizontalLinesDrawer {
                 .foregroundColor: UIColor.chartHorizontalLinesText.withAlphaComponent(alpha)
             ]
 
-            let attributedText = NSAttributedString(string: Double(line.yUnit).abbreviated, attributes: attributes)
+            let yUnitNumber = NSNumber(integerLiteral: line.yUnit)
+            let attributedText = NSAttributedString(string: Constants.formatter.string(from: yUnitNumber) ?? "", attributes: attributes)
             let size = attributedText.size().ceiled
             attributedText.draw(at: CGPoint(x: point.x, y: point.y - size.height - Constants.textOffset.vertical))
         }

@@ -13,7 +13,10 @@ class LineSelectionViewController: UIViewController, RootViewProtocol {
     typealias RootViewType = LineSelectionView
 
     private enum Constants {
+
         static let cellReuseIdentifier = "cellReuseIdentifier"
+
+        static let rowHeight: CGFloat = 44
     }
 
     // MARK: - Public properties
@@ -43,9 +46,12 @@ class LineSelectionViewController: UIViewController, RootViewProtocol {
 
     private func setupTableView() {
         rootView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
+        rootView.rowHeight = Constants.rowHeight
         rootView.delegate = self
         rootView.dataSource = self
         rootView.bounces = false
+        //to prevent UITableView from drawing infinite separators at the bottom of the last cell
+        rootView.tableFooterView = UIView()
     }
 }
 

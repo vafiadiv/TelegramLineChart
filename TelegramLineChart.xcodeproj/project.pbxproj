@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1C7B40E6101E3839AD3AB7F8 /* Double+Readable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B447A23A84C6F462CE09A /* Double+Readable.swift */; };
 		1C7B4299E8A6676BF08D6E3C /* CGRect+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B40CBB075D29A2D849F01 /* CGRect+Convenience.swift */; };
 		1C7B4342EA8768DA34B7D2E5 /* CGPoint+Conventience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4FCA061720450EE2C64D /* CGPoint+Conventience.swift */; };
 		1C7B44133593DB2FE501194F /* ChartDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7B4B696DAD5D2CAEEE9301 /* ChartDTO.swift */; };
@@ -48,6 +47,7 @@
 		A10ABD1912B90022DAA26F8B /* LineSelectionViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2FC55E28D33350D5913 /* LineSelectionViewControllerDelegate.swift */; };
 		A10ABD5EE0714364DCC7B377 /* CGContext+DebugDrawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB7A5D0A9C154F586DAF7 /* CGContext+DebugDrawing.swift */; };
 		A10ABE07D3C182ABCCF61B44 /* PointPopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABCD8FBEFB54C650803EB /* PointPopupViewController.swift */; };
+		A10ABE2604B1CBBA305215DD /* AbbreviatedNumberFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB5E1C12E3F4D4F02F89F /* AbbreviatedNumberFormatter.swift */; };
 		A10ABF33773F3BA35193E9A1 /* LinearFunctionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */; };
 		A10ABF34F8D91946FB0BA627 /* ChartViewControllerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB5D4BE0D2565E7AB4AE8 /* ChartViewControllerModel.swift */; };
 		A10ABFABCB6F5A5D864BED66 /* LineRangeSelectionViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB2457F49465C14BE4C13 /* LineRangeSelectionViewControllerDelegate.swift */; };
@@ -62,7 +62,6 @@
 /* Begin PBXFileReference section */
 		1C7B40CBB075D29A2D849F01 /* CGRect+Convenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Convenience.swift"; sourceTree = "<group>"; };
 		1C7B41CD8B31284E7C6DBCFD /* ChartHorizontalLinesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartHorizontalLinesDrawer.swift; sourceTree = "<group>"; };
-		1C7B447A23A84C6F462CE09A /* Double+Readable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+Readable.swift"; sourceTree = "<group>"; };
 		1C7B44C1E4096876F06B65C0 /* ChartJSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartJSONParser.swift; sourceTree = "<group>"; };
 		1C7B461022C503D871FECBBD /* UIColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		1C7B47484B394C7749455180 /* Chart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chart.swift; sourceTree = "<group>"; };
@@ -80,6 +79,7 @@
 		A10AB438441F8CDDD77C92C1 /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		A10AB44B975EEEF4F8498123 /* ChartDateIndicatorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateIndicatorView.swift; sourceTree = "<group>"; };
 		A10AB5D4BE0D2565E7AB4AE8 /* ChartViewControllerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewControllerModel.swift; sourceTree = "<group>"; };
+		A10AB5E1C12E3F4D4F02F89F /* AbbreviatedNumberFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbbreviatedNumberFormatter.swift; sourceTree = "<group>"; };
 		A10AB5F6C2B767014B0D6261 /* DataRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRect.swift; sourceTree = "<group>"; };
 		A10AB631D4BF05D312DA568F /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		A10AB6CF9CC005000142AC86 /* ChartPointsCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartPointsCalculator.swift; sourceTree = "<group>"; };
@@ -178,6 +178,7 @@
 				A10ABFC4686CF4748EF27E0B /* LinearFunctionFactory.swift */,
 				A10AB5F6C2B767014B0D6261 /* DataRect.swift */,
 				A10AB775733179863406A582 /* Stack.swift */,
+				A10AB5E1C12E3F4D4F02F89F /* AbbreviatedNumberFormatter.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -211,6 +212,13 @@
 			path = ChartDateMarksViewController;
 			sourceTree = "<group>";
 		};
+		A10AB2EB74879D73FFC36AD8 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
 		A10AB7D7E96BEC4718E0A6F1 /* LineSelectionViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -241,7 +249,6 @@
 		A935164B2249B0F700D6549C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1C7B447A23A84C6F462CE09A /* Double+Readable.swift */,
 				1C7B4709780C448DBAC345DB /* CoreGraphics */,
 				A10ABEEB2396E4C8AFE84021 /* UIColor+Static.swift */,
 				A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */,
@@ -269,6 +276,7 @@
 			children = (
 				A9D5AC00223ED48B00AF87FB /* TelegramLineChart */,
 				A9D5ABFF223ED48B00AF87FB /* Products */,
+				A10AB2EB74879D73FFC36AD8 /* Demo */,
 			);
 			sourceTree = "<group>";
 		};
@@ -417,7 +425,6 @@
 				1C7B4FA32DD74A16A9DB7658 /* ChartLoader.swift in Sources */,
 				1C7B4BB60B2E222C2F9A02AB /* DecodingError.swift in Sources */,
 				1C7B4AE1855F0AE2BCB169A7 /* UIColor+Hex.swift in Sources */,
-				1C7B40E6101E3839AD3AB7F8 /* Double+Readable.swift in Sources */,
 				1C7B490E93E10E9A70F4BAEE /* ChartLayer.swift in Sources */,
 				1C7B4D6A13E87EB552DAF1F7 /* ChartHorizontalLinesDrawer.swift in Sources */,
 				1C7B4299E8A6676BF08D6E3C /* CGRect+Convenience.swift in Sources */,
@@ -453,6 +460,7 @@
 				A10ABD1912B90022DAA26F8B /* LineSelectionViewControllerDelegate.swift in Sources */,
 				A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */,
 				A10AB05516699A4EB72D744D /* String+Localized.swift in Sources */,
+				A10ABE2604B1CBBA305215DD /* AbbreviatedNumberFormatter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

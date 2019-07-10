@@ -197,6 +197,16 @@ class ChartLayer: CALayer {
             }
         }
 
+        for i in 0..<onScreenLines.count {
+            drawLine(onScreenLines[i],
+                    to: context,
+                    in: chartRect,
+                    minDataPoint: DataPoint(x: xRange.lowerBound, y: minY),
+                    pointsPerUnitX: pointsPerUnitXRequired,
+                    pointsPerUnitY: currentPointPerUnitY,
+                    alpha: lineAlphas[i])
+        }
+
         if drawHorizontalLines && maxY > minY {
 
             if let animationInfo = animationInfo, animationEnabled {
@@ -223,16 +233,6 @@ class ChartLayer: CALayer {
                         drawingRect: chartRect,
                         context: context)
             }
-        }
-
-        for i in 0..<onScreenLines.count {
-            drawLine(onScreenLines[i],
-                    to: context,
-                    in: chartRect,
-                    minDataPoint: DataPoint(x: xRange.lowerBound, y: minY),
-                    pointsPerUnitX: pointsPerUnitXRequired,
-                    pointsPerUnitY: currentPointPerUnitY,
-                    alpha: lineAlphas[i])
         }
 
         context.restoreGState()

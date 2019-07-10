@@ -24,6 +24,8 @@ class ChartView: UIView {
 
         static let lineRangeSelectionViewHeight: CGFloat = 43
 
+        static let lineRangeSelectionBottom: CGFloat = 11
+
         static let popupAnimationInterval: TimeInterval = 0.25
     }
 
@@ -117,9 +119,8 @@ class ChartView: UIView {
 
         lineSelectionView.frame = CGRect(
                 x: 0,
-                y: lineRangeSelectionView.frame.maxY,
+                y: lineRangeSelectionView.frame.maxY + Constants.lineRangeSelectionBottom,
                 width: bounds.width,
                 height: lineSelectionView.sizeThatFits(maxHeightSize).height)
     }
-
 }

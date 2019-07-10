@@ -32,7 +32,7 @@ class ChartDateIndicatorView: UIView {
 
         static let textColor: UIColor = .chartHorizontalLinesText
 
-        static let font = UIFont.systemFont(ofSize: 12, weight: .light)
+        static let font = UIFont.systemFont(ofSize: 11, weight: .light)
 
         static let labelOffset: CGFloat = 10
 
@@ -110,7 +110,7 @@ class ChartDateIndicatorView: UIView {
         } else if markUnitDistance < previousMarkUnitDistance {
         //2. markUnitDistance decreased, i.e. zoomed in past a threshold from in from the last call. Show new labels with fade in animation
 
-            visibleLabels.removeAll { [weak self] in
+            visibleLabels.removeAll {
                 if let mark = $0.mark {
                     return !markUnitXs.contains(mark.unitX)
                 } else {
@@ -150,7 +150,7 @@ class ChartDateIndicatorView: UIView {
         } else {
         //3. markUnitDistance unchanged, remove/add labels without animation
 
-            visibleLabels.removeAll { [weak self] in
+            visibleLabels.removeAll {
                 if let mark = $0.mark {
                     return !markUnitXs.contains(mark.unitX)
                 } else {
@@ -223,7 +223,6 @@ class ChartDateIndicatorView: UIView {
         let markUnitXs = stride(from: firstMarkUnitX, through: lastMarkUnitX, by: DataPoint.DataType(markUnitDistance))
 
         marks = markUnitXs.map { [unowned self] markUnitX in
-            let pointX = self.frame.width * CGFloat(markUnitX - self.visibleXRange.lowerBound) / rangeWidth
             let date = Date(dataPointX: markUnitX)
             return Mark(label: type(of: self).dateFormatter.string(from: date), unitX: markUnitX)
         }
