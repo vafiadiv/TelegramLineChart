@@ -59,6 +59,9 @@ class ChartListViewController: UITableViewController {
 
     private func setupTableView() {
         tableView.register(ChartCell.self, forCellReuseIdentifier: Constants.cellReuseIdentifier)
+        tableView.separatorStyle = .none
+        //to prevent UITableView from drawing infinite separators at the bottom of the last cell
+        tableView.tableFooterView = UIView()
     }
 
     // MARK: - UITableViewDataSource
