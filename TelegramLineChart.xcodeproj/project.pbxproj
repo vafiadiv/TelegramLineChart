@@ -36,7 +36,6 @@
 		A10AB800009C9EE3557EC7AB /* LineRangeSelectionWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB8A773FC0D27B2348A50 /* LineRangeSelectionWindowView.swift */; };
 		A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB82D521342DDD9243967 /* ChartView.swift */; };
 		A10AB96E6EB706061DBA5CB4 /* Date+DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABE509A7690534352C280 /* Date+DataPoint.swift */; };
-		A10AB97A9C268FBE02B7894C /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = A10AB35C6F14BF4791B3F8D0 /* README.md */; };
 		A10AB97C9598135C09F825A6 /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = A10AB631D4BF05D312DA568F /* chart_data.json */; };
 		A10AB99F19D3BC7133EBFCBA /* ChartDateIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */; };
 		A10ABA07B0B7E5756EDB8A15 /* LineSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10ABFA0FF8F8AFE0E50BE9F /* LineSelectionView.swift */; };
@@ -98,6 +97,7 @@
 		A10AB9071D1400914A3E2E65 /* ChartDateIndicatorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartDateIndicatorViewController.swift; sourceTree = "<group>"; };
 		A10AB9828F1A6DB3520B286B /* UIView+HiddenAnimated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+HiddenAnimated.swift"; sourceTree = "<group>"; };
 		A10AB9FCE487C16EE02F9A1E /* ChartCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartCell.swift; sourceTree = "<group>"; };
+		A10ABACED0CB479DCF3E6177 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		A10ABCD2D469E998AD8B8BC1 /* DataPoint+CGGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DataPoint+CGGeometry.swift"; sourceTree = "<group>"; };
 		A10ABCD8FBEFB54C650803EB /* PointPopupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointPopupViewController.swift; sourceTree = "<group>"; };
 		A10ABCE8B2B65FD6BFECB042 /* UIImage+Static.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Static.swift"; sourceTree = "<group>"; };
@@ -272,6 +272,7 @@
 				A9D5AC00223ED48B00AF87FB /* TelegramLineChart */,
 				A9D5ABFF223ED48B00AF87FB /* Products */,
 				A10AB35C6F14BF4791B3F8D0 /* README.md */,
+				A10ABACED0CB479DCF3E6177 /* LICENSE.txt */,
 			);
 			sourceTree = "<group>";
 		};
@@ -456,7 +457,6 @@
 				A10AB90B0524EAC358C4E8E1 /* ChartView.swift in Sources */,
 				A10AB05516699A4EB72D744D /* String+Localized.swift in Sources */,
 				A10ABE2604B1CBBA305215DD /* AbbreviatedNumberFormatter.swift in Sources */,
-				A10AB97A9C268FBE02B7894C /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,7 +2,7 @@
 //  CGRect+Convenience.swift
 //  TelegramLineChart
 //
-//  Copyright © 2019 VFD. All rights reserved.
+//  Copyright © 2019 Valentin Vafiadi. All rights reserved.
 //
 
 import UIKit

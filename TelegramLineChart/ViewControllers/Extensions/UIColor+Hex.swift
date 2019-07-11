@@ -3,7 +3,7 @@
 //  TelegramLineChart
 //
 //  Created by Vfd on 2019-04-19.
-//  Copyright © 2019 VFD. All rights reserved.
+//  Copyright © 2019 Valentin Vafiadi. All rights reserved.
 //
 
 import UIKit
